@@ -5,7 +5,7 @@ bl_info = {
     "author": "Nicolas Dufresne",
     "location": "3D View (Pose Mode) > Pose menu",
     "version": (0,0,1),
-    "description": "Useful automated rigging tools.",
+    "description": "Advanced yet easy to use rigging tools.",
     "wiki_url": "http://duduf.com"
 }
 
