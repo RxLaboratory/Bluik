@@ -1114,10 +1114,10 @@ class DUIK_MT_pose_menu( types.Menu ):
     def draw( self, context ):
         layout = self.layout
 
-        layout.operator(DUIK_OT_ikfk.bl_idname,  text="Duik: IK/FK Rig")
-        layout.operator(DUIK_OT_fkCtrl.bl_idname,  text="Duik: Add FK Controller")
-        layout.operator(DUIK_OT_fkNoFollow.bl_idname,  text="Duik: Add FK Controller (No Follow)")
-        layout.operator(DUIK_OT_bbone.bl_idname,  text="Duik: Add BBone controllers")
+        layout.operator(DUIK_OT_ikfk.bl_idname,  text="IK/FK Rig")
+        layout.operator(DUIK_OT_fkCtrl.bl_idname,  text="Add FK Controller")
+        layout.operator(DUIK_OT_fkNoFollow.bl_idname,  text="Add FK Controller (No Follow)")
+        layout.operator(DUIK_OT_bbone.bl_idname,  text="Add BBone controllers")
 
 def menu_func(self, context):
     self.layout.menu("DUIK_MT_pose_menu")
