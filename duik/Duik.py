@@ -188,23 +188,23 @@ class DUIK_SelectionSet( types.PropertyGroup ):
 
     def get_bones( self ):
         """Returns the bone name list of the selection set"""
+        if not isinstance(self['bones'], list):
+            self['bones'] = []
         return self['bones']
 
     def add_bones( self, bone_names ):
         """Adds the bones in the selection set"""
-        bones = self['bones']
+        bones = self.get_bones( )
         if not isinstance(bone_names, list):
             bone_names = [bone_names]
-
         for bone_name in bone_names:
             if not bone_name in self['bones']:
                 bones.append( bone_name )
-
         self['bones'] = bones
 
     def remove_bones( self, bone_names):
         """Removes the bones from the selection set"""
-        bones = self['bones']
+        bones = self.get_bones( )
         if not isinstance(bone_names, list):
             bone_names = [bone_names]
         for bone_name in bone_names:
@@ -224,6 +224,8 @@ class DUIK_UiControl( types.PropertyGroup ):
         name="Type",
         description="The type of the control",
         default='LABEL')  
+    toggle: bpy.props.BoolProperty( name="Toggle", default=True)
+    slider: bpy.props.BoolProperty( name="Slider", default=True)
     
     def set_bones( self, bone_names ):
         """Sets the bones of the selection set"""
@@ -235,34 +237,30 @@ class DUIK_UiControl( types.PropertyGroup ):
         """Returns the bone name list of the selection set"""
         if not isinstance(self['bones'], list):
             self['bones'] = []
-
         return self['bones']
 
     def add_bones( self, bone_names ):
         """Adds the bones in the selection set"""
-        if not isinstance(self['bones'], list):
-            self['bones'] = []
-
+        bones = self.get_bones( )
         if not isinstance(bone_names, list):
             bone_names = [bone_names]
-
         for bone_name in bone_names:
-            if not bone_name in self['bones']:
-                self['bones'].append( bone_name )
+            if not bone_name in bones:
+                bones.append( bone_name )
+        self['bones'] = bones
 
     def remove_bones( self, bone_names):
         """Removes the bones from the selection set"""
-        if not isinstance(self['bones'], list):
-            self['bones'] = []
+        bones = self.get_bones( )
+        if len(bones) < 1:
             return
-
         if not isinstance(bone_names, list):
             bone_names = [bone_names]
-
         for bone_name in bone_names:
-            if bone_name in self['bones']:
+            if bone_name in bones:
                 print(bone_name)
-                self['bones'].remove(bone_name)
+                bones.remove(bone_name)
+        self['bones'] = bones
      
 class DUIK_OT_new_selection_set( types.Operator ):
     """Creates a new selection set"""
@@ -489,6 +487,7 @@ class DUIK_OT_assign_ui_control_to_bone( types.Operator ):
 
         if context.mode == 'POSE':
             for b in context.selected_pose_bones:
+                print(b.name)
                 ui_control.add_bones(b.name)
 
         return {'FINISHED'}
@@ -1320,6 +1319,8 @@ class DUIK_PT_ui_controls( types.Panel ):
             if active.control_type == 'PROPERTY':
                 layout.prop_search( active, "target_bone", armature , "bones", text = "Bone" , icon='BONE_DATA')
                 layout.prop( active, "target_rna", text = "Path" , icon='RNA')
+                layout.prop( active, "toggle" )
+                layout.prop( active, "slider" )
 
 class DUIK_PT_controls_ui( types.Panel ):
     bl_space_type = 'VIEW_3D'
@@ -1336,14 +1337,13 @@ class DUIK_PT_controls_ui( types.Panel ):
         armature_object = context.active_object
         armature_data = armature_object.data
         active_bone = context.active_pose_bone
-        print(active_bone.name)
 
         layout = self.layout
 
         current_layout = layout
         
         for ui_control in armature_data.ui_controls:
-            if active_bone.name in ui_control['bones']:
+            if active_bone.name in ui_control.get_bones():
                 name = ui_control.name.upper()
 
                 if name.endswith('.R'):
@@ -1356,7 +1356,7 @@ class DUIK_PT_controls_ui( types.Panel ):
                 elif ui_control.control_type == 'LABEL':
                     current_layout.label( text = ui_control.name )
                 elif ui_control.control_type == 'PROPERTY':
-                    current_layout.prop( armature_object.pose.bones[ ui_control.target_bone ], ui_control.target_rna , text = ui_control.name )
+                    current_layout.prop( armature_object.pose.bones[ ui_control.target_bone ], ui_control.target_rna , text = ui_control.name , slider = ui_control.slider, toggle = ui_control.toggle )
                     
 class DUIK_PT_rig_selectors(types.Panel):
     bl_space_type = 'VIEW_3D'
