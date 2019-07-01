@@ -182,6 +182,8 @@ class DUIK_SelectionSet( types.PropertyGroup ):
     
     def set_bones( self, bone_names ):
         """Sets the bones of the selection set"""
+        if not isinstance(bone_names, list):
+            bone_names = [bone_names]
         self['bones'] = bone_names
 
     def get_bones( self ):
@@ -210,7 +212,58 @@ class DUIK_SelectionSet( types.PropertyGroup ):
                 print(bone_name)
                 bones.remove(bone_name)
         self['bones'] = bones
-        
+
+class DUIK_UiControl( types.PropertyGroup ):
+    """A Control in the UI."""
+    
+    target_bone: bpy.props.StringProperty( name = "Bone", description = "The name of the bone containing the controlled property." )
+    target_rna: bpy.props.StringProperty( name = "RNA", description = "The name of the controlled property (the last part of the data path)" )
+    control_type: bpy.props.EnumProperty(items=[('PROPERTY', "Single property", "The property displayed by this control"),
+        ('LABEL', "Label", "A label" ),
+        ('SEPARATOR', "Separator", "A spacer to be placed between other controls")],
+        name="Type",
+        description="The type of the control",
+        default='LABEL')  
+    
+    def set_bones( self, bone_names ):
+        """Sets the bones of the selection set"""
+        if not isinstance(bone_names, list):
+            bone_names = [bone_names]
+        self['bones'] = bone_names
+
+    def get_bones( self ):
+        """Returns the bone name list of the selection set"""
+        if not isinstance(self['bones'], list):
+            self['bones'] = []
+
+        return self['bones']
+
+    def add_bones( self, bone_names ):
+        """Adds the bones in the selection set"""
+        if not isinstance(self['bones'], list):
+            self['bones'] = []
+
+        if not isinstance(bone_names, list):
+            bone_names = [bone_names]
+
+        for bone_name in bone_names:
+            if not bone_name in self['bones']:
+                self['bones'].append( bone_name )
+
+    def remove_bones( self, bone_names):
+        """Removes the bones from the selection set"""
+        if not isinstance(self['bones'], list):
+            self['bones'] = []
+            return
+
+        if not isinstance(bone_names, list):
+            bone_names = [bone_names]
+
+        for bone_name in bone_names:
+            if bone_name in self['bones']:
+                print(bone_name)
+                self['bones'].remove(bone_name)
+     
 class DUIK_OT_new_selection_set( types.Operator ):
     """Creates a new selection set"""
     bl_idname = "armature.new_selection_set"
@@ -232,7 +285,10 @@ class DUIK_OT_new_selection_set( types.Operator ):
             for b in context.selected_pose_bones:
                 bones.append(b.name)
 
-        selection_set.set_bones( bones )
+        if bones:
+            selection_set.set_bones( bones )
+        else:
+            selection_set.set_bones( [] )
 
         return {'FINISHED'}
 
@@ -264,6 +320,12 @@ class DUIK_OT_selection_set_move( types.Operator ):
     Dublf = Dublf_utils()
     Dublf.toolName = "Duik"
     Duik = DUIK_utils()
+
+    @classmethod
+    def poll(cls, context):
+        armature = context.active_object.data
+        selection_sets = armature.selection_sets
+        return len(selection_sets) > 1
 
     def execute(self, context):
         armature = context.active_object.data
@@ -330,6 +392,124 @@ class DUIK_OT_unselect_all_selection_sets( bpy.types.Operator ):
         context.active_object.data.selection_sets
         for s in context.active_object.data.selection_sets:
             s.selected = False
+        return {'FINISHED'}
+
+class DUIK_OT_new_ui_control( types.Operator ):
+    """Creates a new selection set"""
+    bl_idname = "armature.new_ui_control"
+    bl_label = "New UI control"
+    bl_options = {'REGISTER','UNDO'}
+
+    Dublf = Dublf_utils()
+    Dublf.toolName = "Duik"
+    Duik = DUIK_utils()
+
+    def execute(self, context):
+        armature = context.active_object.data
+        ui_controls = armature.ui_controls
+
+        ui_control = ui_controls.add()
+        ui_control.name = "UI Control"
+        ui_control.control_type = 'LABEL'
+        bones = []
+        if context.mode == 'POSE':
+            for b in context.selected_pose_bones:
+                bones.append(b.name)
+
+        if bones and len(bones) > 0:
+            ui_control.set_bones( bones )
+            ui_control.target_bone = bones[0]
+        else:
+            ui_control.set_bones( [] )
+
+        return {'FINISHED'}
+
+class DUIK_OT_remove_ui_control( types.Operator ):
+    """Removes the active selection set"""
+    bl_idname = "armature.remove_ui_control"
+    bl_label = "Remove UI control"
+    bl_options = {'REGISTER','UNDO'}
+
+    Dublf = Dublf_utils()
+    Dublf.toolName = "Duik"
+    Duik = DUIK_utils()
+
+    def execute(self, context):
+        ui_controls = context.active_object.data.ui_controls
+        active_control = context.active_object.data.active_ui_control
+        ui_controls.remove(active_control)
+
+        return {'FINISHED'}
+
+class DUIK_OT_ui_control_move( types.Operator ):
+    """Moves the UI control up or down"""
+    bl_idname = "armature.ui_control_move"
+    bl_label = "Move Up"
+    bl_options = {'REGISTER','UNDO'}
+
+    up: props.BoolProperty(default = True)
+
+    Dublf = Dublf_utils()
+    Dublf.toolName = "Duik"
+    Duik = DUIK_utils()
+
+    @classmethod
+    def poll(cls, context):
+        armature = context.active_object.data
+        ui_controls = armature.ui_controls
+        return len(ui_controls) > 1
+
+    def execute(self, context):
+        armature = context.active_object.data
+        active = armature.active_ui_control
+        ui_controls = armature.ui_controls
+
+        if self.up and active > 0:
+            ui_controls.move(active, active-1)
+            armature.active_ui_control = active-1
+        elif active < len(ui_controls) - 1:
+            ui_controls.move(active, active+1)
+            armature.active_ui_control = active+1
+
+        return {'FINISHED'}
+
+class DUIK_OT_assign_ui_control_to_bone( types.Operator ):
+    """Assigns the selected bones to the active selection set"""
+    bl_idname = "armature.assign_ui_control_to_bone"
+    bl_label = "Assign"
+    bl_options = {'REGISTER','UNDO'}
+
+    Dublf = Dublf_utils()
+    Dublf.toolName = "Duik"
+    Duik = DUIK_utils()
+
+    def execute(self, context):
+        armature = context.active_object.data
+        ui_control = armature.ui_controls[armature.active_ui_control]
+
+        if context.mode == 'POSE':
+            for b in context.selected_pose_bones:
+                ui_control.add_bones(b.name)
+
+        return {'FINISHED'}
+
+class DUIK_OT_remove_ui_control_from_bone( types.Operator ):
+    """Removes the selected bones from the active selection set"""
+    bl_idname = "armature.remove_ui_control_from_bone"
+    bl_label = "Remove"
+    bl_options = {'REGISTER','UNDO'}
+
+    Dublf = Dublf_utils()
+    Dublf.toolName = "Duik"
+    Duik = DUIK_utils()
+
+    def execute(self, context):
+        armature = context.active_object.data
+        ui_control = armature.ui_controls[armature.active_ui_control]
+
+        if context.mode == 'POSE':
+            for b in context.selected_pose_bones:
+                ui_control.remove_bones(b.name)
         return {'FINISHED'}
 
 class DUIK_OT_ikfk( types.Operator ):
@@ -1045,10 +1225,9 @@ class DUIK_PT_selection_sets( types.Panel ):
         col.operator("armature.new_selection_set", icon='ADD', text="")
         col.operator("armature.remove_selection_set", icon='REMOVE', text="")
 
-        if len(armature.selection_sets) > 1:
-            col.separator()
-            col.operator("armature.selection_set_move", icon='TRIA_UP', text="").up = True
-            col.operator("armature.selection_set_move", icon='TRIA_DOWN', text="").up = False
+        col.separator()
+        col.operator("armature.selection_set_move", icon='TRIA_UP', text="").up = True
+        col.operator("armature.selection_set_move", icon='TRIA_DOWN', text="").up = False
 
         row = layout.row()
         row.operator("armature.assign_to_selection_set")
@@ -1086,6 +1265,99 @@ class DUIK_PT_selection_sets_ui( types.Panel ):
 
             current_layout.prop( selection_set , 'selected' , toggle = True , text = selection_set.name )
 
+class DUIK_UL_ui_controls( types.UIList ):
+    bl_idname = "DUIK_UL_ui_controls"
+
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
+        if self.layout_type in {'DEFAULT', 'COMPACT'}:
+            if item.control_type == 'LABEL':
+                icon = 'FONT_DATA'
+            elif item.control_type == 'PROPERTY':
+                icon = 'RNA'
+            elif item.control_type == 'SEPARATOR':
+                icon = 'GRIP'
+            layout.prop(item, "name", text="", emboss=False, icon=icon)
+
+class DUIK_PT_ui_controls( types.Panel ):
+    bl_label = "Duik UI Controls"
+    bl_idname = "DUIK_PT_ui_controls"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = "data"
+
+    @classmethod
+    def poll(cls, context):
+        return context.object.type == 'ARMATURE'
+
+    def draw(self, context):
+        layout = self.layout
+
+        obj = context.object
+        armature = obj.data
+
+        row = layout.row()
+
+        # template_list now takes two new args.
+        # The first one is the identifier of the registered UIList to use (if you want only the default list,
+        # with no custom draw code, use "UI_UL_list").
+        row.template_list("DUIK_UL_ui_controls", "", armature, "ui_controls", armature, "active_ui_control" , rows = 3 )
+
+        col = row.column(align=True)
+        col.operator("armature.new_ui_control", icon='ADD', text="")
+        col.operator("armature.remove_ui_control", icon='REMOVE', text="")
+
+        col.separator()
+        col.operator("armature.ui_control_move", icon='TRIA_UP', text="").up = True
+        col.operator("armature.ui_control_move", icon='TRIA_DOWN', text="").up = False
+
+        row = layout.row()
+        row.operator("armature.assign_ui_control_to_bone")
+        row.operator("armature.remove_ui_control_from_bone")
+
+        if len(armature.ui_controls) > 0:
+            active = armature.ui_controls[armature.active_ui_control]
+            layout.prop( active, "control_type", text = "Type" )
+            if active.control_type == 'PROPERTY':
+                layout.prop_search( active, "target_bone", armature , "bones", text = "Bone" , icon='BONE_DATA')
+                layout.prop( active, "target_rna", text = "Path" , icon='RNA')
+
+class DUIK_PT_controls_ui( types.Panel ):
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_label = "Duik Controls"
+    bl_idname = "DUIK_PT_controls_ui"
+    bl_category = 'Item'
+
+    @classmethod
+    def poll(self, context):
+        return context.mode == 'POSE'
+        
+    def draw(self, context):
+        armature_object = context.active_object
+        armature_data = armature_object.data
+        active_bone = context.active_pose_bone
+        print(active_bone.name)
+
+        layout = self.layout
+
+        current_layout = layout
+        
+        for ui_control in armature_data.ui_controls:
+            if active_bone.name in ui_control['bones']:
+                name = ui_control.name.upper()
+
+                if name.endswith('.R'):
+                    current_layout = layout.row()
+                elif not name.endswith('.L'):
+                    current_layout = layout
+
+                if ui_control.control_type == 'SEPARATOR':
+                    current_layout.separator( )
+                elif ui_control.control_type == 'LABEL':
+                    current_layout.label( text = ui_control.name )
+                elif ui_control.control_type == 'PROPERTY':
+                    current_layout.prop( armature_object.pose.bones[ ui_control.target_bone ], ui_control.target_rna , text = ui_control.name )
+                    
 class DUIK_PT_rig_selectors(types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
@@ -1130,6 +1402,7 @@ def addKeyMap(name, idname, key, ctrl = False, alt = False, shift = False):
 
 classes = (
     DUIK_SelectionSet,
+    DUIK_UiControl,
     DUIK_OT_new_selection_set,
     DUIK_OT_remove_selection_set,
     DUIK_OT_assign_to_selection_set,
@@ -1139,6 +1412,14 @@ classes = (
     DUIK_UL_selection_sets,
     DUIK_PT_selection_sets,
     DUIK_PT_selection_sets_ui,
+    DUIK_UL_ui_controls,
+    DUIK_PT_ui_controls,
+    DUIK_PT_controls_ui,
+    DUIK_OT_new_ui_control,
+    DUIK_OT_remove_ui_control,
+    DUIK_OT_ui_control_move,
+    DUIK_OT_assign_ui_control_to_bone,
+    DUIK_OT_remove_ui_control_from_bone,
     DUIK_OT_rig_select_group,
     DUIK_PT_rig_selectors,
     DUIK_OT_ikfk,
@@ -1161,6 +1442,10 @@ def register():
         types.Armature.selection_sets = props.CollectionProperty( type = DUIK_SelectionSet )
     if not hasattr( types.Armature, 'active_selection_set' ):
         types.Armature.active_selection_set = props.IntProperty()
+    if not hasattr( types.Armature, 'ui_controls' ):
+        types.Armature.ui_controls = props.CollectionProperty( type = DUIK_UiControl )
+    if not hasattr( types.Armature, 'active_ui_control' ):
+        types.Armature.active_ui_control = props.IntProperty()
     
     # menu
     types.VIEW3D_MT_pose.append(menu_func)
