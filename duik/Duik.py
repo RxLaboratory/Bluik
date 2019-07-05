@@ -1145,9 +1145,8 @@ class DUIK_OT_bbone( types.Operator ):
         # CREATE BONES
         #-----------------------
 
-        use_connect = bone.use_connect
-
         endCtrl = self.Duik.extrudeBone( armatureData, bone , 'Upper' + bone.basename + '.Ctrl', coef = 0.25 , parent = False , connected = False )
+        endCtrl.roll = bone.roll
 
         startCtrl = self.Duik.duplicateBone( armatureData , bone, 'Lower' + bone.basename + '.Ctrl' )
         startCtrl.tail = bone.head + bone.vector / 4
@@ -1171,6 +1170,9 @@ class DUIK_OT_bbone( types.Operator ):
         startCtrl = self.Duik.getPoseBone( armatureObject, startCtrl )
         endCtrl = self.Duik.getPoseBone( armatureObject, endCtrl )
 
+        startCtrl.rotation_mode = 'XYZ'
+        endCtrl.rotation_mode = 'XYZ'
+
         # Add Constraints
 
         st = bone.constraints.new('STRETCH_TO')
@@ -1180,6 +1182,12 @@ class DUIK_OT_bbone( types.Operator ):
         st.head_tail = 0.0
         st.rest_length = 0.0
         st.show_expanded = False
+
+        # Rotation drivers
+
+        driver = self.Duik.addDriver(cr, 'influence', driverType = 'SCRIPTED')
+        self.Duik.addVariable(driver, "ctrl", 'pose.bones["' + controller.name + '"]["Follow"]', armatureObject)
+        driver.expression = "1 - ctrl"
        
         # -------------------
         # TIDYING
