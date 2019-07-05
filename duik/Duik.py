@@ -690,33 +690,25 @@ class DUIK_OT_ikfk( types.Operator ):
         self.Duik.addCustomProperty(controller, "FK / IK Blend", 1.0, {"description": "Blends between IK (1.0) and FK (0.0)",
             "default": 1.0,
             "min": 0.0,
-            "max": 1.0,
-            "soft_min":0.0,
-            "soft_max":1.0,
+            "max": 1.0
             })
 
         self.Duik.addCustomProperty(controller, "Stretchy IK", 0.25, {"description": "Controls the IK stretchiness",
             "default": 0.25,
             "min": 0.0,
-            "max": 1.0,
-            "soft_min":0.0,
-            "soft_max":1.0,
+            "max": 1.0
             })
 
         self.Duik.addCustomProperty(controller, "Pole Angle", 0.0, {"description": "Controls the pole of the IK",
             "default": 0.0,
             "min": -360.0,
-            "max": 360.0,
-            "soft_min":0.0,
-            "soft_max":1.0,
+            "max": 360.0
             })
 
         self.Duik.addCustomProperty(controller, "Auto-Bend", 0.0, {"description": "Automatic bend of the bones for a nicely curved shape when the limb bends",
             "default": 0.0,
             "min": -10.0,
-            "max": 10.0,
-            "soft_min":0.0,
-            "soft_max":1.0,
+            "max": 10.0
             })
 
         # Stretch
@@ -1079,9 +1071,7 @@ class DUIK_OT_fkNoFollow( types.Operator ):
         self.Duik.addCustomProperty( controller , "Follow", 1.0, {"description": "Parent rotation inheritance",
             "default": 1.0,
             "min": 0.0,
-            "max": 1.0,
-            "soft_min":0.0,
-            "soft_max":1.0,
+            "max": 1.0
             })
 
         driver = self.Duik.addDriver(cr, 'influence', driverType = 'SCRIPTED')
