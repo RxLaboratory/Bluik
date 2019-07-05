@@ -131,12 +131,12 @@ class DUIK_utils():
         var.targets[0].data_path = data_path
         var.targets[0].id = id
 
-    def addTransformVariable(self , driver, name, boneTarget, transformType, transformSpace, id):
+    def addTransformVariable(self , driver, name, boneTarget, transformType, transformSpace, var_id):
         """Adds a variable in a driver"""
         var = driver.variables.new()
         var.name = name
         var.type = 'TRANSFORMS'
-        var.targets[0].id = id
+        var.targets[0].id = var_id
         var.targets[0].bone_target = boneTarget.name
         var.targets[0].transform_space = transformSpace
         var.targets[0].transform_type = transformType
@@ -1145,9 +1145,9 @@ class DUIK_OT_bbone( types.Operator ):
         bone.parent = startCtrl
 
         bone.bbone_handle_type_start = 'TANGENT'
-        bone.bbone_custom_handle_start = startCtrl
         bone.bbone_handle_type_end = 'TANGENT'
-        bone.bbone_custom_handle_end = endCtrl
+        bone.use_inherit_rotation = False
+        bone.use_inherit_scale = False
 
         #-----------------------
         # CONSTRAINTS
@@ -1175,9 +1175,33 @@ class DUIK_OT_bbone( types.Operator ):
 
         # Rotation drivers
 
-        driver = self.Duik.addDriver(cr, 'influence', driverType = 'SCRIPTED')
-        self.Duik.addVariable(driver, "ctrl", 'pose.bones["' + controller.name + '"]["Follow"]', armatureObject)
-        driver.expression = "1 - ctrl"
+        driver = self.Duik.addDriver(bone, 'bbone_curveinx', driverType = 'SCRIPTED')
+        self.Duik.addTransformVariable( driver, 'ctrl', startCtrl, 'ROT_Z', 'LOCAL_SPACE', armatureObject)
+        self.Duik.addTransformVariable( driver, 'sc', startCtrl, 'SCALE_Y', 'LOCAL_SPACE', armatureObject)
+        driver.expression = '-ctrl*2*sc'
+
+        driver = self.Duik.addDriver(bone, 'bbone_curveiny', driverType = 'SCRIPTED')
+        self.Duik.addTransformVariable( driver, 'ctrl', startCtrl, 'ROT_X', 'LOCAL_SPACE', armatureObject)
+        self.Duik.addTransformVariable( driver, 'sc', startCtrl, 'SCALE_Y', 'LOCAL_SPACE', armatureObject)
+        driver.expression = 'ctrl*2*sc'
+
+        driver = self.Duik.addDriver(bone, 'bbone_rollin', driverType = 'SCRIPTED')
+        self.Duik.addTransformVariable( driver, 'ctrl', startCtrl, 'ROT_Y', 'LOCAL_SPACE', armatureObject)
+        driver.expression = 'ctrl'
+
+        driver = self.Duik.addDriver(bone, 'bbone_curveoutx', driverType = 'SCRIPTED')
+        self.Duik.addTransformVariable( driver, 'ctrl', endCtrl, 'ROT_Z', 'LOCAL_SPACE', armatureObject)
+        self.Duik.addTransformVariable( driver, 'sc', endCtrl, 'SCALE_Y', 'LOCAL_SPACE', armatureObject)
+        driver.expression = 'ctrl*2*sc'
+
+        driver = self.Duik.addDriver(bone, 'bbone_curveouty', driverType = 'SCRIPTED')
+        self.Duik.addTransformVariable( driver, 'ctrl', endCtrl, 'ROT_X', 'LOCAL_SPACE', armatureObject)
+        self.Duik.addTransformVariable( driver, 'sc', endCtrl, 'SCALE_Y', 'LOCAL_SPACE', armatureObject)
+        driver.expression = '-ctrl*2*sc'
+
+        driver = self.Duik.addDriver(bone, 'bbone_rollout', driverType = 'SCRIPTED')
+        self.Duik.addTransformVariable( driver, 'ctrl', endCtrl, 'ROT_Y', 'LOCAL_SPACE', armatureObject)
+        driver.expression = 'ctrl'
        
         # -------------------
         # TIDYING
