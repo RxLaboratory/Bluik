@@ -1,0 +1,44 @@
+site_name: Duik for Blender Documentation
+site_url: https://rainboxlab.org
+repo_url: https://github.com/Rainbox-dev/DuBLF_Duik/
+edit_uri: edit/master/src-docs/docs/
+site_description: The Duik for Blender comprehensive documentation
+site_author: Nicolas Dufresne and contributors
+copyright: 'Copyright © 2019 Rainbox Lab and Nicolas Dufresne'
+theme:
+    name: readthedocs
+    custom_dir: theme/
+markdown_extensions:
+    - smarty
+    - footnotes
+    - tables
+    - admonition
+    - codehilite
+    - fenced_code
+    - toc
+extra_css:
+    - style.css
+    - video.css
+extra_javascript:
+    - video.js
+site_dir: ../docs/
+dev_addr: '127.0.0.1:8001'
+nav:
+    - About: index.md
+    - Installation: install.md
+    - Settings: settings.md
+    - Rigging:
+        - Introduction: tools.md
+        - IK/FK Rig: ikfk.md
+        - FK Controllers: fk.md
+        - BBone Controllers: bbone.md
+    - UI Creation:
+        - Introduction: ui.md
+        - Selection Sets: selection-sets.md
+        - UI Controls: ui-controls.md
+    - Changelog: changelog.md
+    - Contribution: https://rainbox-dev.github.io/DuAEF_Duik/contributing-guide
+    - License: https://rainbox-dev.github.io/DuAEF_Duik/license
+    - Credits: credits
+    - Contact: https://rainbox-dev.github.io/DuAEF_Duik/contact
+    - Donate: https://rainbox-dev.github.io/DuAEF_Duik/donation

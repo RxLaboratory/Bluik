@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Nicolas Dufresne and contributors">
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>UI Controls - Duik for Blender Documentation</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  <link href="../style.css" rel="stylesheet">
+  <link href="../video.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "UI Controls";
+    var mkdocs_page_input_path = "ui-controls.md";
+    var mkdocs_page_url = "/ui-controls/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Duik for Blender Documentation</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">About</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../install/">Installation</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../settings/">Settings</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Rigging</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../tools/">Introduction</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../ikfk/">IK/FK Rig</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../fk/">FK Controllers</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../bbone/">BBone Controllers</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">UI Creation</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../ui/">Introduction</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../selection-sets/">Selection Sets</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">UI Controls</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#create-and-manage-controls">Create and manage controls</a></li>
+    
+
+    <li class="toctree-l3"><a href="#the-ui">The UI</a></li>
+    
+
+    <li class="toctree-l3"><a href="#configuration-of-the-controls">Configuration of the controls</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#single-property">Single property</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../changelog/">Changelog</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="https://rainbox-dev.github.io/DuAEF_Duik/contributing-guide">Contribution</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="https://rainbox-dev.github.io/DuAEF_Duik/license">License</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../credits">Credits</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="https://rainbox-dev.github.io/DuAEF_Duik/contact">Contact</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="https://rainbox-dev.github.io/DuAEF_Duik/donation">Donate</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Duik for Blender Documentation</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>UI Creation &raquo;</li>
+        
+      
+    
+    <li>UI Controls</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/Rainbox-dev/DuBLF_Duik/edit/master/src-docs/docs/ui-controls.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>With <em>Duik</em>, you can create nice UI controls for any (custom) property on the <em>Armature</em> you&rsquo;re working on.</p>
+<div class="toc">
+<ul>
+<li><a href="#create-and-manage-controls">Create and manage controls</a></li>
+<li><a href="#the-ui">The UI</a></li>
+<li><a href="#configuration-of-the-controls">Configuration of the controls</a><ul>
+<li><a href="#single-property">Single property</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h1 id="create-and-manage-controls">Create and manage controls</h1>
+<p>In the <code>Armature data</code> tab of the <code>Properties</code> panel, you&rsquo;ll find the <em>Duik UI Contrlos</em> Panel.</p>
+<p><img alt="" src="../img/ui-controls-config.png" /></p>
+<p>Select a bone and click on the <code>+</code> button to create a UI Control.</p>
+<p>You can also duplicate an existing control using the menu under the down arrow, which will automatically be updated depending on the bone currently selected, to quickly create another control for a property with the same name on another bone.</p>
+<p>This control will be automatically added on the selected bone. You can add and remove any UI Control to any other bone using the <code>Assign</code> and <code>Remove</code> button.</p>
+<h1 id="the-ui">The UI</h1>
+<p>These <em>Duik Controls</em> are available in the <em>sidebar</em> of the <em>3D View</em>, in the <code>Item</code> tab.</p>
+<p><img alt="" src="../img/ui-controls.png" /></p>
+<p>Duik will try to build a nice layout, depending on the names of the controls, and their order in the list. Each time an <em>.R</em> suffix followed by an <em>.L</em> suffix is found, the two sets are showed in a row.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>UI controls are a very nice way to expose (or not) the controls which may be useful for the animator, while keeping the other custom properties hidden.<br />
+Their UI is also nicer than the UI of the native custom properties.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Keep in mind that you can have the same UI Control on several bones at once, which is a nice way to be able to animate the same property from different places</p>
+</div>
+<h1 id="configuration-of-the-controls">Configuration of the controls</h1>
+<p><img alt="" src="../img/ui-controls-config-details.png" /></p>
+<p>There are three types of UI Controls:</p>
+<ul>
+<li><strong><em>Label</em></strong> is a simple text shown in the UI.</li>
+<li><strong><em>Separator</em></strong> is a blank space.</li>
+<li><strong><em>Single Property</em></strong> is an actual control.</li>
+</ul>
+<h2 id="single-property">Single property</h2>
+<p>When set on <em>Single Property</em>, the control has some options:</p>
+<ul>
+<li><em>Bone:</em> is the bone where to find the controlled property.</li>
+<li><em>Path:</em> is the <strong>last part only</strong> of the path copied when [right-click] on the property and choosing <em>copy data path</em>.</li>
+<li><em>Toggle:</em> is not yet implemented.</li>
+<li><em>Slider:</em> changes the apperances of the control, to be either a slider or a simple value.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In future versions, the <em>Path</em> option will be updated to work the same way as in drivers, using the full data path from any object.</p>
+</div>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../changelog/" class="btn btn-neutral float-right" title="Changelog">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../selection-sets/" class="btn btn-neutral" title="Selection Sets"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>Copyright © 2019 Rainbox Lab and Nicolas Dufresne</p>
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/Rainbox-dev/DuBLF_Duik/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../selection-sets/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../changelog/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../video.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>
