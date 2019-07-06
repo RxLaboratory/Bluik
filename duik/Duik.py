@@ -4,7 +4,7 @@ bl_info = {
     "blender": (2, 80, 0),
     "author": "Nicolas Dufresne",
     "location": "3D View (Pose Mode) > Pose menu",
-    "version": (0,0,2),
+    "version": (0,0,3),
     "description": "Advanced yet easy to use rigging tools.",
     "wiki_url": "http://duduf.com"
 }
