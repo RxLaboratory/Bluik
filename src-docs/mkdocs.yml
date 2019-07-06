@@ -30,7 +30,7 @@ nav:
     - Rigging:
         - Introduction: tools.md
         - IK/FK Rig: ikfk.md
-        - FK Controllers: fk.md
+        - FK Controller: fk.md
         - BBone Controllers: bbone.md
     - UI Creation:
         - Introduction: ui.md
