@@ -23,7 +23,7 @@ You can get it either:
 
 ## Install
 
-The add-on can be either a python *Duik.py* single file or a *Duik_vX.Y.Z.zip* file.
+The add-on can be either a python *Duik.py* single file or a *Duik-Blender_X.Y.Z.zip* file.
 
 In either case, it is installed very simply throught the *Blender* preferences (`Edit/Preferences` menu), in the `Add-ons` tab.
 
