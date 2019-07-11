@@ -903,19 +903,9 @@ class DUIK_OT_fk( types.Operator ):
 
         use_connect = bone.use_connect
 
-        nofollowBone = self.Duik.duplicateBone( armatureData , bone, bone.basename + '.NoFollow' )
-        nofollowBone.use_connect = use_connect
-        nofollowBone.use_inherit_rotation = False
-
-        switchBone = self.Duik.duplicateBone( armatureData , bone, bone.basename + '.Switch' )
-        switchBone.use_connect = use_connect
-
         controller = self.Duik.duplicateBone( armatureData , bone, bone.basename + '.Ctrl' )
-        controller.use_connect = False
-        controller.parent = switchBone
-
-        bone.use_connect = False
-        bone.parent = switchBone
+        controller.use_connect = use_connect
+        controller.parent = bone.parent
 
         #-----------------------
         # CONSTRAINTS
@@ -925,8 +915,6 @@ class DUIK_OT_fk( types.Operator ):
 
         # Get pose bones
         bone = self.Duik.getPoseBone( armatureObject, bone )
-        nofollowBone = self.Duik.getPoseBone( armatureObject, nofollowBone )
-        switchBone = self.Duik.getPoseBone( armatureObject, switchBone )
         controller = self.Duik.getPoseBone( armatureObject, controller )
 
         controller.rotation_mode = 'YXZ'
@@ -960,34 +948,22 @@ class DUIK_OT_fk( types.Operator ):
         st.rest_length = controller.bone.vector.length
         st.show_expanded = False
 
-        # No Follow
-
-        cr = switchBone.constraints.new('COPY_ROTATION')
-        cr.target = armatureObject
-        cr.subtarget = nofollowBone.name
-        cr.target_space = 'WORLD'
-        cr.owner_space = 'WORLD'
-        cr.name = 'Copy NoFollow Rotation'
-        cr.show_expanded = False
-
         # No Follow Driver
 
-        self.Duik.addCustomProperty( bone , "Follow", 1.0, {"description": "Parent rotation inheritance",
-            "default": 1.0,
+        self.Duik.addCustomProperty( bone , "Follow", 1, {"description": "Parent rotation inheritance",
+            "default": 1,
             "min": 0.0,
             "max": 1.0
             })
 
-        driver = self.Duik.addDriver(cr, 'influence', driverType = 'SCRIPTED')
+        driver = self.Duik.addDriver(controller.bone, 'use_inherit_rotation', driverType = 'SCRIPTED')
         self.Duik.addVariable(driver, "ctrl", 'pose.bones["' + bone.name + '"]["Follow"]', armatureObject)
-        driver.expression = "1 - ctrl"
+        driver.expression = "ctrl == 1"
 
         # -------------------
         # TIDYING
         # -------------------
 
-        self.Duik.addBoneToLayers( nofollowBone.bone , [duik_prefs.layer_rig] )
-        self.Duik.addBoneToLayers( switchBone.bone , [duik_prefs.layer_rig] )
         self.Duik.addBoneToLayers( bone.bone , [duik_prefs.layer_skin] )
         self.Duik.addBoneToLayers( controller.bone , [duik_prefs.layer_controllers] )
 
