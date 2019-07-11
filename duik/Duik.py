@@ -972,14 +972,14 @@ class DUIK_OT_fk( types.Operator ):
 
         # No Follow Driver
 
-        self.Duik.addCustomProperty( controller , "Follow", 1.0, {"description": "Parent rotation inheritance",
+        self.Duik.addCustomProperty( bone , "Follow", 1.0, {"description": "Parent rotation inheritance",
             "default": 1.0,
             "min": 0.0,
             "max": 1.0
             })
 
         driver = self.Duik.addDriver(cr, 'influence', driverType = 'SCRIPTED')
-        self.Duik.addVariable(driver, "ctrl", 'pose.bones["' + controller.name + '"]["Follow"]', armatureObject)
+        self.Duik.addVariable(driver, "ctrl", 'pose.bones["' + bone.name + '"]["Follow"]', armatureObject)
         driver.expression = "1 - ctrl"
 
         # -------------------
