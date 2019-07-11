@@ -181,7 +181,11 @@
               
                 <p>Select one bone and launch the tool.</p>
 <p>This will create a single FK controller for the bone, which will control the rotation and the scale of the bone. If the bone was not connected to its parent, it will also control its location.</p>
-<p>The <em>No Follow</em> version of the tool will add a control to be able to activate or deactivate the rotation inheritance of the bone from its parent. This is very useful for necks, heads or arms. This control is available in the sidebar [N] of the <em>3D View</em> with the controller selected.</p>
+<p>There&rsquo;s a <em>Follow</em> property on the bone used to make it inherit the parent rotation or not. This is very useful for necks, heads or arms. This control is available in the sidebar [N] of the <em>3D View</em> with the bone selected.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Use a Duik <a href="../ui-controls/"><em>UI Control</em></a> to expose the follow property on the controller if needed by the animator.</p>
+</div>
               
             </div>
           </div>

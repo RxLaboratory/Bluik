@@ -4,6 +4,10 @@ This is the list of what has changed since the first version of *Duik for Blende
 
 ## 0.0.3 (in development)
 
+#### Improvements
+
+- [*FK Controller*](fk.md): the property for the "follow" option has been moved to the bone instead of the controller. Use a Duik [*UI Control*](ui-controls.md) to expose it on the controller if needed. Also, the way to rig the FK controller has been simplified a lot.
+
 ## 0.0.2
 
 #### New

@@ -1,4 +1,5 @@
 With *Duik*, you can create nice UI controls for any (custom) property on the *Armature* you're working on.
+This is a way to expose and group the controls needed by the animator using the rig in the `Item` tab of the *sidebar* of the *3D View* (with the transform properties), while keeping any other custom property hidden on bones not used as controllers. These controls have a better display than the native custom properties too.
 
 [TOC]
 
