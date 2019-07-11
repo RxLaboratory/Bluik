@@ -858,105 +858,7 @@ class DUIK_OT_ikfk( types.Operator ):
 
         return {'FINISHED'}
 
-class DUIK_OT_fkCtrl( types.Operator ):
-    """Creates an FK Control on a selected bone"""
-    bl_idname = "armature.duik_fkctrl"
-    bl_label = "Add FK Control"
-    bl_options = {'REGISTER','UNDO'}
-
-    Dublf = Dublf_utils()
-    Dublf.toolName = "Duik"
-    Duik = DUIK_utils()
-
-    def execute(self, context):
-
-        preferences = context.preferences
-        duik_prefs = preferences.addons[__name__].preferences
-
-        # Measure performance
-        time_start = time.time()
-                
-        self.Dublf.log( 'Creating an FK Controller' , time_start )
-
-        #-----------------------
-        # INIT
-        #-----------------------
-
-        # Go in edit mode
-        ops.object.mode_set(mode='EDIT')
-
-        # Get the active bone
-        bone = context.active_bone
-        # The Armature
-        armatureObject = context.active_object
-        armatureData = bpy.types.Armature(armatureObject.data)
-
-        if bone is None:
-            self.Dublf.showMessageBox( "Select the bone", "Select bone first")
-            self.Dublf.log( 'Error: No bone selected' , time_start )
-            ops.object.mode_set(mode='POSE')
-            return {'CANCELLED'}
-           
-        #-----------------------
-        # CREATE BONE
-        #-----------------------
-
-        controller = self.Duik.duplicateBone( armatureData , bone, bone.basename + '.Ctrl' )
-
-        use_connect = bone.use_connect
-
-        controller.use_connect = use_connect
-
-        #-----------------------
-        # CREATE CONSTRAINTS
-        #-----------------------
-
-        ops.object.mode_set(mode='POSE')
-
-        # Get pose bones
-        bone = self.Duik.getPoseBone( armatureObject, bone )
-        controller = self.Duik.getPoseBone( armatureObject, controller )
-        controller.rotation_mode = 'XYZ'
-
-        # Add constraints
-
-        cr = bone.constraints.new('COPY_ROTATION')
-        cr.target = armatureObject
-        cr.subtarget = controller.name
-        cr.target_space = 'LOCAL'
-        cr.owner_space = 'LOCAL'
-        cr.name = 'Copy Controller Rotation'
-        cr.show_expanded = False
-
-        if not use_connect:
-            cl = bone.constraints.new('COPY_LOCATION')
-            cl.target = armatureObject
-            cl.subtarget = controller.name
-            cl.target_space = 'LOCAL'
-            cl.owner_space = 'LOCAL'
-            cl.name = 'Copy Controller Location'
-            cl.show_expanded = False
-
-        st = bone.constraints.new('STRETCH_TO')
-        st.target = armatureObject
-        st.subtarget = controller.name
-        st.name = 'Stretch To Controller'
-        st.head_tail = 1.0
-        st.rest_length = controller.bone.vector.length
-        st.show_expanded = False
-
-        # -------------------
-        # TIDYING
-        # -------------------
-
-        self.Duik.addBoneToLayers( controller.bone , [duik_prefs.layer_controllers] )
-
-        bpy.context.object.data.layers[duik_prefs.layer_controllers] = True
-
-        self.Dublf.log("FK Controller creation finished without error",time_start)
-        return {'FINISHED'}
-
-class DUIK_OT_fkNoFollow( types.Operator ):
+class DUIK_OT_fk( types.Operator ):
     """Creates an FK Control on a selected bone, with follow/no follow options"""
     bl_idname = "armature.duik_fknofollowctrl"
     bl_label = "Add FK Control (No Follow option)"
@@ -1027,6 +929,8 @@ class DUIK_OT_fkNoFollow( types.Operator ):
         switchBone = self.Duik.getPoseBone( armatureObject, switchBone )
         controller = self.Duik.getPoseBone( armatureObject, controller )
 
+        controller.rotation_mode = 'YXZ'
+
         # Add Constraints
 
         # FK Control
@@ -1034,8 +938,8 @@ class DUIK_OT_fkNoFollow( types.Operator ):
         cr = bone.constraints.new('COPY_ROTATION')
         cr.target = armatureObject
         cr.subtarget = controller.name
-        cr.target_space = 'LOCAL'
-        cr.owner_space = 'LOCAL'
+        cr.target_space = 'WORLD'
+        cr.owner_space = 'WORLD'
         cr.name = 'Copy Controller Rotation'
         cr.show_expanded = False
 
@@ -1440,8 +1344,7 @@ class DUIK_MT_pose_menu( types.Menu ):
         layout = self.layout
 
         layout.operator(DUIK_OT_ikfk.bl_idname,  text="IK/FK Rig")
-        layout.operator(DUIK_OT_fkCtrl.bl_idname,  text="Add FK Controller")
-        layout.operator(DUIK_OT_fkNoFollow.bl_idname,  text="Add FK Controller (No Follow)")
+        layout.operator(DUIK_OT_fk.bl_idname,  text="Add FK Controller")
         layout.operator(DUIK_OT_bbone.bl_idname,  text="Add BBone controllers")
 
 def menu_func(self, context):
@@ -1477,8 +1380,7 @@ classes = (
     DUIK_PT_ui_controls,
     DUIK_PT_controls_ui,
     DUIK_OT_ikfk,
-    DUIK_OT_fkCtrl,
-    DUIK_OT_fkNoFollow,
+    DUIK_OT_fk,
     DUIK_OT_bbone,
     DUIK_Preferences,
     DUIK_MT_pose_menu,
