@@ -32,14 +32,7 @@ class DUIK_PT_rig_layers( bpy.types.Panel ):
 
     @classmethod
     def poll(self, context):
-        mode = context.mode == 'POSE' or context.mode == 'EDIT_ARMATURE'
-        if not mode:
-            return False
-
-        preferences = context.preferences
-        duik_prefs = preferences.addons[__package__].preferences
-
-        return duik_prefs.create_layers_ui
+        return context.object.type == 'ARMATURE'
         
     def draw(self, context):
         layout = self.layout

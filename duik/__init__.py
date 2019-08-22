@@ -23,7 +23,7 @@ bl_info = {
     "blender": (2, 80, 0),
     "author": "Nicolas 'Duduf' Dufresne",
     "location": "3D View (Pose Mode) > Pose menu, Tool UI, Item UI, View UI",
-    "version": (0,0,5),
+    "version": (0,0,6),
     "description": "Advanced yet easy to use rigging tools.",
     "wiki_url": "http://duduf.com"
 }

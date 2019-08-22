@@ -207,7 +207,7 @@ class DUIK_UL_selection_sets( bpy.types.UIList ):
     #   index is index of the current item in the collection.
     #   flt_flag is the result of the filtering process for this item.
     #   Note: as index and flt_flag are optional arguments, you do not have to use/declare them here if you don't
-    #         need them.
+    #         need them.    
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
         
         # draw_item must handle the three layout types... Usually 'DEFAULT' and 'COMPACT' can share the same code.
@@ -263,7 +263,7 @@ class DUIK_PT_selection_sets_ui( bpy.types.Panel ):
 
     @classmethod
     def poll(self, context):
-        return context.mode != 'POSE' or context.mode != 'EDIT'
+        return context.mode == 'POSE' or context.mode == 'EDIT_ARMATURE'
         
     def draw(self, context):
         armature = context.active_object.data
