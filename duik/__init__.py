@@ -23,7 +23,7 @@ bl_info = {
     "blender": (2, 80, 0),
     "author": "Nicolas 'Duduf' Dufresne",
     "location": "3D View (Pose Mode) > Pose menu, Tool UI, Item UI, View UI",
-    "version": (0,0,4),
+    "version": (0,0,5),
     "description": "Advanced yet easy to use rigging tools.",
     "wiki_url": "http://duduf.com"
 }
@@ -32,6 +32,7 @@ import bpy # pylint: disable=import-error
 from . import autorig
 from . import selection_sets
 from . import ui_controls
+from . import ui_layers
 
 class DUIK_Preferences( bpy.types.AddonPreferences ):
     # this must match the add-on name, use '__package__'
@@ -50,6 +51,10 @@ class DUIK_Preferences( bpy.types.AddonPreferences ):
         name="Layer for bones without influences",
         default=24,
     )
+    create_layers_ui: bpy.props.BoolProperty(
+        name="Create a nice UI on Armatures for the bones layers",
+        default=True,
+    )
 
     def draw(self, context):
         layout = self.layout
@@ -57,9 +62,33 @@ class DUIK_Preferences( bpy.types.AddonPreferences ):
         layout.prop(self, "layer_controllers")
         layout.prop(self, "layer_skin")
         layout.prop(self, "layer_rig")
+        layout.prop(self, "create_layers_ui")
+
+class DUIK_PT_armature_options( bpy.types.Panel ):
+    bl_label = "Duik Layers UI"
+    bl_idname = "DUIK_PT_armature_options"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = "data"
+
+    @classmethod
+    def poll(cls, context):
+        return context.object.type == 'ARMATURE'
+
+    def draw(self, context):
+        layout = self.layout
+
+        obj = context.object
+        armature = obj.data
+
+        layout.prop( armature, 'duik_rig_type' )
+        layout.separator(factor=1.0)
+        layout.prop( armature, 'duik_layers_arm_ikfk')
+        layout.prop( armature, 'duik_layers_leg_ikfk')
 
 classes = (
     DUIK_Preferences,
+    DUIK_PT_armature_options,
 )
 
 def register():
@@ -71,16 +100,48 @@ def register():
     autorig.register()
     selection_sets.register()
     ui_controls.register()
+    ui_layers.register()
+
+    # add options to armature
+    if not hasattr( bpy.types.Armature, 'duik_rig_type' ):
+        rig_types = [
+            ('custom', "Custom", "A custom character.", '', 0),
+            ('biped', "Biped", "Character with two arms, two legs and a tail.", '', 1),
+            ('quadruped', "Quadruped", "Character with two arms, two legs and a tail.", '', 2),
+        ]
+        bpy.types.Armature.duik_rig_type = bpy.props.EnumProperty (
+            items=rig_types,
+            description= "The type of the character (biped, quadruped...)",
+            default= "biped",
+            name = "Type"
+        )
+    if not hasattr( bpy.types.Armature, 'duik_layers_arm_ikfk' ):
+        bpy.types.Armature.duik_layers_arm_ikfk = bpy.props.BoolProperty(
+            name = "Arm: separate IK/FK",
+            description = "If checked, the UI for the arm layers will add separate buttons for IK and FK",
+            default = True
+        )
+    if not hasattr( bpy.types.Armature, 'duik_layers_leg_ikfk' ):
+        bpy.types.Armature.duik_layers_leg_ikfk = bpy.props.BoolProperty(
+            name = "Leg: separate IK/FK",
+            description = "If checked, the UI for the leg layers will add separate buttons for IK and FK",
+            default = True
+        )
     
 def unregister():
     # unregister
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
+    del bpy.types.Armature.duik_rig_type
+    del bpy.types.Armature.duik_layers_leg_ikfk
+    del bpy.types.Armature.duik_layers_arm_ikfk
+
     # modules
     autorig.unregister()
     selection_sets.unregister()
     ui_controls.unregister()
+    ui_layers.unregister()
 
 if __name__ == "__main__":
     register()
