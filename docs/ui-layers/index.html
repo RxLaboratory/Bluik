@@ -7,18 +7,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <meta name="author" content="Nicolas Dufresne and contributors">
-  <link rel="shortcut icon" href="./img/favicon.ico">
-  <title>Duik for Blender Documentation</title>
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Layers UI - Duik for Blender Documentation</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
-  <link rel="stylesheet" href="./css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="./css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-  <link href="./style.css" rel="stylesheet">
-  <link href="./video.css" rel="stylesheet">
+  <link href="../style.css" rel="stylesheet">
+  <link href="../video.css" rel="stylesheet">
   
-  <script src="./js/jquery-2.1.1.min.js" defer></script>
-  <script src="./js/modernizr-2.8.3.min.js" defer></script>
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Layers UI";
+    var mkdocs_page_input_path = "ui-layers.md";
+    var mkdocs_page_url = "/ui-layers/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script> 
   
@@ -31,9 +38,9 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href="./." class="icon icon-home"> Duik for Blender Documentation</a>
+        <a href=".." class="icon icon-home"> Duik for Blender Documentation</a>
         <div role="search">
-  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
@@ -45,17 +52,17 @@
           
             <li class="toctree-l1">
 		
-    <a class="" href="./.">About</a>
+    <a class="" href="..">About</a>
 	    </li>
           
             <li class="toctree-l1">
 		
-    <a class="" href="./install/">Installation</a>
+    <a class="" href="../install/">Installation</a>
 	    </li>
           
             <li class="toctree-l1">
 		
-    <a class="" href="./settings/">Settings</a>
+    <a class="" href="../settings/">Settings</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -64,19 +71,19 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="./tools/">Introduction</a>
+    <a class="" href="../tools/">Introduction</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="./ikfk/">IK/FK Rig</a>
+    <a class="" href="../ikfk/">IK/FK Rig</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="./fk/">FK Controller</a>
+    <a class="" href="../fk/">FK Controller</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="./bbone/">BBone Controllers</a>
+    <a class="" href="../bbone/">BBone Controllers</a>
                 </li>
     </ul>
 	    </li>
@@ -87,26 +94,29 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="./ui/">Introduction</a>
+    <a class="" href="../ui/">Introduction</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="./selection-sets/">Selection Sets</a>
+    <a class="" href="../selection-sets/">Selection Sets</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="./ui-controls/">UI Controls</a>
+    <a class="" href="../ui-controls/">UI Controls</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="./ui-layers/">Layers UI</a>
+    <a class="current" href="./">Layers UI</a>
+    <ul class="subnav">
+            
+    </ul>
                 </li>
     </ul>
 	    </li>
           
             <li class="toctree-l1">
 		
-    <a class="" href="./changelog/">Changelog</a>
+    <a class="" href="../changelog/">Changelog</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -121,7 +131,7 @@
           
             <li class="toctree-l1">
 		
-    <a class="" href="./credits">Credits</a>
+    <a class="" href="../credits">Credits</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -144,7 +154,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="./.">Duik for Blender Documentation</a>
+        <a href="..">Duik for Blender Documentation</a>
       </nav>
 
       
@@ -152,10 +162,19 @@
         <div class="rst-content">
           <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="./.">Docs</a> &raquo;</li>
+    <li><a href="..">Docs</a> &raquo;</li>
     
+      
+        
+          <li>UI Creation &raquo;</li>
+        
+      
     
+    <li>Layers UI</li>
     <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/Rainbox-dev/DuBLF_Duik/edit/master/src-docs/docs/ui-layers.md"
+          class="icon icon-github"> Edit on GitHub</a>
       
     </li>
   </ul>
@@ -164,27 +183,28 @@
           <div role="main">
             <div class="section">
               
-
-  <h1 id="search">Search Results from the Duik for Blender Documentation</h1>
-
-  <form id="content_search" action="search.html">
-    <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
-    <input name="q" id="mkdocs-search-query" type="text" class="search_input search-query ui-autocomplete-input" placeholder="Search the Docs" autocomplete="off" autofocus title="Type search term here">
-  </form>
-
-  <div id="mkdocs-search-results" class="search-results">
-    Searching...
-  </div>
-
-  <div class="admonition hint">
-  <p class="admonition-title">Hint</p>
-  <p>You're searching in the <i>Duik for Blender</i> documentation. For other tools, go to <a href="https://rainboxlab.org">Rainbox Lab</a>.</p>
-  </div>
-
-
+                <p>With <em>Duik</em>, you can easily create nice selectors for the bone layers on your armatures.</p>
+<p>In the <code>Armature data</code> tab of the <code>Properties</code> panel, you&rsquo;ll find the <em>Duik Layers UI</em> Panel.</p>
+<p><img alt="" src="../img/ui-layers-config.png" /></p>
+<p>These controls change which layers are displayed in the <code>Tool</code> tab of the <em>sidebar</em> of the <em>3D View</em>.</p>
+<p><img alt="" src="../img/ui-layers.png" /></p>
+<p>At each button corresponds a bone layer on the Armature. Try the buttons to see at which layer they are attached. Their number is visible in the tooltip of the buttons too, if you have activated the option to see Python Tooltips in Blender.</p>
+<p><img alt="" src="../img/ui-layers-tooltip.png" /></p>
+<p>Duik uses only the left part of the layers (from 1 to 7 and 16 to 23).</p>
+<p><img alt="" src="../img/bone-layers.png" /></p>
+              
             </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../changelog/" class="btn btn-neutral float-right" title="Changelog">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../ui-controls/" class="btn btn-neutral" title="UI Controls"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -212,13 +232,17 @@
           <a href="https://github.com/Rainbox-dev/DuBLF_Duik/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
+        <span><a href="../ui-controls/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../changelog/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
-    <script>var base_url = '.';</script>
-    <script src="./js/theme.js" defer></script>
-      <script src="./video.js" defer></script>
-      <script src="./search/main.js" defer></script>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../video.js" defer></script>
+      <script src="../search/main.js" defer></script>
 
 </body>
 </html>

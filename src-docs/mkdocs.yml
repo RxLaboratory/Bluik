@@ -36,6 +36,7 @@ nav:
         - Introduction: ui.md
         - Selection Sets: selection-sets.md
         - UI Controls: ui-controls.md
+        - Layers UI: ui-layers.md
     - Changelog: changelog.md
     - Contribution: https://rainbox-dev.github.io/DuAEF_Duik/contributing-guide
     - License: https://rainbox-dev.github.io/DuAEF_Duik/license
