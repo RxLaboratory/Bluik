@@ -51,10 +51,6 @@ class DUIK_Preferences( bpy.types.AddonPreferences ):
         name="Layer for bones without influences",
         default=24,
     )
-    create_layers_ui: bpy.props.BoolProperty(
-        name="Create a nice UI on Armatures for the bones layers",
-        default=True,
-    )
 
     def draw(self, context):
         layout = self.layout
@@ -62,7 +58,6 @@ class DUIK_Preferences( bpy.types.AddonPreferences ):
         layout.prop(self, "layer_controllers")
         layout.prop(self, "layer_skin")
         layout.prop(self, "layer_rig")
-        layout.prop(self, "create_layers_ui")
 
 class DUIK_PT_armature_options( bpy.types.Panel ):
     bl_label = "Duik Layers UI"
