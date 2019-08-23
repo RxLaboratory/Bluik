@@ -23,16 +23,19 @@ bl_info = {
     "blender": (2, 80, 0),
     "author": "Nicolas 'Duduf' Dufresne",
     "location": "3D View (Pose Mode) > Pose menu, Tool UI, Item UI, View UI",
-    "version": (0,0,6),
+    "version": (0,0,7),
     "description": "Advanced yet easy to use rigging tools.",
     "wiki_url": "http://duduf.com"
 }
 
 import bpy # pylint: disable=import-error
-from . import autorig
-from . import selection_sets
-from . import ui_controls
-from . import ui_layers
+from . import (
+    autorig,
+    selection_sets,
+    ui_controls,
+    ui_layers,
+    tex_anim,
+)
 
 class DUIK_Preferences( bpy.types.AddonPreferences ):
     # this must match the add-on name, use '__package__'
@@ -96,6 +99,7 @@ def register():
     selection_sets.register()
     ui_controls.register()
     ui_layers.register()
+    tex_anim.register()
 
     # add options to armature
     if not hasattr( bpy.types.Armature, 'duik_rig_type' ):
@@ -137,6 +141,7 @@ def unregister():
     selection_sets.unregister()
     ui_controls.unregister()
     ui_layers.unregister()
+    tex_anim.unregister()
 
 if __name__ == "__main__":
     register()
