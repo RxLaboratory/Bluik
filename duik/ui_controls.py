@@ -23,6 +23,7 @@ import bpy # pylint: disable=import-error
 import idprop # pylint: disable=import-error
 from .dublf import (
     DUBLF_utils,
+    DuBLF_rna,
 )
 from .dublf.rigging import (
     DUBLF_rigging,
@@ -33,12 +34,61 @@ class DUIK_UiControlBone( bpy.types.PropertyGroup ):
 
 class DUIK_UiControl( bpy.types.PropertyGroup ):
     """A Control in the UI."""
+
+    def typeChanged( self, context ):
+        print(self.target.name)
+
+
     bones: bpy.props.CollectionProperty( type = DUIK_UiControlBone )
-    target_bone: bpy.props.StringProperty( name = "Bone", description = "The name of the bone containing the controlled property." )
-    target_rna: bpy.props.StringProperty( name = "RNA", description = "The name of the controlled property (the last part of the data path)" )
-    control_type: bpy.props.EnumProperty(items=[('PROPERTY', "Single property", "The property displayed by this control"),
-            ('LABEL', "Label", "A label" ),
-            ('SEPARATOR', "Separator", "A spacer to be placed between other controls")],
+    id_type: bpy.props.EnumProperty (
+        items = [
+            ('actions', 'Action', '', 'ACTION', 1),
+            ('armatures', 'Armature', '', 'OUTLINER_DATA_ARMATURE',2),
+            ('brushes', 'Brush', '', 'BRUSH_DATA',3),
+            ('cameras', 'Camera', '', 'OUTLINER_DATA_CAMERA',4),
+            ('cache_files', 'Cache File', '', 'FILE_CACHE',5),
+            ('collections', 'Collection', '', 'COLLECTION_NEW',6),
+            ('curves', 'Curve', '', 'OUTLINER_DATA_CURVE',7),
+            ('fonts', 'Font', '', 'OUTLINER_DATA_FONT',8),
+            ('grease_pencils', 'Grease Pencil', '', 'OUTLINER_DATA_GREASEPENCIL',9),
+            ('images', 'Image', '', 'IMAGE',10),
+            ('lattices', 'Lattice', '', 'OUTLINER_DATA_LATTICE',11),
+            ('libraries', 'Library', '', 'LINKED',12),
+            ('lightprobes', 'Light Probe', '', 'OUTLINER_DATA_LIGHTPROBE',13),
+            ('lights', 'Light', '', 'OUTLINER_DATA_LIGHT',14),
+            ('linestyles', 'Line Style', '', 'LINE_DATA',15),
+            ('masks', 'Mask', '', 'MOD_MASK',16),
+            ('materials', 'Material', '', 'MATERIAL',17),
+            ('meshes', 'Mesh', '', 'OUTLINER_DATA_MESH',18),
+            ('metaballs', 'Metaball', '', 'OUTLINER_DATA_META',19),
+            ('movieclips', 'Movie Clip', '', 'FILE_MOVIE',20),
+            ('node_groups', 'Node Group', '', 'NODETREE',21),
+            ('objects', 'Object', '', 'OBJECT_DATA',22),
+            ('paint_curves', 'Paint Curve', '', 'CURVE_BEZCURVE',23),
+            ('palettes', 'Palette', '', 'COLOR',24),
+            ('particles', 'Particle', '', 'PARTICLES',25),
+            ('scenes', 'Scene', '', 'SCENE',26),
+            ('shape_keys', 'Shape Key', '', 'SHAPEKEY_DATA',27),
+            ('sounds', 'Sound', '', 'SOUND',28),
+            ('speakers', 'Speaker', '', 'OUTLINER_DATA_SPEAKER',29),
+            ('texts', 'Text', '', 'TEXT',30),
+            ('textures', 'Texture', '', 'TEXTURE',31),
+            ('window_managers', 'Window Manager', '', 'WINDOW',32),
+            ('workspaces', 'Workspace', '', 'WORKSPACE',33),
+            ('worlds', 'World', '', 'WORLD',34)
+        ],
+        name = "ID Type",
+        description = "Type of ID-Block that can be used",
+        default= 'objects',
+        update = typeChanged
+        )
+    target: bpy.props.PointerProperty( type = bpy.types.ID )
+    target_rna: bpy.props.StringProperty( name = "RNA", description = "The RNA to the property from the ID-Block" )
+    control_type: bpy.props.EnumProperty(items=[
+            ('PROPERTY', "Single property", "The property displayed by this control",'RNA', 1 ),
+            ('LABEL', "Label", "A label", 'FONT_DATA', 2 ),
+            ('SEPARATOR', "Separator", "A spacer to be placed between other controls", 'GRIP', 3)
+            ],
         name="Type",
         description="The type of the control",
         default='LABEL')
@@ -292,7 +342,9 @@ class DUIK_PT_ui_controls( bpy.types.Panel ):
             active = armature.ui_controls[armature.active_ui_control]
             layout.prop( active, "control_type", text = "Type" )
             if active.control_type == 'PROPERTY':
-                layout.prop_search( active, "target_bone", armature , "bones", text = "Bone" , icon='BONE_DATA')
+                row = layout.row()
+                row.prop( active, 'id_type', text = "Prop")
+                row.prop_search( active, "target", bpy.data , active.id_type, text = "" )
                 layout.prop( active, "target_rna", text = "Path" , icon='RNA')
                 layout.prop( active, "toggle" )
                 layout.prop( active, "slider" )
@@ -331,8 +383,13 @@ class DUIK_PT_controls_ui( bpy.types.Panel ):
                 elif ui_control.control_type == 'LABEL':
                     current_layout.label( text = ui_control.name )
                 elif ui_control.control_type == 'PROPERTY':
-                    if (ui_control.target_rna != '' and ui_control.target_bone != ""):
-                        current_layout.prop( armature_object.pose.bones[ ui_control.target_bone ], ui_control.target_rna , text = ui_control.name , slider = ui_control.slider, toggle = ui_control.toggle )
+                    if (ui_control.target_rna != '' and not (ui_control.target is None)):
+                        pathArray = ui_control.target_rna.split('.')
+                        prop = pathArray.pop()
+                        path = ".".join(pathArray)
+                        target = DuBLF_rna.get_bpy_struct(ui_control.target, path)
+                        if not (target is None):
+                            current_layout.prop( target, prop , text = ui_control.name , slider = ui_control.slider, toggle = ui_control.toggle )
 
 classes = (
     DUIK_UiControlBone,
