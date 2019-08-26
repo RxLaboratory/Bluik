@@ -22,6 +22,7 @@
 
 import bpy # pylint: disable=import-error
 import time
+import re
 from . import rigging
 
 # ========= UTILS ======================
@@ -106,6 +107,32 @@ class DUBLF_handlers():
     def frame_change_pre_remove( fn ):
         """Removes a function from frame_change_pre handler"""
         DUBLF_handlers.remove_function( bpy.app.handlers.frame_change_pre, fn )
+
+# ========= RNA ========================
+
+class DuBLF_rna():
+    """Methods to help rna paths"""
+
+    @staticmethod
+    def get_bpy_struct( obj_id, path):
+        """ Gets a bpy_struct or property from an ID and an RNA path
+            Returns None in case the path is invalid
+            """
+        pathArray = path.split('.')
+        try:
+            for p in pathArray:
+                # this regexp has one match with two results: first word and what's in brackets if any
+                # "prop['test']" -> [("prop", "'test'")]
+                # "prop" -> [("prop","")]
+                # "prop[12]" -> [("prop","12")]
+                match = re.findall( r'(\w+)(?:\[([^\]]+)\])?' , p )[0]
+                obj_id = getattr(obj_id, match[0])
+                if match[1] != '':
+                    obj_id = obj_id[ eval(match[1]) ]
+            return obj_id
+        except:
+            return None
+            
 
 def register():
     rigging.register()
