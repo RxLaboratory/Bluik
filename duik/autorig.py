@@ -138,6 +138,11 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
         controllerTibia = armatureObject.pose.bones[controllerTibia.name]
         controllerFemur = armatureObject.pose.bones[controllerFemur.name]
 
+        # EULER
+
+        controllerTibia.rotation_mode = 'XYZ'
+        controllerFemur.rotation_mode = 'XYZ'
+
         # Add Main IK
         ik = ikTibia.constraints.new('IK')
         ik.target = armatureObject
