@@ -25,18 +25,21 @@ class DUBLF_rigging():
     bl_label = "DuBLF - Rigging Tools"
     bl_options = {'REGISTER'}
 
-    def selectBones( self, bones , select = True):
+    @staticmethod
+    def selectBones( bones , select = True):
         """(De)selects the bones"""
         for bone in bones:
-            self.selectBone(bone, False)
+            DUBLF_rigging.selectBone(bone, False)
 
-    def selectBone( self, bone , select = True):
+    @staticmethod
+    def selectBone( bone , select = True):
         """(De)Selects a bone in the armature"""
         bone.select = select
         bone.select_head = select
         bone.select_tail = select
 
-    def addBoneToLayers( self, bone , layers ):
+    @staticmethod
+    def addBoneToLayers( bone , layers ):
         """Adds the bone to the layers
         layers: int Array, the layer indices"""
         i = 0
@@ -48,20 +51,23 @@ class DUBLF_rigging():
                     break
             i = i + 1
         bone.layers = arr
-                
-    def addBone( self , armature_data , name , location = (.0,.0,.0) ):
+
+    @staticmethod          
+    def addBone( armature_data , name , location = (.0,.0,.0) ):
         """Adds a new bone at a specific location in the Armature"""
         b = armature_data.edit_bones.new(name)
         b.translate(location)
         return b
 
-    def getPoseBone( self, armature_object, editbone ):
+    @staticmethod
+    def getPoseBone( armature_object, editbone ):
         for posebone in armature_object.pose.bones:
             if posebone.bone.name == editbone.name:
                 return posebone
         return None
 
-    def extrudeBone( self , armature_data, sourceBone , name = "", coef = 1.0 , parent = True , connected = True ):
+    @staticmethod
+    def extrudeBone( armature_data, sourceBone , name = "", coef = 1.0 , parent = True , connected = True ):
         """Extrudes (and returns) an editbone.
         Its length equals the length of the source multiplied by coef."""
         if name == "":
@@ -75,15 +81,17 @@ class DUBLF_rigging():
             b.use_connect = connected
         return b
 
-    def duplicateBone( self ,  armature_data , sourceBone , name ):
+    @staticmethod
+    def duplicateBone( armature_data , sourceBone , name ):
         """Duplicates an bone in the armature, setting all the transformations to the same value"""
-        b = self.addBone( armature_data , name , location = sourceBone.head )
+        b = DUBLF_rigging.addBone( armature_data , name , location = sourceBone.head )
         b.tail = sourceBone.tail
         b.roll = sourceBone.roll
         b.parent = sourceBone.parent
         return b
 
-    def addCustomProperty( self , obj, name, default, options = {} ):
+    @staticmethod
+    def addCustomProperty( obj, name, default, options = {} ):
         """Adds a custom property on an object"""
         obj[name] = default
         rna_ui = obj.get('_RNA_UI')
@@ -91,7 +99,8 @@ class DUBLF_rigging():
             obj['_RNA_UI'] = {}
         obj['_RNA_UI'][name] = options
 
-    def addDriver(self , obj, dataPath, driverType = 'SUM'):
+    @staticmethod
+    def addDriver( obj, dataPath, driverType = 'SUM'):
         """Adds a driver to a property
         Returns either the driver or a list of drivers"""
         driver = obj.driver_add( dataPath )
@@ -108,14 +117,16 @@ class DUBLF_rigging():
         
         return driver
 
-    def addVariable(self , driver, name, data_path, id):
+    @staticmethod
+    def addVariable( driver, name, data_path, id):
         """Adds a variable in a driver"""
         var = driver.variables.new()
         var.name = name
         var.targets[0].data_path = data_path
         var.targets[0].id = id
 
-    def addTransformVariable(self , driver, name, boneTarget, transformType, transformSpace, var_id):
+    @staticmethod
+    def addTransformVariable( driver, name, boneTarget, transformType, transformSpace, var_id):
         """Adds a variable in a driver"""
         var = driver.variables.new()
         var.name = name
