@@ -23,8 +23,11 @@ import bpy # pylint: disable=import-error
 import time
 from .dublf import (
     DUBLF_utils,
-    DUBLF_rigging,
     )
+from .dublf.rigging import (
+    DUBLF_rigging,
+)
+
 
 class DUIK_OT_ikfk( bpy.types.Operator ):
     """Creates an IK/FK rig on a two-bone chain"""
