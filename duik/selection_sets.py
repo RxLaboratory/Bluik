@@ -26,14 +26,15 @@ from .dublf import DUBLF_utils
 Dublf = DUBLF_utils()
 Dublf.toolName = "Duik"
 
+class DUIK_SelectionSetBone( bpy.types.PropertyGroup ):
+    name: bpy.props.StringProperty()
+
 class DUIK_SelectionSet( bpy.types.PropertyGroup ):
-    
-
-    def __init__( self, bone_names ):
-        self['bones'] = []
-
     """A selection set of pose bones in an armature."""
-    def select(self, context):
+    bones: bpy.props.CollectionProperty( type = DUIK_SelectionSetBone )
+    name: bpy.props.StringProperty()
+
+    def select ( self, context):
         armature = context.active_object.data
         bones = []
         if context.mode == 'POSE' or context.mode == 'EDIT_ARMATURE':
@@ -41,44 +42,10 @@ class DUIK_SelectionSet( bpy.types.PropertyGroup ):
         else:
             return
         for b in bones:
-            if b.name in self.get_bones():
+            if b.name in self.bones:
                 b.select = self.selected
 
-    selected: bpy.props.BoolProperty( update = select)
-    name: bpy.props.StringProperty()
-
-    def set_bones( self, bone_names ):
-        """Sets the bones of the selection set"""
-        Dublf.log("Adding " + str(len(bone_names)) + " bones to selection set.")
-        self['bones'] = bone_names
-
-    def get_bones( self ):
-        """Returns the bone name list of the selection set"""
-        if isinstance(self['bones'], idprop.types.IDPropertyArray):
-            return self['bones'].to_list()
-        elif isinstance(self['bones'], list):
-            return self['bones']
-        else:
-            return []
-
-    def add_bones( self, bone_names ):
-        """Adds the bones in the selection set"""
-        bones = self.get_bones( )
-        for bone_name in bone_names:
-            if not bone_name in bones:
-                bones.append( bone_name )
-        self['bones'] = bones
-
-    def remove_bones( self, bone_names):
-        """Removes the bones from the selection set"""
-        bones = self.get_bones( )
-        for bone_name in bone_names:
-            if bone_name in bones:
-                bones.remove(bone_name)
-        if bones and len(bones) > 0:
-            self['bones'] = bones
-        else:
-            self['bones'] = []
+    selected: bpy.props.BoolProperty( default = False, update = select )
 
 class DUIK_OT_new_selection_set( bpy.types.Operator ):
     """Creates a new selection set"""
@@ -93,13 +60,17 @@ class DUIK_OT_new_selection_set( bpy.types.Operator ):
 
         selection_set = selection_sets.add()
         selection_set.name = "Selection set"
+
         bones = []
         if context.mode == 'POSE':
-            for b in context.selected_pose_bones:
-                bones.append(b.name)
+            bones = context.selected_pose_bones
+            
+        elif context.mode == 'EDIT_ARMATURE':
+            bones = context.selected_bones
 
-        if bones:
-            selection_set.set_bones( bones )
+        for bone in bones:
+            b = selection_set.bones.add()
+            b.name = bone.name
 
         Dublf.log("Selection set created without error.")
         return {'FINISHED'}
@@ -114,6 +85,79 @@ class DUIK_OT_remove_selection_set( bpy.types.Operator ):
         selection_sets = context.active_object.data.selection_sets
         active_set = context.active_object.data.active_selection_set
         selection_sets.remove(active_set)
+
+        return {'FINISHED'}
+
+class DUIK_OT_assign_to_selection_set( bpy.types.Operator ):
+    """Assigns the selected bones to the active selection set"""
+    bl_idname = "armature.assign_to_selection_set"
+    bl_label = "Assign"
+    bl_options = {'REGISTER','UNDO'}
+
+    @classmethod
+    def poll(self, context):
+        armature = context.active_object
+        if armature is None:
+            return False
+        if context.mode != 'POSE' and context.mode != 'EDIT_ARMATURE':
+            return False
+        armature = armature.data
+        if len(armature.selection_sets) == 0:
+            return False
+        return True
+
+    def execute(self, context):
+        armature = context.active_object.data
+        selection_set = armature.selection_sets[armature.active_selection_set]
+
+        bones = []
+        if context.mode == 'POSE':
+            bones = context.selected_pose_bones
+            
+        elif context.mode == 'EDIT_ARMATURE':
+            bones = context.selected_bones
+
+        for bone in bones:
+            b = selection_set.bones.add()
+            b.name = bone.name
+
+        return {'FINISHED'}
+
+class DUIK_OT_remove_from_selection_set( bpy.types.Operator ):
+    """Removes the selected bones from the active selection set"""
+    bl_idname = "armature.remove_from_selection_set"
+    bl_label = "Remove"
+    bl_options = {'REGISTER','UNDO'}
+
+    @classmethod
+    def poll(self, context):
+        armature = context.active_object
+        if armature is None:
+            return False
+        if context.mode != 'POSE' and context.mode != 'EDIT_ARMATURE':
+            return False
+        armature = armature.data
+        if len(armature.selection_sets) == 0:
+            return False
+        return True
+
+    def execute(self, context):
+        armature = context.active_object.data
+        selection_set = armature.selection_sets[armature.active_selection_set]
+
+        bones = []
+        if context.mode == 'POSE':
+            bones = context.selected_pose_bones
+            
+        elif context.mode == 'EDIT_ARMATURE':
+            bones = context.selected_bones
+
+        for bone in bones:
+            i = len(selection_set.bones) -1
+            while i >= 0:
+                if bone.name == selection_set.bones[i].name:
+                    selection_set.bones.remove(i)
+                i = i-1
 
         return {'FINISHED'}
 
@@ -147,50 +191,18 @@ class DUIK_OT_selection_set_move( bpy.types.Operator ):
 
         return {'FINISHED'}
 
-class DUIK_OT_assign_to_selection_set( bpy.types.Operator ):
-    """Assigns the selected bones to the active selection set"""
-    bl_idname = "armature.assign_to_selection_set"
-    bl_label = "Assign"
-    bl_options = {'REGISTER','UNDO'}
-
-    def execute(self, context):
-        armature = context.active_object.data
-        selection_set = armature.selection_sets[armature.active_selection_set]
-
-        if context.mode == 'POSE':
-            bones = []
-            for b in context.selected_pose_bones:
-                bones.append(b.name)
-            selection_set.add_bones(bones)
-        return {'FINISHED'}
-
-class DUIK_OT_remove_from_selection_set( bpy.types.Operator ):
-    """Removes the selected bones from the active selection set"""
-    bl_idname = "armature.remove_from_selection_set"
-    bl_label = "Remove"
-    bl_options = {'REGISTER','UNDO'}
-
-    def execute(self, context):
-        armature = context.active_object.data
-        selection_set = armature.selection_sets[armature.active_selection_set]
-
-        if context.mode == 'POSE':
-            bones = []
-            for b in context.selected_pose_bones:
-                bones.append(b.name)
-            selection_set.remove_bones(bones)
-        return {'FINISHED'}
-
 class DUIK_OT_unselect_all_selection_sets( bpy.types.Operator ):
     """Deselects all bones and selection sets"""
     bl_idname = "armature.unselect_all_selection_sets"
     bl_label = "Select None"
     bl_options = {'REGISTER', 'UNDO'}
-    
+   
     def execute(self, context):
-        if context.mode != 'POSE' and context.mode != 'EDIT':
-            return {'FINISHED'}
-        bpy.ops.pose.select_all(action='DESELECT')
+        if context.mode == 'POSE':
+            bpy.ops.pose.select_all(action='DESELECT')
+        elif context.mode == 'EDIT_ARMATURE':
+            bpy.ops.armature.select_all(action='DESELECT')
+
         context.active_object.data.selection_sets
         for s in context.active_object.data.selection_sets:
             s.selected = False
@@ -291,27 +303,8 @@ class DUIK_PT_selection_sets_ui( bpy.types.Panel ):
 
             current_layout.prop( selection_set , 'selected' , toggle = True , text = selection_set.name )
 
-class DUIK_OT_rig_select_group( bpy.types.Operator ):
-    bl_idname = "object.duik_rig_select_group"
-    bl_label = "Select Bone Group"
-    bl_options = {'REGISTER', 'UNDO'}
-    
-    select: bpy.props.BoolProperty(name = "Select")
-    group_name: bpy.props.StringProperty(name = "Group Name")
-    
-    def execute(self, context):
-        bgs = context.active_object.pose.bone_groups
-        for bg in bgs:
-            if bg.name == self.group_name:
-                bgs.active = bg
-                if self.select:
-                    bpy.ops.pose.group_select()
-                else:
-                    bpy.ops.pose.group_deselect()
-                return {'FINISHED'}
-        return {'FINISHED'}
-
 classes = (
+    DUIK_SelectionSetBone,
     DUIK_SelectionSet,
     DUIK_OT_new_selection_set,
     DUIK_OT_remove_selection_set,
@@ -322,7 +315,6 @@ classes = (
     DUIK_UL_selection_sets,
     DUIK_PT_selection_sets,
     DUIK_PT_selection_sets_ui,
-    DUIK_OT_rig_select_group,
 )
 
 def register():
@@ -340,3 +332,6 @@ def unregister():
     # unregister
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
+    
+    del bpy.types.Armature.selection_sets
+    del bpy.types.Armature.active_selection_set
