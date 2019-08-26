@@ -128,6 +128,8 @@ class DUIK_OT_selection_set_move( bpy.types.Operator ):
     @classmethod
     def poll(cls, context):
         armature = context.active_object.data
+        if armature is None:
+            return False
         selection_sets = armature.selection_sets
         return len(selection_sets) > 1
 
@@ -227,7 +229,10 @@ class DUIK_PT_selection_sets( bpy.types.Panel ):
 
     @classmethod
     def poll(cls, context):
-        return context.object.type == 'ARMATURE'
+        obj = context.object
+        if obj is None:
+            return False
+        return obj.type == 'ARMATURE'
 
     def draw(self, context):
         layout = self.layout

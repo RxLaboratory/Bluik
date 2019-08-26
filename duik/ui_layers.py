@@ -32,6 +32,9 @@ class DUIK_PT_rig_layers( bpy.types.Panel ):
 
     @classmethod
     def poll(self, context):
+        obj = context.object
+        if obj is None:
+            return False
         return context.object.type == 'ARMATURE'
         
     def draw(self, context):
