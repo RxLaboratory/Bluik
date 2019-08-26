@@ -17,7 +17,9 @@
 
 # <pep8 compliant>
 
-# Rigging methods
+import bpy # pylint: disable=import-error
+
+# Rigging tools and methods
 
 class DUBLF_rigging():
     """Rigging methods"""
@@ -135,3 +137,18 @@ class DUBLF_rigging():
         var.targets[0].bone_target = boneTarget.name
         var.targets[0].transform_space = transformSpace
         var.targets[0].transform_type = transformType
+
+
+classes = (
+
+)
+
+def register():
+    # register
+    for cls in classes:
+        bpy.utils.register_class(cls)
+
+def unregister():
+    # unregister
+    for cls in reversed(classes):
+        bpy.utils.unregister_class(cls)

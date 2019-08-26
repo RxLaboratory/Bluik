@@ -23,7 +23,7 @@ bl_info = {
     "blender": (2, 80, 0),
     "author": "Nicolas 'Duduf' Dufresne",
     "location": "3D View (Pose Mode) > Pose menu, Tool UI, Item UI, View UI",
-    "version": (0,0,7),
+    "version": (0,0,8),
     "description": "Advanced yet easy to use rigging tools.",
     "wiki_url": "http://duduf.com"
 }
@@ -35,6 +35,7 @@ from . import (
     ui_controls,
     ui_layers,
     tex_anim,
+    dublf,
 )
 
 class DUIK_Preferences( bpy.types.AddonPreferences ):
@@ -95,6 +96,7 @@ def register():
         bpy.utils.register_class(cls)
 
     # modules
+    dublf.register()
     autorig.register()
     selection_sets.register()
     ui_controls.register()

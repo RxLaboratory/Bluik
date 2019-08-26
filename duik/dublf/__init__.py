@@ -22,7 +22,9 @@
 
 import bpy # pylint: disable=import-error
 import time
-from .rigging import DUBLF_rigging
+from . import rigging
+
+# ========= UTILS ======================
 
 class DUBLF_utils():
     """Utilitaries for Duduf's tools"""
@@ -104,3 +106,9 @@ class DUBLF_handlers():
     def frame_change_pre_remove( fn ):
         """Removes a function from frame_change_pre handler"""
         DUBLF_handlers.remove_function( bpy.app.handlers.frame_change_pre, fn )
+
+def register():
+    rigging.register()
+
+def unregister():
+    rigging.unregister()
