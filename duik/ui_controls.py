@@ -21,11 +21,19 @@
 
 import bpy # pylint: disable=import-error
 import idprop # pylint: disable=import-error
-from .dublf import (DUBLF_utils, DUBLF_rigging)
+from .dublf import (
+    DUBLF_utils,
+)
+from .dublf.rigging import (
+    DUBLF_rigging,
+)
+
+class DUIK_UiControlBone( bpy.types.PropertyGroup ):
+    name: bpy.props.StringProperty()
 
 class DUIK_UiControl( bpy.types.PropertyGroup ):
     """A Control in the UI."""
-    
+    bones: bpy.props.CollectionProperty( type = DUIK_UiControlBone )
     target_bone: bpy.props.StringProperty( name = "Bone", description = "The name of the bone containing the controlled property." )
     target_rna: bpy.props.StringProperty( name = "RNA", description = "The name of the controlled property (the last part of the data path)" )
     control_type: bpy.props.EnumProperty(items=[('PROPERTY', "Single property", "The property displayed by this control"),
@@ -36,39 +44,27 @@ class DUIK_UiControl( bpy.types.PropertyGroup ):
         default='LABEL')
     toggle: bpy.props.BoolProperty( name="Toggle", default=True)
     slider: bpy.props.BoolProperty( name="Slider", default=True)
-    
+
     def set_bones( self, bone_names ):
         """Sets the bones of the selection set"""
-        self['bones'] = bone_names
+        self.bones.clear()
+        self.add_bones( bone_names )
 
-    def get_bones( self ):
-        """Returns the bone name list of the selection set"""
-        if isinstance(self['bones'], idprop.types.IDPropertyArray):
-            return self['bones'].to_list()
-        elif isinstance(self['bones'], list):
-            return self['bones']
-        else:
-            return []
-
-    def add_bones( self, bone_names ):
-        """Adds the bones in the selection set"""
-        bones = self.get_bones( )
-        for bone_name in bone_names:
-            if not bone_name in bones:
-                bones.append( bone_name )
-        self['bones'] = bones
+    def add_bones( self, bone_names):
+        for bone in bone_names:
+            b = self.bones.add()
+            b.name = bone
 
     def remove_bones( self, bone_names):
-        """Removes the bones from the selection set"""
-        bones = self.get_bones( )
+        """Removes the bones from the ui control"""
         for bone_name in bone_names:
-            if bone_name in bones:
-                bones.remove(bone_name)
-        if bones and len(bones) > 0:
-            self['bones'] = bones
-        else:
-            self['bones'] = []
-
+            i = len(self.bones) -1
+            while i >= 0:
+                if bone_name == self.bones[i].name:
+                    self.bones.remove(i)
+                    break
+                i = i-1
+    
 class DUIK_OT_new_ui_control( bpy.types.Operator ):
     """Creates a new UI control"""
     bl_idname = "armature.new_ui_control"
@@ -322,7 +318,7 @@ class DUIK_PT_controls_ui( bpy.types.Panel ):
         current_layout = layout
         
         for ui_control in armature_data.ui_controls:
-            if active_bone.name in ui_control.get_bones():
+            if active_bone.name in ui_control.bones:
                 name = ui_control.name.upper()
 
                 if name.endswith('.R'):
@@ -339,6 +335,7 @@ class DUIK_PT_controls_ui( bpy.types.Panel ):
                         current_layout.prop( armature_object.pose.bones[ ui_control.target_bone ], ui_control.target_rna , text = ui_control.name , slider = ui_control.slider, toggle = ui_control.toggle )
 
 classes = (
+    DUIK_UiControlBone,
     DUIK_UiControl,
     DUIK_OT_new_ui_control,
     DUIK_OT_duplicate_ui_control,
