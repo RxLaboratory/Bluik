@@ -21,6 +21,7 @@
 
 import bpy # pylint: disable=import-error
 import bpy.utils.previews # pylint: disable=import-error
+from bpy.app.handlers import persistent # pylint: disable=import-error
 import re
 from .dublf import (
     DUBLF_fs,
@@ -300,6 +301,7 @@ def update_image(node):
 def update_current_image( self, context ):
     update_image(self)
 
+@persistent
 def update_image_handler( scene ):
     """Updates all TexAnim_images, as the update function does not work on playback"""
 
