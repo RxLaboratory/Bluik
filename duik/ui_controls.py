@@ -281,6 +281,7 @@ class DUIK_UL_ui_controls( bpy.types.UIList ):
     bl_idname = "DUIK_UL_ui_controls"
 
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
+        icon = None
         if self.layout_type in {'DEFAULT', 'COMPACT'}:
             if item.control_type == 'LABEL':
                 icon = 'FONT_DATA'
@@ -358,7 +359,9 @@ class DUIK_PT_controls_ui( bpy.types.Panel ):
 
     @classmethod
     def poll(self, context):
-        return context.mode == 'POSE'
+        if context.mode != 'POSE': return False
+        active_bone = context.active_pose_bone
+        return not (active_bone is None)
         
     def draw(self, context):
         armature_object = context.active_object
@@ -384,12 +387,11 @@ class DUIK_PT_controls_ui( bpy.types.Panel ):
                     current_layout.label( text = ui_control.name )
                 elif ui_control.control_type == 'PROPERTY':
                     if (ui_control.target_rna != '' and not (ui_control.target is None)):
-                        pathArray = ui_control.target_rna.split('.')
-                        prop = pathArray.pop()
-                        path = ".".join(pathArray)
-                        target = DuBLF_rna.get_bpy_struct(ui_control.target, path)
+                        target = DuBLF_rna.get_bpy_struct(ui_control.target, ui_control.target_rna)
+                        print( target[0] )
+                        print( target[1] )
                         if not (target is None):
-                            current_layout.prop( target, prop , text = ui_control.name , slider = ui_control.slider, toggle = ui_control.toggle )
+                            current_layout.prop( target[0], target[1] , text = ui_control.name , slider = ui_control.slider, toggle = ui_control.toggle )
 
 classes = (
     DUIK_UiControlBone,

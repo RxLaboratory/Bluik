@@ -118,18 +118,29 @@ class DuBLF_rna():
         """ Gets a bpy_struct or property from an ID and an RNA path
             Returns None in case the path is invalid
             """
-        pathArray = path.split('.')
         try:
-            for p in pathArray:
-                # this regexp has one match with two results: first word and what's in brackets if any
-                # "prop['test']" -> [("prop", "'test'")]
-                # "prop" -> [("prop","")]
-                # "prop[12]" -> [("prop","12")]
-                match = re.findall( r'(\w+)(?:\[([^\]]+)\])?' , p )[0]
-                obj_id = getattr(obj_id, match[0])
-                if match[1] != '':
-                    obj_id = obj_id[ eval(match[1]) ]
-            return obj_id
+            # this regexp matches with two results: first word and what's in brackets if any
+            # "prop['test']" -> [("prop", "'test'")]
+            # "prop" -> [("prop","")]
+            # "prop[12]" -> [("prop","12")]
+            matches = re.findall( r'(\w+)?(?:\[([^\]]+)\])?' , path )
+            print(matches)
+            for i,match in enumerate(matches) :
+                attr = match[0]
+                arr = match[1]
+                if i == len(matches) -2:
+                    if attr != '' and  arr != '':
+                        obj_id = getattr(obj_id, attr)
+                        return obj_id, '[' + arr + ']'
+                    elif attr != '':
+                        return obj_id, attr
+                    else:
+                        return obj_id, '[' + arr + ']'
+                if attr != '':
+                    obj_id = getattr(obj_id, attr)
+                if arr != '':
+                    obj_id = obj_id[ eval(arr) ]
+            return None           
         except:
             return None
             
