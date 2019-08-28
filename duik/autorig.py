@@ -509,7 +509,6 @@ class DUIK_OT_bbone( bpy.types.Operator ):
         bone.bbone_custom_handle_start = startCtrl
         bone.bbone_handle_type_end = 'TANGENT'
         bone.bbone_custom_handle_end = endCtrl
-        bone.use_inherit_rotation = False
         bone.use_inherit_scale = False
 
         #-----------------------
@@ -591,11 +590,11 @@ class DUIK_OT_bbone( bpy.types.Operator ):
         #Scale drivers
         driver = DUBLF_rigging.addDriver(bone, 'bbone_easein', driverType = 'SCRIPTED')
         DUBLF_rigging.addTransformVariable( driver, 'ctrl', startCtrl, 'SCALE_Y', 'LOCAL_SPACE', armatureObject)
-        driver.expression = 'ctrl'
+        driver.expression = 'ctrl-1'
 
         driver = DUBLF_rigging.addDriver(bone, 'bbone_easeout', driverType = 'SCRIPTED')
         DUBLF_rigging.addTransformVariable( driver, 'ctrl', endCtrl, 'SCALE_Y', 'LOCAL_SPACE', armatureObject)
-        driver.expression = 'ctrl'
+        driver.expression = 'ctrl-1'
        
         # -------------------
         # TIDYING
