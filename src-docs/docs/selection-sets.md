@@ -15,3 +15,6 @@ When you have some selection sets, they will be available in the *sidebar* of th
 Duik will try to build a nice layout, depending on the names of the sets, and their order in the list. Each time an *.R* suffix followed by an *.L* suffix is found, the two sets are showed in a row.
 
 Just click on the buttons to select all the bones contained in the corresponding selection set. This is very useful to quickly select and animate all FK controls of a finger for example.
+
+
+<sub>*Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script>*</sub>

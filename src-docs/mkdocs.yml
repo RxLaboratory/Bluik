@@ -27,11 +27,13 @@ nav:
     - About: index.md
     - Installation: install.md
     - Settings: settings.md
-    - Rigging:
+    - (Auto)-Rigging:
         - Introduction: tools.md
         - IK/FK Rig: ikfk.md
         - FK Controller: fk.md
         - BBone Controllers: bbone.md
+    - Texture Animation:
+        - The TexAnim module: texanim.md
     - UI Creation:
         - Introduction: ui.md
         - Selection Sets: selection-sets.md

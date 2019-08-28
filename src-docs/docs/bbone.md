@@ -6,3 +6,14 @@ This will add one controller at each end of the bendy-bone, to easily control th
 
 !!! hint
     This tool is very useful for not-too-realistic spines or for tails.
+
+The controls for the options are added as custom properties on the controllers bone.
+You can find them in the sidebar [N] of the *3D View* with the controller selected.
+
+![BBone Sidebar](img/bbone-sidebar.png)
+
+The *Rotation Influence* property can be used to adjust the sensibility of the control on the curve with the rotations of the controllers.
+
+
+
+<sub>*Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script>*</sub>

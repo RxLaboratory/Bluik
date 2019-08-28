@@ -1,7 +1,9 @@
-With *Duik*, you can create nice UI controls for any (custom) property on the *Armature* you're working on.
+With *Duik*, you can create nice UI controls for any (custom) property on the *Armature* or other objects you're working on.
 This is a way to expose and group the controls needed by the animator using the rig in the `Item` tab of the *sidebar* of the *3D View* (with the transform properties), while keeping any other custom property hidden on bones not used as controllers. These controls have a better display than the native custom properties too.
 
 [TOC]
+
+![](img\ui-controls-intro.png)
 
 # Create and manage controls
 
@@ -21,7 +23,7 @@ These *Duik Controls* are available in the *sidebar* of the *3D View*, in the `I
 
 ![](img\ui-controls.png)
 
-Duik will try to build a nice layout, depending on the names of the controls, and their order in the list. Each time an *.R* suffix followed by an *.L* suffix is found, the two sets are showed in a row.
+Duik will try to build a nice layout, depending on the names of the controls, and their order in the list. Each time an *.R* suffix followed by an *.L* suffix is found, the two controls are showed in a row.
 
 !!! tip
     UI controls are a very nice way to expose (or not) the controls which may be useful for the animator, while keeping the other custom properties hidden.  
@@ -42,12 +44,13 @@ There are three types of UI Controls:
 
 ## Single property
 
-When set on *Single Property*, the control has some options:
+When set on *Single Property*, the control has some options, which work the same way as in the *Edit driver* panel.
 
-- *Bone:* is the bone where to find the controlled property.
-- *Path:* is the **last part only** of the path copied when [right-click] on the property and choosing *copy data path*.
-- *Toggle:* is not yet implemented.
-- *Slider:* changes the apperances of the control, to be either a slider or a simple value.
+- *Prop:* is the object where to find the controlled property.
+- *Path:* is the path copied when [right-click] on the property and choosing *copy data path*.
+- *Toggle:* changes the appearance of boolean controls, to be either a button or a checkbox.
+- *Slider:* changes the appearance of numerical controls, to be either a slider or a simple value.
 
-!!! note
-    In future versions, the *Path* option will be updated to work the same way as in drivers, using the full data path from any object.
+
+
+<sub>*Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script>*</sub>

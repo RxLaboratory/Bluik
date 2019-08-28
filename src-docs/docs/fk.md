@@ -6,3 +6,6 @@ There's a *Follow* property on the bone used to make it inherit the parent rotat
 
 !!! tip
     Use a Duik [*UI Control*](ui-controls.md) to expose the follow property on the controller if needed by the animator.
+
+
+<sub>*Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script>*</sub>

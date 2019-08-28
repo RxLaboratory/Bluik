@@ -2,7 +2,7 @@ Select a chain of two bones parented together, and launch the tool.
 
 It will create a comprehensive IK/FK rig for these two bones, with the ability to switch between IK and FK, curve the limb, and adjust the stretchiness.
 
-**Four controllers are created, two for IK and two for FK:**
+**Four controllers are created, two for the IK and two for the FK:**
 
 - __*limb.IK.Ctrl*__ is the main controller for the IK.
 - __*limb.Pole.Ctrl*__ is the controller for the pole angle of the IK, which is either controlled by the location of this controller or by the custom property on the *limb.IK.Ctrl* bone.
@@ -17,3 +17,6 @@ You can find them in the sidebar [N] of the *3D View* with the controller select
 !!! hint
     These properties can be exposed on several controllers at once, with a better UI/UX using the [UI Controls](ui-controls.md) tools.
 
+
+
+<sub>*Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script>*</sub>

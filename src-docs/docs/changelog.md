@@ -1,8 +1,45 @@
 # Changelog
 
+[TOC]
+
 This is the list of what has changed since the first version of *Duik for Blender*.
 
-## 0.0.3 (in development)
+## 0.0.12
+
+#### New
+
+- Added a [Pie menu for the auto-rig](tools.md) tools.
+
+#### Bugfixes
+
+- Lots of bugfixes
+
+## 0.0.6
+
+#### New
+
+- Added the [Texture Animation](texanim.md) tool.
+
+#### Bugfixes
+
+- Lots of bugfixes
+
+## 0.0.5
+
+#### New
+
+- Added a [ui for bone layers](ui-layers.md) in the 3D View
+
+## 0.0.4
+
+#### Source code Improvement and cleaning
+
+As the addon becomes bigger, there was a need to clean the source code to improve the groundwork of future features.
+
+- Split the addon in modules and submodules for easier development and maintenance
+- Added GPLv3 notices
+
+## 0.0.3
 
 #### Improvements
 
@@ -34,3 +71,6 @@ Initial release with:
     - [*BBone Controllers*](bbone.md)
 - UI Controls:
     - [*Selection sets*](selection-sets.md)
+
+
+<sub>*Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script>*</sub>

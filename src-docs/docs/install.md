@@ -6,9 +6,6 @@ __*Duik for Blender* has been developped for Blender 2.80__ and is tested on the
 
 **It will not work on Blender 2.79** and previous versions.
 
-!!! warning
-    There may be some issues with some versions of Blender 2.80 as this version of Blender is still in development and things are moving. It will become more stable once it is released, and Duik will itself be more stable a few weeks after that.
-
 # Installation
 
 There is no official release yet, as Duik is in its early phase of development.
@@ -34,3 +31,6 @@ The add-on will appear in the list below, and needs to be activated. If you do n
 ![Settings](img\settings.png)
 
 Once activated, a few options are available. See the [Settings](settings.md) section for more information.
+
+
+<sub>*Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script>*</sub>

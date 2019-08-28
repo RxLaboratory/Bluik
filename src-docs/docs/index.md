@@ -2,7 +2,7 @@ Welcome to the official *Duik for Blender* documentation.
 
 ![cel anim panel](img\logo-blender.png)
 
-*Duik* originally is a comprehensive animation and rigging toolset for __*Adobe After Effects*__.  
+*Duik* is originally a comprehensive animation and rigging toolset for __*Adobe After Effects*__.  
 It all began as a joke... __When will *Duik* be available for *Blender*?__
 
 *Duik for Blender* aims to reproduce the rigging process developped in After Effects but in blender, with predefined Armatures and bones for limbs or complete characters and a comprehensive yet easy to animate auto-rig, along with some advanced rigging and animation tools for experts.
@@ -23,7 +23,9 @@ Blender already includes an auto-rig add-on called *Rigify* but it's a tool whic
 Duik for Blender tries to address these issues by using a modular system, with low, mid and high-level tools. Low-level tools are more advanced and modular, as high-level tools are pretty standard auto-rigs for limbs or complete characters. The rigs created by Duik have all controls needed for a perfect animation (there are no compromise on usability), but always built with a priority on intuitivity and easiness (controls are sorted out based on their importance, there are no unnecessary control).
 
 For now, Duik for Blender only includes low-level tools for controllers creation, which will be used to build high-level auto-rigs.  
-One of the goal for future development of *Duik for Blender* is to make it easy to use for beginners with automatic tools and auto-rigs working the same way as *Duik for After Effects*, with the same process (Armature -> Autorig -> Details).
+The first goal for the upcoming versions of *Duik for Blender*, is to build robust, useful, and modular tools for advanced and professionnal riggers.  
+Another goal for future development of *Duik for Blender* is to make it easy to use for beginners with automatic tools and auto-rigs working the same way as *Duik for After Effects*, with the same process (Armature -> Autorig -> Details).
+
 
 ## 2D (Cut-out)
 
@@ -38,3 +40,6 @@ One could even imagine that characters could be rigged either in After Effects o
 There's no precise schedule to develop all of this yet, as the only revenue for these development (and the support of the tools, the maintainment of the website, etc) is what [Duduf](http://duduf.com) (the developper) gets on [Patreon](https://patreon.com/duduf), and this is going to be a huge work. But, step by step, we'll see how it goes.
 
 Maybe after building a few more tools it could be time for a crowdfunding campaign. But absolutely nothing's sure yet, these are just assumptions!
+
+
+<sub>*Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script>*</sub>

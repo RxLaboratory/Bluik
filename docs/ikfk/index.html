@@ -67,7 +67,7 @@
           
             <li class="toctree-l1">
 		
-    <span class="caption-text">Rigging</span>
+    <span class="caption-text">(Auto)-Rigging</span>
     <ul class="subnav">
                 <li class="">
                     
@@ -87,6 +87,17 @@
                 <li class="">
                     
     <a class="" href="../bbone/">BBone Controllers</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Texture Animation</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../texanim/">The TexAnim module</a>
                 </li>
     </ul>
 	    </li>
@@ -166,7 +177,7 @@
     
       
         
-          <li>Rigging &raquo;</li>
+          <li>(Auto)-Rigging &raquo;</li>
         
       
     
@@ -185,7 +196,7 @@
               
                 <p>Select a chain of two bones parented together, and launch the tool.</p>
 <p>It will create a comprehensive IK/FK rig for these two bones, with the ability to switch between IK and FK, curve the limb, and adjust the stretchiness.</p>
-<p><strong>Four controllers are created, two for IK and two for FK:</strong></p>
+<p><strong>Four controllers are created, two for the IK and two for the FK:</strong></p>
 <ul>
 <li><strong><em>limb.IK.Ctrl</em></strong> is the main controller for the IK.</li>
 <li><strong><em>limb.Pole.Ctrl</em></strong> is the controller for the pole angle of the IK, which is either controlled by the location of this controller or by the custom property on the <em>limb.IK.Ctrl</em> bone.</li>
@@ -199,6 +210,7 @@ You can find them in the sidebar [N] of the <em>3D View</em> with the controller
 <p class="admonition-title">Hint</p>
 <p>These properties can be exposed on several controllers at once, with a better UI/UX using the <a href="../ui-controls/">UI Controls</a> tools.</p>
 </div>
+<p><sub><em>Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script></em></sub></p>
               
             </div>
           </div>

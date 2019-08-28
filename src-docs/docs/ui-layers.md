@@ -15,3 +15,7 @@ At each button corresponds a bone layer on the Armature. Try the buttons to see 
 Duik uses only the left part of the layers (from 1 to 7 and 16 to 23).
 
 ![](img\bone-layers.png)
+
+
+
+<sub>*Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script>*</sub>
