@@ -38,7 +38,6 @@ class DUIK_UiControl( bpy.types.PropertyGroup ):
     def typeChanged( self, context ):
         print(self.target.name)
 
-
     bones: bpy.props.CollectionProperty( type = DUIK_UiControlBone )
     id_type: bpy.props.EnumProperty (
         items = [
@@ -139,7 +138,6 @@ class DUIK_OT_new_ui_control( bpy.types.Operator ):
 
         if bones and len(bones) > 0:
             ui_control.set_bones( bones )
-            ui_control.target_bone = bones[0]
         else:
             ui_control.set_bones( [] )
 
@@ -166,7 +164,7 @@ class DUIK_OT_duplicate_ui_control( bpy.types.Operator ):
         ui_control.toggle = ui_control_from.toggle
         ui_control.slider = ui_control_from.slider
         ui_control.target_rna = ui_control_from.target_rna
-        ui_control.target_bone = ui_control_from.target_bone
+        ui_control.target = ui_control_from.target
 
         bones = []
         if context.mode == 'POSE':
@@ -175,7 +173,6 @@ class DUIK_OT_duplicate_ui_control( bpy.types.Operator ):
 
         if bones and len(bones) > 0:
             ui_control.set_bones( bones )
-            ui_control.target_bone = bones[0]
         else:
             ui_control.set_bones( [] )
 
