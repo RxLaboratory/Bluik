@@ -22,10 +22,10 @@ bl_info = {
     "category": "Rigging",
     "blender": (2, 80, 0),
     "author": "Nicolas 'Duduf' Dufresne",
-    "location": "3D View (Pose Mode) > Pose menu, Tool UI, Item UI, View UI",
+    "location": "Armature properties, Pose Menu, View3d sidebar (N), Shader Editor sidebar (N).",
     "version": (0,0,12),
     "description": "Advanced yet easy to use rigging tools.",
-    "wiki_url": "http://duduf.com"
+    "wiki_url": "https://duik-blender-docs.rainboxlab.org/",
 }
 
 import bpy # pylint: disable=import-error
