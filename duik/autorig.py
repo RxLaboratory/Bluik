@@ -611,9 +611,9 @@ class DUIK_OT_bbone( bpy.types.Operator ):
 
 def populateMenu( layout ):
     """Populates a Duik menu with the autorig methods"""
-    layout.operator(DUIK_OT_ikfk.bl_idname,  text="IK/FK Rig")
-    layout.operator(DUIK_OT_fk.bl_idname,  text="Add FK Controller")
-    layout.operator(DUIK_OT_bbone.bl_idname,  text="Add BBone controllers")
+    layout.operator(DUIK_OT_ikfk.bl_idname,  text="IK/FK Rig", icon='CON_KINEMATIC')
+    layout.operator(DUIK_OT_fk.bl_idname,  text="Add FK Controller", icon='CON_ROTLIKE')
+    layout.operator(DUIK_OT_bbone.bl_idname,  text="Add BBone controllers", icon='CURVE_DATA')
 
 class DUIK_MT_pose_menu( bpy.types.Menu ):
     bl_idname = "DUIK_MT_pose_menu"
@@ -631,7 +631,9 @@ class DUIK_MT_pie_menu ( bpy.types.Menu):
 
     @classmethod
     def poll(self, context):
-        return context.mode == 'POSE'
+        preferences = context.preferences
+        duik_prefs = preferences.addons[__package__].preferences
+        return context.mode == 'POSE' and duik_prefs.pie_menu_autorig
 
     def draw( self, context ):
         layout = self.layout.menu_pie()
