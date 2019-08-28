@@ -609,17 +609,33 @@ class DUIK_OT_bbone( bpy.types.Operator ):
         self.Dublf.log("BBone control creation finished without error",time_start)
         return {'FINISHED'}
 
+def populateMenu( layout ):
+    """Populates a Duik menu with the autorig methods"""
+    layout.operator(DUIK_OT_ikfk.bl_idname,  text="IK/FK Rig")
+    layout.operator(DUIK_OT_fk.bl_idname,  text="Add FK Controller")
+    layout.operator(DUIK_OT_bbone.bl_idname,  text="Add BBone controllers")
+
 class DUIK_MT_pose_menu( bpy.types.Menu ):
     bl_idname = "DUIK_MT_pose_menu"
-    bl_label = "Duik"
+    bl_label = "Duik Auto-Rig"
     bl_description = "Rigging tools: easily create advanced controllers and rigs."
 
     def draw( self, context ):
         layout = self.layout
+        populateMenu(layout)
 
-        layout.operator(DUIK_OT_ikfk.bl_idname,  text="IK/FK Rig")
-        layout.operator(DUIK_OT_fk.bl_idname,  text="Add FK Controller")
-        layout.operator(DUIK_OT_bbone.bl_idname,  text="Add BBone controllers")
+class DUIK_MT_pie_menu ( bpy.types.Menu):
+    bl_idname = "DUIK_MT_pie_menu"
+    bl_label = "Duik Auto-Rig"
+    bl_description = "Rigging tools: easily create advanced controllers and rigs."
+
+    @classmethod
+    def poll(self, context):
+        return context.mode == 'POSE'
+
+    def draw( self, context ):
+        layout = self.layout.menu_pie()
+        populateMenu(layout)
 
 def menu_func(self, context):
     self.layout.menu("DUIK_MT_pose_menu")
@@ -629,7 +645,10 @@ classes = (
     DUIK_OT_fk,
     DUIK_OT_bbone,
     DUIK_MT_pose_menu,
+    DUIK_MT_pie_menu,
 )
+
+addon_keymaps = []
 
 def register():
     # register
@@ -639,6 +658,15 @@ def register():
     # menu
     bpy.types.VIEW3D_MT_pose.append(menu_func)
 
+    # keymaps
+    kc = bpy.context.window_manager.keyconfigs.addon
+    if kc:
+        km = kc.keymaps.new(name='3D View', space_type='VIEW_3D')
+        kmi = km.keymap_items.new('wm.call_menu_pie', 'D', 'PRESS', shift=True)
+        kmi.properties.name = 'DUIK_MT_pie_menu'
+        addon_keymaps.append((km, kmi))
+
+
 def unregister():
     # unregister
     for cls in reversed(classes):
@@ -646,3 +674,9 @@ def unregister():
 
     # menu
     bpy.types.VIEW3D_MT_pose.remove(menu_func)
+
+    # keymaps
+    for km, kmi in addon_keymaps:
+        km.keymap_items.remove(kmi)
+    addon_keymaps.clear()
+            
