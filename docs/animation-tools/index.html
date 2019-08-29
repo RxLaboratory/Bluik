@@ -7,18 +7,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <meta name="author" content="Nicolas Dufresne and contributors">
-  <link rel="shortcut icon" href="img/favicon.ico">
-  <title>Duik for Blender Documentation</title>
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Animation tools - Duik for Blender Documentation</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
-  <link rel="stylesheet" href="css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-  <link href="style.css" rel="stylesheet">
-  <link href="video.css" rel="stylesheet">
+  <link href="../style.css" rel="stylesheet">
+  <link href="../video.css" rel="stylesheet">
   
-  <script src="js/jquery-2.1.1.min.js" defer></script>
-  <script src="js/modernizr-2.8.3.min.js" defer></script>
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Animation tools";
+    var mkdocs_page_input_path = "animation-tools.md";
+    var mkdocs_page_url = "/animation-tools/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script> 
   
@@ -31,9 +38,9 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href="." class="icon icon-home"> Duik for Blender Documentation</a>
+        <a href=".." class="icon icon-home"> Duik for Blender Documentation</a>
         <div role="search">
-  <form id ="rtd-search-form" class="wy-form" action="/search.html" method="get">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
@@ -45,17 +52,17 @@
           
             <li class="toctree-l1">
 		
-    <a class="" href=".">About</a>
+    <a class="" href="..">About</a>
 	    </li>
           
             <li class="toctree-l1">
 		
-    <a class="" href="install/">Installation</a>
+    <a class="" href="../install/">Installation</a>
 	    </li>
           
             <li class="toctree-l1">
 		
-    <a class="" href="settings/">Settings</a>
+    <a class="" href="../settings/">Settings</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -64,19 +71,19 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="tools/">Introduction</a>
+    <a class="" href="../tools/">Introduction</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="ikfk/">IK/FK Rig</a>
+    <a class="" href="../ikfk/">IK/FK Rig</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="fk/">FK Controller</a>
+    <a class="" href="../fk/">FK Controller</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="bbone/">BBone Controllers</a>
+    <a class="" href="../bbone/">BBone Controllers</a>
                 </li>
     </ul>
 	    </li>
@@ -87,7 +94,7 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="texanim/">The TexAnim module</a>
+    <a class="" href="../texanim/">The TexAnim module</a>
                 </li>
     </ul>
 	    </li>
@@ -98,19 +105,19 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="ui/">Introduction</a>
+    <a class="" href="../ui/">Introduction</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="selection-sets/">Selection Sets</a>
+    <a class="" href="../selection-sets/">Selection Sets</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="ui-controls/">UI Controls</a>
+    <a class="" href="../ui-controls/">UI Controls</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="ui-layers/">Layers UI</a>
+    <a class="" href="../ui-layers/">Layers UI</a>
                 </li>
     </ul>
 	    </li>
@@ -119,16 +126,22 @@
 		
     <span class="caption-text">Animation</span>
     <ul class="subnav">
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="animation-tools/">Animation tools</a>
+    <a class="current" href="./">Animation tools</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#swap-ik-and-fk">Swap IK and FK</a></li>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
           
             <li class="toctree-l1">
 		
-    <a class="" href="changelog/">Changelog</a>
+    <a class="" href="../changelog/">Changelog</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -143,7 +156,7 @@
           
             <li class="toctree-l1">
 		
-    <a class="" href="credits">Credits</a>
+    <a class="" href="../credits">Credits</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -166,7 +179,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href=".">Duik for Blender Documentation</a>
+        <a href="..">Duik for Blender Documentation</a>
       </nav>
 
       
@@ -174,10 +187,19 @@
         <div class="rst-content">
           <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".">Docs</a> &raquo;</li>
+    <li><a href="..">Docs</a> &raquo;</li>
     
+      
+        
+          <li>Animation &raquo;</li>
+        
+      
     
+    <li>Animation tools</li>
     <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/Rainbox-dev/DuBLF_Duik/edit/master/src-docs/docs/animation-tools.md"
+          class="icon icon-github"> Edit on GitHub</a>
       
     </li>
   </ul>
@@ -186,15 +208,28 @@
           <div role="main">
             <div class="section">
               
-
-  <h1 id="404-page-not-found">404</h1>
-
-  <p><strong>Page not found</strong></p>
-
-
+                <p><em>Duik</em> provides some tools to ease the work of the animator, in conjunction with its rigging tools.</p>
+<p>These tools are available in the <em>Pose</em> menu in <em>Pose</em> mode.</p>
+<p><img alt="Animation Menu" src="../img/pose-menu-animation.png" /></p>
+<p>They are also available as a pie menu with the <code>[SHIFT] + [D]</code> keyboard shorcut.</p>
+<p><img alt="Animation Menu" src="../img/pie-menu-animation.png" /></p>
+<h2 id="swap-ik-and-fk">Swap IK and FK</h2>
+<p>This tool is used with limbs rigged using the <a href="../ikfk/">IK/FK rig</a>.<br />
+It automatically detects if the active controller is used to control the corresponding limb with <em>IK</em> or <em>FK</em>, and automatically aligns either the <em>FK</em> controls or the <em>IK</em> controls, then switches them. It also adds the necessary keyframes on the controllers.<br />
+It&rsquo;s a quick and easy way to animate both in IK and FK in during the same action.</p>
+              
             </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../changelog/" class="btn btn-neutral float-right" title="Changelog">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../ui-layers/" class="btn btn-neutral" title="Layers UI"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -222,13 +257,17 @@
           <a href="https://github.com/Rainbox-dev/DuBLF_Duik/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
+        <span><a href="../ui-layers/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../changelog/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
-    <script>var base_url = '';</script>
-    <script src="js/theme.js" defer></script>
-      <script src="video.js" defer></script>
-      <script src="search/main.js" defer></script>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../video.js" defer></script>
+      <script src="../search/main.js" defer></script>
 
 </body>
 </html>

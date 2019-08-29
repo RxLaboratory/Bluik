@@ -21,17 +21,23 @@ The bones used as controllers are in the first layer by default, the bones with 
 
 #### (Auto)Rigging tools
 
-You can use a nice pie menu to quickly access the (auto)rigging tools using the `[SHIFT] + [D]` keyboard shortcut.
+You can use a nice pie menu to quickly access the (auto)rigging tools using the `[SHIFT] + [R]` keyboard shortcut.
 
 ![Pie menu](img/pie_menu_autorig.png)
 
 #### Armature Display
 
-With the `[SHIFT] + [D]` keyboard shortcut, you can quickly change the display of the active armature.
+With the `[SHIFT] + [V]` keyboard shortcut, you can quickly change the display of the active armature.
 
 ![Armature display pie menu](img/armature_display_pie_menu.png)
 
-If you'd prefer not to use these pie menus and keep their shortcuts for something else, you can de-activate them in these settings.
+#### Animation tools
 
+The `[SHIFT] + [D]` keyboard shortcut shows a pie menu with useful animation tools.
+
+![Animation Menu](img/pie-menu-animation.png)
+
+
+If you'd prefer not to use these pie menus and keep their shortcuts for something else, you can de-activate them in these settings.
 
 <sub>*Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script>*</sub>

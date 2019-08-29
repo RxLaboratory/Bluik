@@ -6,7 +6,7 @@ With an *Armature* in *Pose* mode, you'll find a *Duik* section in the `Pose` me
 
 ![Pose menu](img\pose-menu.png)
 
-These rigging tools are also quickly accessible through a *pie menu*, using the `[SHIFT] + [D]` keyboard shortcut in the *3D View* in *Pose* mode.
+These rigging tools are also quickly accessible through a *pie menu*, using the `[SHIFT] + [R]` keyboard shortcut in the *3D View* in *Pose* mode.
 
 ![Pie menu](img\pie_menu_autorig.png)
 
