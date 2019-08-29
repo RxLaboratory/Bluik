@@ -41,6 +41,10 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
     Dublf.toolName = "Duik"
     Duik = DUBLF_rigging()
 
+    @classmethod
+    def poll (self, context):
+        return context.mode == 'POSE'
+
     def execute(self, context):
 
         preferences = context.preferences
@@ -373,6 +377,10 @@ class DUIK_OT_fk( bpy.types.Operator ):
     Dublf.toolName = "Duik"
     Duik = DUBLF_rigging()
 
+    @classmethod
+    def poll (self, context):
+        return context.mode == 'POSE'
+
     def execute(self, context):
         self.Dublf.log("Adding FK Controller...")
 
@@ -486,6 +494,10 @@ class DUIK_OT_bbone( bpy.types.Operator ):
 
     Dublf = DUBLF_utils()
     Dublf.toolName = "Duik"
+
+    @classmethod
+    def poll (self, context):
+        return context.mode == 'POSE'
 
     def execute(self, context):
 
@@ -633,6 +645,50 @@ class DUIK_OT_bbone( bpy.types.Operator ):
         self.Dublf.log("BBone control creation finished without error",time_start)
         return {'FINISHED'}
 
+class DUIK_OT_armature_display_as ( bpy.types.Operator ):
+    """Changes the 'display as' option for the active armature"""
+    bl_idname = "armature.display_as"
+    bl_label = "Armature Display as"
+    bl_options = {'REGISTER','UNDO'}
+
+    display_type: bpy.props.StringProperty(default = 'OCTAHEDRAL')
+
+    @classmethod
+    def poll (self, context):
+        return context.active_object.type == 'ARMATURE'
+
+    def execute( self, context ):
+        armature = context.active_object.data
+        armature.display_type = self.display_type
+        return {'FINISHED'}
+
+class DUIK_OT_show_hide_metadata ( bpy.types.Operator ):
+    """Checks or unchecks the metada items on the active armature"""
+    bl_idname = "armature.show_hide_metadata"
+    bl_label = "Armature Show/Hide metadata"
+    bl_options = {'REGISTER','UNDO'}
+
+    item: bpy.props.StringProperty(default = 'AXES')
+
+    @classmethod
+    def poll (self, context):
+        return context.active_object.type == 'ARMATURE'
+
+    def execute( self, context ):
+        armature = context.active_object.data
+        if self.item == 'AXES':
+            armature.show_axes = not armature.show_axes
+        elif self.item == 'NAMES':
+            armature.show_names = not armature.show_names
+        elif self.item == 'SHAPES':
+            armature.show_bone_custom_shapes = not armature.show_bone_custom_shapes
+        elif self.item == 'COLORS':
+            armature.show_group_colors = not armature.show_group_colors
+        elif self.item == 'IN FRONT':
+            armature.show_in_front = not armature.show_in_front
+
+        return {'FINISHED'}
+
 def populateMenu( layout ):
     """Populates a Duik menu with the autorig methods"""
     layout.operator(DUIK_OT_ikfk.bl_idname,  text="IK/FK Rig", icon='CON_KINEMATIC')
@@ -663,6 +719,26 @@ class DUIK_MT_pie_menu ( bpy.types.Menu):
         layout = self.layout.menu_pie()
         populateMenu(layout)
 
+class DUIK_MT_pie_menu_armature_display ( bpy.types.Menu):
+    bl_idname = "DUIK_MT_pie_menu_armature_display"
+    bl_label = "Armature Viewport Display"
+    bl_description = "Changes the viewport display of armatures."
+
+    @classmethod
+    def poll(self, context):
+        preferences = context.preferences
+        duik_prefs = preferences.addons[__package__].preferences
+        return context.active_object.type == 'ARMATURE' and duik_prefs.pie_menu_armature_display
+
+    def draw( self, context ):
+        layout = self.layout.menu_pie()
+        layout.operator( 'armature.display_as', text='Octahedral', icon='PMARKER_ACT').display_type = 'OCTAHEDRAL'
+        layout.operator( 'armature.display_as', text='Stick', icon='MOD_SIMPLIFY').display_type = 'STICK'
+        layout.operator( 'armature.display_as', text='B-Bone', icon='MOD_ARRAY').display_type = 'BBONE'
+        layout.operator( 'armature.display_as', text='Envelope', icon = 'MESH_CAPSULE').display_type = 'ENVELOPE'
+        layout.operator( 'armature.display_as', text='Wire', icon='IPO_LINEAR').display_type = 'WIRE'
+        layout.operator( 'armature.show_hide_metadata', text='Show Axes', icon='EMPTY_ARROWS').item = 'AXES'
+        
 def menu_func(self, context):
     self.layout.menu("DUIK_MT_pose_menu")
 
@@ -670,8 +746,11 @@ classes = (
     DUIK_OT_ikfk,
     DUIK_OT_fk,
     DUIK_OT_bbone,
+    DUIK_OT_armature_display_as,
+    DUIK_OT_show_hide_metadata,
     DUIK_MT_pose_menu,
     DUIK_MT_pie_menu,
+    DUIK_MT_pie_menu_armature_display,
 )
 
 addon_keymaps = []
@@ -690,8 +769,9 @@ def register():
         km = kc.keymaps.new(name='3D View', space_type='VIEW_3D')
         kmi = km.keymap_items.new('wm.call_menu_pie', 'D', 'PRESS', shift=True)
         kmi.properties.name = 'DUIK_MT_pie_menu'
+        kmi = km.keymap_items.new('wm.call_menu_pie', 'V', 'PRESS', shift=True)
+        kmi.properties.name = 'DUIK_MT_pie_menu_armature_display'
         addon_keymaps.append((km, kmi))
-
 
 def unregister():
     # unregister

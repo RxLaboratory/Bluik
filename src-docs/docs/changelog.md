@@ -4,6 +4,12 @@
 
 This is the list of what has changed since the first version of *Duik for Blender*.
 
+## 0.0.13
+
+#### New
+
+- Added a [Pie menu for the armature display options](tools.md).
+
 ## 0.0.12
 
 #### New

@@ -57,10 +57,14 @@ class DUIK_Preferences( bpy.types.AddonPreferences ):
     )
     pie_menu_autorig: bpy.props.BoolProperty(
         description="Use a pie menu for the auto-rig operators. [SHIFT + D] in 'Pose' mode",
-        name="Pie menu for auto-rig operators. [SHIFT + D]",
+        name="Auto-rig operators. [SHIFT + D]",
         default=True
         )
-
+    pie_menu_armature_display: bpy.props.BoolProperty(
+        description="A nice pie menu to change the armature display. [SHIFT + V] in 'Pose' or 'Edit' mode",
+        name="Armature display. [SHIFT + V]",
+        default=True
+        )
 
     def draw(self, context):
         layout = self.layout
@@ -69,8 +73,9 @@ class DUIK_Preferences( bpy.types.AddonPreferences ):
         layout.prop(self, "layer_skin")
         layout.prop(self, "layer_rig")
         layout.label(text="Pie Menus")
-        layout.prop(self, "pie_menu_autorig")
-
+        row = layout.row()
+        row.prop(self, "pie_menu_autorig")
+        row.prop(self, "pie_menu_armature_display")
 
 class DUIK_PT_armature_options( bpy.types.Panel ):
     bl_label = "Duik Layers UI"
