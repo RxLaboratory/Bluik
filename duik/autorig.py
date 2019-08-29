@@ -20,6 +20,8 @@
 # Auto-rigging tools
 
 import bpy # pylint: disable=import-error
+import mathutils # pylint: disable=import-error
+import math
 import time
 from .dublf import (
     DUBLF_utils,
@@ -46,8 +48,6 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
 
         # Measure performance
         time_start = time.time()
-                
-        self.Dublf.log( 'Creating IK/FK Rig' , time_start )
 
         #-----------------------
         # INIT
@@ -63,15 +63,18 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
         armatureData = bpy.types.Armature(armatureObject.data)
 
         if len(bones) == 0:
-            self.Dublf.showMessageBox( "Select the bones (pose mode)", "Select bones first")
+            self.report({'INFO'},"No bone selected")
             self.Dublf.log( 'Error: No bone selected' , time_start )
             bpy.ops.object.mode_set(mode='POSE')
             return {'CANCELLED'}
         elif len(bones) != 2:
-            self.Dublf.showMessageBox( "Works only with two bones", "Wrong bone count")
+            self.report({'INFO'},"Wrong bone count: works only with two bones")
             self.Dublf.log( 'Error: Wrong bone count' , time_start )
             bpy.ops.object.mode_set(mode='POSE')
             return {'CANCELLED'}
+
+        self.Dublf.log( 'Creating IK/FK Rig' , time_start )
+        self.report({'OPERATOR'},"Setuping IK/FK")
 
         # Find parent
         femur = bones[1]
@@ -318,6 +321,25 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
         DUBLF_rigging.addVariable(driver, "ctrl", driverPath, armatureObject)
         driver.expression = driverExpression
 
+        # ALIGN POLE ANGLE
+
+        # we need to evaluate the transformations, updating the dependency graph
+        depsgraph = context.evaluated_depsgraph_get()
+        depsgraph.update()
+
+        ikZ = mathutils.Vector( ikTibia.z_axis )
+        fkZ = mathutils.Vector( controllerTibia.z_axis )
+        angle = ikZ.angle( fkZ )
+        ik.pole_angle = angle
+        
+        # check if it's the right sign
+        depsgraph.update()
+        ikZ = mathutils.Vector( ikTibia.z_axis )
+        fkZ = mathutils.Vector( controllerTibia.z_axis )
+        testAngle = ikZ.angle( fkZ )
+        if math.degrees( testAngle ) > 0.5:
+            ik.pole_angle = -angle
+
         # -------------------
         # TIDYING
         # -------------------
@@ -336,6 +358,7 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
         bpy.context.object.data.layers[duik_prefs.layer_skin] = True
         bpy.context.object.data.layers[duik_prefs.layer_controllers] = True
 
+        self.report({'OPERATOR'},"IK/FK setup finished without error")
         self.Dublf.log("IK/FK setup finished without error",time_start)
 
         return {'FINISHED'}
