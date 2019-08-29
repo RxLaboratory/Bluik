@@ -100,6 +100,7 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
             
         # Create IK Controller
         controller = DUBLF_rigging.extrudeBone( armatureData , tibia , tibia.basename + '.IK.Ctrl', coef = 0.2 , parent = False )
+        controller.roll = tibia.roll
 
         # Create FK Controllers
         controllerTibia = DUBLF_rigging.duplicateBone( armatureData , tibia , tibia.basename + '.FK.Ctrl' )
