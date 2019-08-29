@@ -30,7 +30,15 @@ from .dublf.rigging import (
     DUBLF_rigging,
 )
 
-
+class DUIK_ikfk_prop ( bpy.types.PropertyGroup ):
+    """The property storing all info needed to handle and animate IK/FK rigs"""
+    ikCtrl_name: bpy.props.StringProperty(default = '')
+    pole_name: bpy.props.StringProperty()
+    fk1_name: bpy.props.StringProperty()
+    fk2_name: bpy.props.StringProperty()
+    ik1_name: bpy.props.StringProperty()
+    ik2_name: bpy.props.StringProperty()
+    
 class DUIK_OT_ikfk( bpy.types.Operator ):
     """Creates an IK/FK rig on a two-bone chain"""
     bl_idname = "armature.duik_ikfk"
@@ -43,7 +51,8 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
 
     @classmethod
     def poll (self, context):
-        return context.mode == 'POSE'
+        if context.active_object is None: return False
+        return context.active_object.type == 'ARMATURE'
 
     def execute(self, context):
 
@@ -358,6 +367,34 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
         DUBLF_rigging.addBoneToLayers( ptFemur.bone , [duik_prefs.layer_rig] )
         DUBLF_rigging.addBoneToLayers( kneeController.bone , [duik_prefs.layer_controllers] )
 
+        controller.duik_ikfk.ikCtrl_name = controller.name
+        controller.duik_ikfk.pole_name = ptFemur.name
+        controller.duik_ikfk.fk1_name = controllerFemur.name
+        controller.duik_ikfk.fk2_name = controllerTibia.name
+        controller.duik_ikfk.ik1_name = ikFemur.name
+        controller.duik_ikfk.ik2_name = ikTibia.name
+
+        kneeController.duik_ikfk.ikCtrl_name = controller.name
+        kneeController.duik_ikfk.pole_name = ptFemur.name
+        kneeController.duik_ikfk.fk1_name = controllerFemur.name
+        kneeController.duik_ikfk.fk2_name = controllerTibia.name
+        kneeController.duik_ikfk.ik1_name = ikFemur.name
+        kneeController.duik_ikfk.ik2_name = ikTibia.name
+
+        controllerTibia.duik_ikfk.ikCtrl_name = controller.name
+        controllerTibia.duik_ikfk.pole_name = ptFemur.name
+        controllerTibia.duik_ikfk.fk1_name = controllerFemur.name
+        controllerTibia.duik_ikfk.fk2_name = controllerTibia.name
+        controllerTibia.duik_ikfk.ik1_name = ikFemur.name
+        controllerTibia.duik_ikfk.ik2_name = ikTibia.name
+
+        controllerFemur.duik_ikfk.ikCtrl_name = controller.name
+        controllerFemur.duik_ikfk.pole_name = ptFemur.name
+        controllerFemur.duik_ikfk.fk1_name = controllerFemur.name
+        controllerFemur.duik_ikfk.fk2_name = controllerTibia.name
+        controllerFemur.duik_ikfk.ik1_name = ikFemur.name
+        controllerFemur.duik_ikfk.ik2_name = ikTibia.name
+
         #show layers
         bpy.context.object.data.layers[duik_prefs.layer_skin] = True
         bpy.context.object.data.layers[duik_prefs.layer_controllers] = True
@@ -379,7 +416,8 @@ class DUIK_OT_fk( bpy.types.Operator ):
 
     @classmethod
     def poll (self, context):
-        return context.mode == 'POSE'
+        if context.active_object is None: return False
+        return context.active_object.type == 'ARMATURE'
 
     def execute(self, context):
         self.Dublf.log("Adding FK Controller...")
@@ -497,7 +535,8 @@ class DUIK_OT_bbone( bpy.types.Operator ):
 
     @classmethod
     def poll (self, context):
-        return context.mode == 'POSE'
+        if context.active_object is None: return False
+        return context.active_object.type == 'ARMATURE'
 
     def execute(self, context):
 
@@ -655,6 +694,7 @@ class DUIK_OT_armature_display_as ( bpy.types.Operator ):
 
     @classmethod
     def poll (self, context):
+        if context.active_object is None: return False
         return context.active_object.type == 'ARMATURE'
 
     def execute( self, context ):
@@ -672,6 +712,7 @@ class DUIK_OT_show_hide_metadata ( bpy.types.Operator ):
 
     @classmethod
     def poll (self, context):
+        if context.active_object is None: return False
         return context.active_object.type == 'ARMATURE'
 
     def execute( self, context ):
@@ -689,11 +730,108 @@ class DUIK_OT_show_hide_metadata ( bpy.types.Operator ):
 
         return {'FINISHED'}
 
-def populateMenu( layout ):
+def ik2fk( context, ikCtrl, ik2, pole, fk2 ):
+    depsgraph = context.evaluated_depsgraph_get()
+
+    # snap ik to fk tail
+    ikMatrix = fk2.matrix.copy()
+    ikMatrix.translation = fk2.tail
+    ikCtrl.matrix = ikMatrix
+
+    # align pole vectors   
+    # we need to update the constraints to measure the angle
+    depsgraph.update()
+
+    ikZ = mathutils.Vector( ik2.z_axis )
+    fkZ = mathutils.Vector( fk2.z_axis )
+    angle = ikZ.angle( fkZ )
+    ikCtrl["Pole Angle"] = angle
+    
+    # check if it's the right sign
+    depsgraph.update()
+    ikZ = mathutils.Vector( ik2.z_axis )
+    fkZ = mathutils.Vector( fk2.z_axis )
+    testAngle = ikZ.angle( fkZ )
+    if math.degrees( testAngle ) > 0.5:
+        ikCtrl["Pole Angle"] = -angle
+
+    # switch to fk
+    depsgraph.update()
+    ikCtrl["FK / IK Blend"] = 1.0
+
+    # Add keyframes 
+    ikCtrl.keyframe_insert("location")
+    ikCtrl.keyframe_insert('["FK / IK Blend"]')
+    ikCtrl.keyframe_insert('["Pole Angle"]')
+
+def fk2ik( context, fk1, fk2, ik1, ik2, ikCtrl ):
+    # get the dependency graph
+    depsgraph = context.evaluated_depsgraph_get()
+    # align fk1
+    fk1.matrix = ik1.matrix
+    # we need to update the depth graph so fk1 is at its right location when moving fk2
+    depsgraph.update()
+    # align fk2
+    fk2.matrix = ik2.matrix
+
+    # switch to ik
+    depsgraph.update()
+    ikCtrl["FK / IK Blend"] = 0.0
+
+    # Add keyframes 
+    ikCtrl.keyframe_insert('["FK / IK Blend"]')
+    fk1.keyframe_insert('rotation_euler')
+    fk2.keyframe_insert('rotation_euler')
+
+class DUIK_OT_swap_ikfk ( bpy.types.Operator ):
+    """Swaps the limb rigged in IK/FK between IK and FK"""
+    bl_idname = "armature.swap_ikfk"
+    bl_label = "Swap IK / FK"
+    bl_options = {'REGISTER','UNDO'}
+
+    mode: bpy.props.StringProperty( default = 'AUTO' )
+
+    @classmethod
+    def poll( self, context ):
+        bone = context.active_pose_bone
+        if bone is None: return False
+        return bone.duik_ikfk.ikCtrl_name != '' 
+        
+    def execute( self, context ):
+        active_bone = context.active_pose_bone
+        # get the bones
+        ikCtrl = active_bone.duik_ikfk.ikCtrl_name
+        pole = active_bone.duik_ikfk.pole_name
+        fk2 = active_bone.duik_ikfk.fk2_name
+        fk1 = active_bone.duik_ikfk.fk1_name
+        ik2 = active_bone.duik_ikfk.ik2_name
+        ik1 = active_bone.duik_ikfk.ik1_name
+
+        armature = context.active_object
+
+        ikCtrl = armature.pose.bones[ikCtrl]
+        pole = armature.pose.bones[pole]
+        fk2 = armature.pose.bones[fk2]
+        fk1 = armature.pose.bones[fk1]
+        ik2 = armature.pose.bones[ik2]
+        ik1 = armature.pose.bones[ik1]
+
+        if ikCtrl["FK / IK Blend"] > 0.5:
+            fk2ik( context, fk1, fk2, ik1, ik2, ikCtrl )
+        else:
+            ik2fk( context, ikCtrl, ik2, pole, fk2 )
+
+        return {'FINISHED'}
+
+def populateRiggingMenu( layout ):
     """Populates a Duik menu with the autorig methods"""
     layout.operator(DUIK_OT_ikfk.bl_idname,  text="IK/FK Rig", icon='CON_KINEMATIC')
     layout.operator(DUIK_OT_fk.bl_idname,  text="Add FK Controller", icon='CON_ROTLIKE')
     layout.operator(DUIK_OT_bbone.bl_idname,  text="Add BBone controllers", icon='CURVE_DATA')
+
+def populateAnimationMenu( layout ):
+    """Populates a Duik menu with the animation methods"""
+    layout.operator( 'armature.swap_ikfk', text='Swap IK and FK', icon='CON_KINEMATIC').mode = 'AUTO'
 
 class DUIK_MT_pose_menu( bpy.types.Menu ):
     bl_idname = "DUIK_MT_pose_menu"
@@ -702,7 +840,17 @@ class DUIK_MT_pose_menu( bpy.types.Menu ):
 
     def draw( self, context ):
         layout = self.layout
-        populateMenu(layout)
+        populateRiggingMenu(layout)
+
+class DUIK_MT_animation_menu( bpy.types.Menu ):
+    bl_idname = "DUIK_MT_animation_menu"
+    bl_label = "Duik Animation"
+    bl_description = "Tools for animators."
+
+    def draw( self, context ):
+        layout = self.layout
+        populateAnimationMenu(layout)
+
 
 class DUIK_MT_pie_menu ( bpy.types.Menu):
     bl_idname = "DUIK_MT_pie_menu"
@@ -717,7 +865,7 @@ class DUIK_MT_pie_menu ( bpy.types.Menu):
 
     def draw( self, context ):
         layout = self.layout.menu_pie()
-        populateMenu(layout)
+        populateRiggingMenu(layout)
 
 class DUIK_MT_pie_menu_armature_display ( bpy.types.Menu):
     bl_idname = "DUIK_MT_pie_menu_armature_display"
@@ -738,19 +886,39 @@ class DUIK_MT_pie_menu_armature_display ( bpy.types.Menu):
         layout.operator( 'armature.display_as', text='Envelope', icon = 'MESH_CAPSULE').display_type = 'ENVELOPE'
         layout.operator( 'armature.display_as', text='Wire', icon='IPO_LINEAR').display_type = 'WIRE'
         layout.operator( 'armature.show_hide_metadata', text='Show Axes', icon='EMPTY_ARROWS').item = 'AXES'
-        
+
+class DUIK_MT_pie_menu_animation( bpy.types.Menu ):
+    bl_idname = "DUIK_MT_pie_menu_animation"
+    bl_label = "Duik Animation Tools"
+    bl_description = "Useful tools for animators."
+
+    @classmethod
+    def poll( self, context ):
+        preferences = context.preferences
+        duik_prefs = preferences.addons[__package__].preferences
+        return context.mode == 'POSE' and duik_prefs.pie_menu_animation
+
+    def draw( self, context ):
+        layout = self.layout.menu_pie()
+        populateAnimationMenu(layout)
+
 def menu_func(self, context):
     self.layout.menu("DUIK_MT_pose_menu")
+    self.layout.menu("DUIK_MT_animation_menu")
 
 classes = (
+    DUIK_ikfk_prop,
     DUIK_OT_ikfk,
     DUIK_OT_fk,
     DUIK_OT_bbone,
     DUIK_OT_armature_display_as,
     DUIK_OT_show_hide_metadata,
+    DUIK_OT_swap_ikfk,
     DUIK_MT_pose_menu,
+    DUIK_MT_animation_menu,
     DUIK_MT_pie_menu,
     DUIK_MT_pie_menu_armature_display,
+    DUIK_MT_pie_menu_animation,
 )
 
 addon_keymaps = []
@@ -760,23 +928,31 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
-    # menu
+    # ikfk props
+    if not hasattr( bpy.types.PoseBone, 'duik_ikfk' ):
+        bpy.types.PoseBone.duik_ikfk = bpy.props.PointerProperty ( type = DUIK_ikfk_prop )
+
+    # menus
     bpy.types.VIEW3D_MT_pose.append(menu_func)
 
     # keymaps
     kc = bpy.context.window_manager.keyconfigs.addon
     if kc:
         km = kc.keymaps.new(name='3D View', space_type='VIEW_3D')
-        kmi = km.keymap_items.new('wm.call_menu_pie', 'D', 'PRESS', shift=True)
+        kmi = km.keymap_items.new('wm.call_menu_pie', 'R', 'PRESS', shift=True)
         kmi.properties.name = 'DUIK_MT_pie_menu'
         kmi = km.keymap_items.new('wm.call_menu_pie', 'V', 'PRESS', shift=True)
         kmi.properties.name = 'DUIK_MT_pie_menu_armature_display'
+        kmi = km.keymap_items.new('wm.call_menu_pie', 'D', 'PRESS', shift=True)
+        kmi.properties.name = 'DUIK_MT_pie_menu_animation'
         addon_keymaps.append((km, kmi))
 
 def unregister():
     # unregister
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
+
+    del bpy.types.PoseBone.duik_ikfk
 
     # menu
     bpy.types.VIEW3D_MT_pose.remove(menu_func)
