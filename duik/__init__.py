@@ -56,13 +56,18 @@ class DUIK_Preferences( bpy.types.AddonPreferences ):
         default=24,
     )
     pie_menu_autorig: bpy.props.BoolProperty(
-        description="Use a pie menu for the auto-rig operators. [SHIFT + D] in 'Pose' mode",
-        name="Auto-rig operators. [SHIFT + D]",
+        description="Use a pie menu for the auto-rig operators. [SHIFT + R] in 'Pose' mode",
+        name="Auto-rig operators. [SHIFT + R]",
         default=True
         )
     pie_menu_armature_display: bpy.props.BoolProperty(
         description="A nice pie menu to change the armature display. [SHIFT + V] in 'Pose' or 'Edit' mode",
         name="Armature display. [SHIFT + V]",
+        default=True
+        )
+    pie_menu_animation: bpy.props.BoolProperty(
+        description="A nice pie menu with tools for animators. [SHIFT + D] in 'Pose' mode",
+        name="Animation tools. [SHIFT + D]",
         default=True
         )
 
@@ -76,6 +81,8 @@ class DUIK_Preferences( bpy.types.AddonPreferences ):
         row = layout.row()
         row.prop(self, "pie_menu_autorig")
         row.prop(self, "pie_menu_armature_display")
+        row = layout.row()
+        row.prop(self, "pie_menu_animation")
 
 class DUIK_PT_armature_options( bpy.types.Panel ):
     bl_label = "Duik Layers UI"
