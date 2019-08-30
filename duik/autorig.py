@@ -76,18 +76,17 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
         armatureData = bpy.types.Armature(armatureObject.data)
 
         if len(bones) == 0:
-            self.report({'INFO'},"No bone selected")
+            self.report({'ERROR'},"No bone selected")
             self.Dublf.log( 'Error: No bone selected' , time_start )
             bpy.ops.object.mode_set(mode='POSE')
             return {'CANCELLED'}
         elif len(bones) != 2:
-            self.report({'INFO'},"Wrong bone count: works only with two bones")
+            self.report({'ERROR'},"Wrong bone count: works only with two bones")
             self.Dublf.log( 'Error: Wrong bone count' , time_start )
             bpy.ops.object.mode_set(mode='POSE')
             return {'CANCELLED'}
 
         self.Dublf.log( 'Creating IK/FK Rig' , time_start )
-        self.report({'OPERATOR'},"Setuping IK/FK")
 
         # Find parent
         femur = bones[1]
@@ -145,18 +144,30 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
         # CREATE CONSTRAINTS
         #-----------------------
 
+        # Get pose bones
+
+        tibiaName = tibia.name
+        femurName = femur.name
+        ikTibiaName = ikTibia.name
+        ikFemurName = ikFemur.name
+        ptFemurName = ptFemur.name
+        controllerName = controller.name
+        kneeControllerName = kneeController.name
+        controllerTibiaName = controllerTibia.name
+        controllerFemurName = controllerFemur.name
+
         bpy.ops.object.mode_set(mode='POSE')
 
-        # Get pose bones
-        tibia = armatureObject.pose.bones[tibia.name]
-        femur = armatureObject.pose.bones[femur.name]
-        ikTibia = armatureObject.pose.bones[ikTibia.name]
-        ikFemur = armatureObject.pose.bones[ikFemur.name]
-        ptFemur = armatureObject.pose.bones[ptFemur.name]
-        controller = armatureObject.pose.bones[controller.name]
-        kneeController = armatureObject.pose.bones[kneeController.name]
-        controllerTibia = armatureObject.pose.bones[controllerTibia.name]
-        controllerFemur = armatureObject.pose.bones[controllerFemur.name]
+        
+        tibia = armatureObject.pose.bones[ tibiaName]
+        femur = armatureObject.pose.bones[ femurName ]
+        ikTibia = armatureObject.pose.bones[ ikTibiaName ]
+        ikFemur = armatureObject.pose.bones[ ikFemurName ]
+        ptFemur = armatureObject.pose.bones[ ptFemurName ]
+        controller = armatureObject.pose.bones[ controllerName ]
+        kneeController = armatureObject.pose.bones[ kneeControllerName ]
+        controllerTibia = armatureObject.pose.bones[ controllerTibiaName ]
+        controllerFemur = armatureObject.pose.bones[ controllerFemurName ] 
 
         # EULER
 
@@ -400,7 +411,7 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
         bpy.context.object.data.layers[duik_prefs.layer_skin] = True
         bpy.context.object.data.layers[duik_prefs.layer_controllers] = True
 
-        self.report({'OPERATOR'},"IK/FK setup finished without error")
+        self.report({'INFO'},"IK/FK setup finished")
         self.Dublf.log("IK/FK setup finished without error",time_start)
 
         return {'FINISHED'}
@@ -445,7 +456,7 @@ class DUIK_OT_fk( bpy.types.Operator ):
         armatureData = bpy.types.Armature(armatureObject.data)
 
         if bone is None:
-            self.Dublf.showMessageBox( "Select the bone", "Select bone first")
+            self.report( {'ERROR'}, "No bone selected")
             self.Dublf.log( 'Error: No bone selected' , time_start )
             bpy.ops.object.mode_set(mode='POSE')
             return {'CANCELLED'}
@@ -464,11 +475,14 @@ class DUIK_OT_fk( bpy.types.Operator ):
         # CONSTRAINTS
         #-----------------------
 
+        # Get pose bones
+        boneName = bone.name
+        controllerName = controller.name
+
         bpy.ops.object.mode_set(mode='POSE')
 
-        # Get pose bones
-        bone = DUBLF_rigging.getPoseBone( armatureObject, bone )
-        controller = DUBLF_rigging.getPoseBone( armatureObject, controller )
+        bone = armatureObject.pose.bones[ boneName ]
+        controller = armatureObject.pose.bones[ controllerName ]
 
         controller.rotation_mode = 'YXZ'
 
@@ -523,6 +537,7 @@ class DUIK_OT_fk( bpy.types.Operator ):
         bpy.context.object.data.layers[duik_prefs.layer_controllers] = True
 
         self.Dublf.log("FK Controller creation finished without error",time_start)
+        self.report({'INFO'}, 'Fk controller created')
         return {'FINISHED'}
 
 class DUIK_OT_bbone( bpy.types.Operator ):
@@ -591,16 +606,20 @@ class DUIK_OT_bbone( bpy.types.Operator ):
         # CONSTRAINTS
         #-----------------------
 
-        bpy.ops.object.mode_set(mode='POSE')
-
         # Get segments
-
         segments = bone.bbone_segments
 
         # Get pose bones
-        bone = DUBLF_rigging.getPoseBone( armatureObject, bone )
-        startCtrl = DUBLF_rigging.getPoseBone( armatureObject, startCtrl )
-        endCtrl = DUBLF_rigging.getPoseBone( armatureObject, endCtrl )
+
+        boneName = bone.name
+        startCtrlName = startCtrl.name
+        endCtrlName = endCtrl.name
+
+        bpy.ops.object.mode_set(mode='POSE')
+
+        bone = armatureObject.pose.bones[ boneName ]
+        startCtrl = armatureObject.pose.bones[ startCtrlName ]
+        endCtrl = armatureObject.pose.bones[ endCtrlName ]
 
         # Add custom property to control influence
 
@@ -683,6 +702,7 @@ class DUIK_OT_bbone( bpy.types.Operator ):
         bpy.context.object.data.layers[duik_prefs.layer_controllers] = True
 
         self.Dublf.log("BBone control creation finished without error",time_start)
+        self.report({'INFO'}, "BBone control creation finished")
         return {'FINISHED'}
 
 class DUIK_OT_armature_display_as ( bpy.types.Operator ):

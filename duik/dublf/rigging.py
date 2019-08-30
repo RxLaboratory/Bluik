@@ -62,13 +62,6 @@ class DUBLF_rigging():
         return b
 
     @staticmethod
-    def getPoseBone( armature_object, editbone ):
-        for posebone in armature_object.pose.bones:
-            if posebone.bone.name == editbone.name:
-                return posebone
-        return None
-
-    @staticmethod
     def extrudeBone( armature_data, sourceBone , name = "", coef = 1.0 , parent = True , connected = True ):
         """Extrudes (and returns) an editbone.
         Its length equals the length of the source multiplied by coef."""
