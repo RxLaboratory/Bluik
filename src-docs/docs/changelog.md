@@ -4,24 +4,14 @@
 
 This is the list of what has changed since the first version of *Duik for Blender*.
 
-## 0.0.14
+## 0.0.16
 
 #### New
 
 - [Pie menu with animation tools](animation-tools.md).
-- Automatically [swap IK and FK](animation-tools.md).
-
-## 0.0.13
-
-#### New
-
 - Added a [Pie menu for the armature display options](tools.md).
-
-## 0.0.12
-
-#### New
-
 - Added a [Pie menu for the auto-rig](tools.md) tools.
+- Automatically [swap IK and FK](animation-tools.md).
 
 #### Bugfixes
 
