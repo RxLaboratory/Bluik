@@ -162,6 +162,7 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
 
         controllerTibia.rotation_mode = 'XYZ'
         controllerFemur.rotation_mode = 'XYZ'
+        controller.rotation_mode = 'XYZ'
 
         # Add Main IK
         ik = ikTibia.constraints.new('IK')
@@ -736,9 +737,11 @@ def ik2fk( context, ikCtrl, ik2, pole, fk2 ):
     # snap ik to fk tail
     ikMatrix = fk2.matrix.copy()
     ikMatrix.translation = fk2.tail
+    rotMatrix = mathutils.Euler( ikCtrl.rotation_euler, ikCtrl.rotation_mode ).to_matrix()
+    ikMatrix = ikMatrix @ rotMatrix.to_4x4()
     ikCtrl.matrix = ikMatrix
 
-    # align pole vectors   
+    # align pole vectors
     # we need to update the constraints to measure the angle
     depsgraph.update()
 
@@ -850,7 +853,6 @@ class DUIK_MT_animation_menu( bpy.types.Menu ):
     def draw( self, context ):
         layout = self.layout
         populateAnimationMenu(layout)
-
 
 class DUIK_MT_pie_menu ( bpy.types.Menu):
     bl_idname = "DUIK_MT_pie_menu"
