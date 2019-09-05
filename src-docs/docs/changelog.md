@@ -4,7 +4,13 @@
 
 This is the list of what has changed since the first version of *Duik for Blender*.
 
-## 0.0.16
+
+## 0.0.17
+
+#### Bugfixes
+
+- The [TexAnim](texanim.md) keyframes are now correctly updated when modifying the list of images if the list already has keyframes.
+- The [TexAnim](texanim.md) is now correctly updated when navigating the timeline with the keyboard shortcuts ( [->] and [<-] )
 
 #### New
 

@@ -38,6 +38,11 @@ class DUIK_TexAnimImage( bpy.types.PropertyGroup ):
     image: bpy.props.PointerProperty( type = bpy.types.Image )
     name: bpy.props.StringProperty( name="Image", default="Image")
 
+# TODO
+"""- en cas de suppression d'une image, j'enlève toutes les éventuelles clefs qui référencaient cette image
+- en cas d'ajout, pas de souci, vu quelles sont ajoutées tout à la fin (donc après l'index le plus grand possible)
+- en cas de déplacement dans la liste, je mets à jour toutes les clefs pour changer leur valeur pour qu'elles référencent toujours la meme image, meme si son index change"""
+
 class DUIK_OT_new_texanim_images( bpy.types.Operator ):
     """Adds a new image to the texanim"""
     bl_idname = "texanim.new_texanim_images"
@@ -92,7 +97,27 @@ class DUIK_OT_remove_texanim_image( bpy.types.Operator ):
 
     def execute(self, context):
         node = context.active_node
-        node.duik_texanim_images.remove(node.duik_texanim_current_index)
+        # remove all keyframes referencing this image
+        # and adjust values of other keyframes to continue referencing the right images
+        current_index = node.duik_texanim_current_index
+        action = bpy.context.material.node_tree.animation_data.action
+        if action is not None:
+            fcurves = action.fcurves
+            for curve in fcurves:
+                if curve.data_path == 'nodes[\"' + node.name + '\"].duik_texanim_current_index':
+                    keyframes = curve.keyframe_points
+                    i = len(keyframes) -1
+                    while i >= 0:
+                        keyframe = keyframes[i]
+                        val = keyframe.co[1]
+                        if val == current_index:
+                            keyframes.remove(keyframe)
+                        if val > current_index:
+                            keyframe.co[1] = val-1
+                        i = i-1
+
+        # remove this image
+        node.duik_texanim_images.remove(current_index)
         return {'FINISHED'}
 
 class DUIK_OT_texanim_image_move( bpy.types.Operator ):
@@ -112,15 +137,31 @@ class DUIK_OT_texanim_image_move( bpy.types.Operator ):
 
     def execute(self, context):
         node = context.active_node
-        active = node.duik_texanim_current_index
+        current_index = node.duik_texanim_current_index
         images = node.duik_texanim_images
 
-        if self.up and active > 0:
-            images.move(active, active-1)
-            node.duik_texanim_current_index = active-1
-        elif active < len(images) - 1:
-            images.move(active, active+1)
-            node.duik_texanim_current_index = active+1
+        if self.up and current_index <= 0: return {'CANCELLED'}
+        elif current_index >= len(images) - 1: return {'CANCELLED'}
+
+        action = bpy.context.material.node_tree.animation_data.action
+
+        new_index = 0
+        if self.up: new_index = current_index - 1
+        else: new_index = current_index + 1
+
+        # update keyframes values
+        if action is not None:
+            fcurves = action.fcurves
+            for curve in fcurves:
+                if curve.data_path == 'nodes[\"' + node.name + '\"].duik_texanim_current_index':
+                    keyframes = curve.keyframe_points
+                    for keyframe in keyframes:
+                        if keyframe.co[1] == new_index: keyframe.co[1] = current_index
+                        elif keyframe.co[1] == current_index: keyframe.co[1] = new_index
+
+        
+        images.move(current_index, new_index)
+        node.duik_texanim_current_index = new_index
 
         return {'FINISHED'}
 
@@ -282,7 +323,6 @@ class DUIK_PT_texanim_control( bpy.types.Panel ):
         if not (obj is None):
             for control in obj.duik_texanim_controls:
                 self.addList( layout, control )
-                
 
 # ===================================================
 # methods to update images on frame change and update
@@ -298,8 +338,9 @@ def update_image(node):
             index = numImages
         node.image = node.duik_texanim_images[index].image
 
-def update_current_image( self, context ):
-    update_image(self)
+def update_current_image( node, context ):
+    """Changes the image used in the Texture Image node"""
+    update_image(node)
 
 @persistent
 def update_image_handler( scene ):
@@ -345,7 +386,7 @@ def register():
         bpy.types.PoseBone.duik_texanim_controls = bpy.props.CollectionProperty( type = Duik_TexAnimControl )
 
     # Add handler
-    DUBLF_handlers.frame_change_pre_append( update_image_handler )
+    DUBLF_handlers.frame_change_post_append( update_image_handler )
 
 def unregister():
     # unregister
@@ -358,4 +399,4 @@ def unregister():
     del bpy.types.PoseBone.duik_texanim_controls
 
     # Remove handler
-    DUBLF_handlers.frame_change_pre_remove( update_image_handler )
+    DUBLF_handlers.frame_change_post_remove( update_image_handler )

@@ -19,18 +19,21 @@ The *Current image* property shows the number of the selected image and you can 
 
 You can use the *Copy control to active object* and *Remove control from active object* buttons to add or remove a copy of the list in the sidebar of the 3D View (N), when the active object is selected. This is a nice way to expose the list to make it more accessible for animation. **This list can be keyframed**.
 
+!!! tip
+    You can keep the active shader in the shader editor while selecting another object using the pin in the top bar.
+    ![](img/shader-editor-pin.png)
+
+
 ![Duik TexAnim Section](img/texanim-3dsidebar.png)
+
+!!! hint
+    Most of the time, when you use this list, you may want to set the keyframes interpolation to *constant* unless you want to display all the images between two keyframes, in case you can keep the interpolation to *linear*.
 
 !!! tip
     If the active object is a bone in *Pose* mode, the list is displayed only when this bone is selected, not the whole armature. Out of the *Pose* mode, the list is linked to the armature object and not any specific bone.
 
 !!! hint
     The list is actually linked to the node in the shader, not any object. This means the keyframes are shown by default in the *dope sheet* and *graph editor* only when the node is selected. Deselect the "*Only Selected*" option to see these keyframes even when the shader editor is closed, and use the filters (especially the *collection* filter) to better sort all the keyframes.
-
-!!! tip
-    You can keep the active shader in the shader editor while selecting another object using the pin in the top bar.
-    ![](img/shader-editor-pin.png)
-
 
 
 <sub>*Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script>*</sub>
