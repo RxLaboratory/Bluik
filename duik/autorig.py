@@ -925,6 +925,7 @@ class DUIK_MT_pie_menu_animation( bpy.types.Menu ):
         populateAnimationMenu(layout)
 
 def menu_func(self, context):
+    self.layout.separator()
     self.layout.menu("DUIK_MT_pose_menu")
     self.layout.menu("DUIK_MT_animation_menu")
 
