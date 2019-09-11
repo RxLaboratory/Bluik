@@ -244,6 +244,10 @@
 <p class="admonition-title">Hint</p>
 <p>The list is actually linked to the node in the shader, not any object. This means the keyframes are shown by default in the <em>dope sheet</em> and <em>graph editor</em> only when the node is selected. Deselect the &ldquo;<em>Only Selected</em>&rdquo; option to see these keyframes even when the shader editor is closed, and use the filters (especially the <em>collection</em> filter) to better sort all the keyframes.</p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When ungrouping a node group containing an image node, the original image node will continue to live in the node group, which is not removed from the scene. This means if  a control for a TexAnim has been added from this node group, the control will still be linked to the previous image node inside the node group, and not the new image node outside of it. Don&rsquo;t forget to remove the control <strong>before</strong> ungrouping, and adding it again after from the new image node outside of the group.</p>
+</div>
 <p><sub><em>Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script></em></sub></p>
               
             </div>

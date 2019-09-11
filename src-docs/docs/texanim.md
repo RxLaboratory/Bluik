@@ -35,5 +35,8 @@ You can use the *Copy control to active object* and *Remove control from active 
 !!! hint
     The list is actually linked to the node in the shader, not any object. This means the keyframes are shown by default in the *dope sheet* and *graph editor* only when the node is selected. Deselect the "*Only Selected*" option to see these keyframes even when the shader editor is closed, and use the filters (especially the *collection* filter) to better sort all the keyframes.
 
+!!! note
+    When ungrouping a node group containing an image node, the original image node will continue to live in the node group, which is not removed from the scene. This means if  a control for a TexAnim has been added from this node group, the control will still be linked to the previous image node inside the node group, and not the new image node outside of it. Don't forget to remove the control **before** ungrouping, and adding it again after from the new image node outside of the group.
+
 
 <sub>*Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script>*</sub>
