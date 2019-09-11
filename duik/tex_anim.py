@@ -28,9 +28,9 @@ from .dublf import (
     DUBLF_handlers,
     )
 
-class Duik_TexAnimControl( bpy.types.PropertyGroup ):
+class Duik_TexAnimControl( bpy.types.PropertyGroup ):       
     """A texanim control on an object or a pose_bone"""
-    material: bpy.props.PointerProperty( type = bpy.types.Material )
+    nodeTree: bpy.props.PointerProperty( type = bpy.types.ShaderNodeTree )
     node: bpy.props.StringProperty( )
 
 class DUIK_TexAnimImage( bpy.types.PropertyGroup ):
@@ -190,15 +190,27 @@ class DUIK_OT_texanim_add_control( bpy.types.Operator ):
         if obj is None:
             obj = context.active_object
         # Check if not already there 
-        material = bpy.context.material
         node = context.active_node
         for control in obj.duik_texanim_controls:
-            if material is control.material and node.name == control.node:
+            if node.id_data is control.nodeTree and node.name == control.node:
                 return {'FINISHED'}
 
         texanimControl = obj.duik_texanim_controls.add()
-        texanimControl.material = material
+        texanimControl.nodeTree = node.id_data
         texanimControl.node = node.name
+
+        # cleaning! remove any node not available anymore
+        # check if everything still exists
+        i = len(obj.duik_texanim_controls) - 1
+        while i >= 0:
+            control = obj.duik_texanim_controls[i]
+            nodeTree = control.nodeTree
+            try:
+                test = nodeTree.nodes[control.node]
+            except:
+                obj.duik_texanim_controls.remove(i)
+            i = i-1
+
         return {'FINISHED'}
 
 class DUIK_OT_texanim_remove_control( bpy.types.Operator ):
@@ -225,12 +237,16 @@ class DUIK_OT_texanim_remove_control( bpy.types.Operator ):
         if obj is None:
             obj = context.active_object
         # Check if already there 
-        material = bpy.context.material
         node = context.active_node
         i = len(obj.duik_texanim_controls) - 1
         while i >= 0:
             control = obj.duik_texanim_controls[i]
-            if material is control.material and node.name == control.node:
+            nodeTree = control.nodeTree
+            try:
+                test = nodeTree.nodes[control.node]
+            except:
+                obj.duik_texanim_controls.remove(i)
+            if node.id_data is nodeTree and node.name == control.node:
                 obj.duik_texanim_controls.remove(i)
             i = i-1
 
@@ -306,23 +322,33 @@ class DUIK_PT_texanim_control( bpy.types.Panel ):
         return numControls != 0
 
     def addList( self, layout, texanimControl ):
-        texanim = texanimControl.material.node_tree.nodes[texanimControl.node]
-        layout.label( text = texanim.duik_texanim_name + ":" )
-        layout.template_list("DUIK_UL_texanim", "", texanim , "duik_texanim_images", texanim , "duik_texanim_current_index" , rows = 3 )
+        # check if everything still exists
+        nodeTree = texanimControl.nodeTree
+        try:
+            texanim = nodeTree.nodes[texanimControl.node]
+            layout.label( text = texanim.duik_texanim_name + ":" )
+            layout.template_list("DUIK_UL_texanim", "", texanim , "duik_texanim_images", texanim , "duik_texanim_current_index" , rows = 3 )
+        except:
+            return False
+
+        return True
+
+    def addControls( self, obj, layout ):
+        if obj is None:
+            return
+        controls = obj.duik_texanim_controls
+        i = len( controls ) - 1
+        while i >= 0:
+            control = controls[i]
+            self.addList( layout, control )
+            i = i-1   
 
     def draw( self, context ):
         layout = self.layout
 
-        bone = context.active_pose_bone
-        obj = context.active_object
+        self.addControls( context.active_pose_bone, layout )
+        self.addControls( context.active_object, layout )
 
-        if not (bone is None):
-            for control in bone.duik_texanim_controls:
-                self.addList( layout, control )
-
-        if not (obj is None):
-            for control in obj.duik_texanim_controls:
-                self.addList( layout, control )
 
 # ===================================================
 # methods to update images on frame change and update
