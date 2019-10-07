@@ -28,7 +28,7 @@ from .dublf import (
     DUBLF_handlers,
     )
 
-class Duik_TexAnimControl( bpy.types.PropertyGroup ):       
+class Duik_TexAnimControl( bpy.types.PropertyGroup ):
     """A texanim control on an object or a pose_bone"""
     nodeTree: bpy.props.PointerProperty( type = bpy.types.ShaderNodeTree )
     node: bpy.props.StringProperty( )
@@ -37,11 +37,6 @@ class DUIK_TexAnimImage( bpy.types.PropertyGroup ):
     """One Image in the TexAnim"""
     image: bpy.props.PointerProperty( type = bpy.types.Image )
     name: bpy.props.StringProperty( name="Image", default="Image")
-
-# TODO
-"""- en cas de suppression d'une image, j'enlève toutes les éventuelles clefs qui référencaient cette image
-- en cas d'ajout, pas de souci, vu quelles sont ajoutées tout à la fin (donc après l'index le plus grand possible)
-- en cas de déplacement dans la liste, je mets à jour toutes les clefs pour changer leur valeur pour qu'elles référencent toujours la meme image, meme si son index change"""
 
 class DUIK_OT_new_texanim_images( bpy.types.Operator ):
     """Adds a new image to the texanim"""
@@ -349,7 +344,6 @@ class DUIK_PT_texanim_control( bpy.types.Panel ):
         self.addControls( context.active_pose_bone, layout )
         self.addControls( context.active_object, layout )
 
-
 # ===================================================
 # methods to update images on frame change and update
 # ===================================================
@@ -371,14 +365,16 @@ def update_current_image( node, context ):
 @persistent
 def update_image_handler( scene ):
     """Updates all TexAnim_images, as the update function does not work on playback"""
-
     # get all texanims in the scene
     for material in bpy.data.materials:
-        if not (material.node_tree is None):
+        if material.node_tree is not None:
             for node in material.node_tree.nodes:
                 if node.bl_idname == 'ShaderNodeTexImage':
                     update_image(node)
-
+    for nodeGroup in bpy.data.node_groups:
+        for node in nodeGroup.nodes:
+            if node.bl_idname == 'ShaderNodeTexImage':
+                update_image(node)
 classes = (
     Duik_TexAnimControl,
     DUIK_TexAnimImage,
