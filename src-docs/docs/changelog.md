@@ -4,11 +4,12 @@
 
 This is the list of what has changed since the first version of *Duik for Blender*.
 
-## 0.0.19
+## 0.0.20
 
 #### Bugfixes
 
 - The [TexAnim](texanim.md) now updates correctly the textures when are nested inside node groups.
+- Fixed textures which could not be moved or removed from [TexAnim](texanim.md) when it's nested inside node groups.
 
 ## 0.0.18
 
