@@ -95,8 +95,7 @@ class DUIK_OT_remove_texanim_image( bpy.types.Operator ):
         # remove all keyframes referencing this image
         # and adjust values of other keyframes to continue referencing the right images
         current_index = node.duik_texanim_current_index
-        action = bpy.context.material.node_tree.animation_data.action
-        if action is not None:
+        for action in bpy.data.actions:
             fcurves = action.fcurves
             for curve in fcurves:
                 if curve.data_path == 'nodes[\"' + node.name + '\"].duik_texanim_current_index':
@@ -138,14 +137,12 @@ class DUIK_OT_texanim_image_move( bpy.types.Operator ):
         if self.up and current_index <= 0: return {'CANCELLED'}
         elif current_index >= len(images) - 1: return {'CANCELLED'}
 
-        action = bpy.context.material.node_tree.animation_data.action
-
         new_index = 0
         if self.up: new_index = current_index - 1
         else: new_index = current_index + 1
 
         # update keyframes values
-        if action is not None:
+        for action in bpy.data.actions:
             fcurves = action.fcurves
             for curve in fcurves:
                 if curve.data_path == 'nodes[\"' + node.name + '\"].duik_texanim_current_index':
@@ -154,7 +151,6 @@ class DUIK_OT_texanim_image_move( bpy.types.Operator ):
                         if keyframe.co[1] == new_index: keyframe.co[1] = current_index
                         elif keyframe.co[1] == current_index: keyframe.co[1] = new_index
 
-        
         images.move(current_index, new_index)
         node.duik_texanim_current_index = new_index
 
