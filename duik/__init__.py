@@ -23,7 +23,7 @@ bl_info = {
     "blender": (2, 80, 0),
     "author": "Nicolas 'Duduf' Dufresne",
     "location": "Armature properties, Pose Menu, View3d sidebar (N), Shader Editor sidebar (N).",
-    "version": (0,0,20),
+    "version": (0,0,21),
     "description": "Advanced yet easy to use rigging tools.",
     "wiki_url": "https://duik-blender-docs.rainboxlab.org/",
 }

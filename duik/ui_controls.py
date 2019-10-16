@@ -385,8 +385,6 @@ class DUIK_PT_controls_ui( bpy.types.Panel ):
                 elif ui_control.control_type == 'PROPERTY':
                     if (ui_control.target_rna != '' and not (ui_control.target is None)):
                         target = DuBLF_rna.get_bpy_struct(ui_control.target, ui_control.target_rna)
-                        print( target[0] )
-                        print( target[1] )
                         if not (target is None):
                             current_layout.prop( target[0], target[1] , text = ui_control.name , slider = ui_control.slider, toggle = ui_control.toggle )
 
