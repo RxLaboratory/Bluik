@@ -751,6 +751,37 @@ class DUIK_OT_show_hide_metadata ( bpy.types.Operator ):
 
         return {'FINISHED'}
 
+class DUIK_OT_parent_apply_inverse( bpy.types.Operator ):
+    """Applies the inverse parent transformations
+    to the actual transformations of the object"""
+    bl_idname = "object.parent_apply_inverse"
+    bl_label = "Apply Inverse"
+    bl_options = {'REGISTER','UNDO'}
+
+    @classmethod
+    def poll (self, context):
+        if context.active_object is None: return False
+        return not context.active_object.parent == None
+
+    def execute( self, context ):
+        DUBLF_rigging.applyParentInverse(context.active_object)
+        return {'FINISHED'}
+
+class DUIK_OT_make_parent_apply_inverse( bpy.types.Operator ):
+    """Parents the selected objects to the active one, applying the inverse parent transformations
+    to the actual transformations of the object"""
+    bl_idname = "object.make_parent_apply_inverse"
+    bl_label = "Make Parent (Apply Inverse)"
+    bl_options = {'REGISTER','UNDO'}
+
+    def execute( self, context ):
+        bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
+        bpy.ops.object.parent_set()
+        parent = context.active_object
+        for obj in context.selected_objects:
+            DUBLF_rigging.applyParentInverse(obj)
+        return {'FINISHED'}
+
 def ik2fk( context, ikCtrl, ik2, pole, fk2 ):
     depsgraph = context.evaluated_depsgraph_get()
 
@@ -929,6 +960,13 @@ def menu_func(self, context):
     self.layout.menu("DUIK_MT_pose_menu")
     self.layout.menu("DUIK_MT_animation_menu")
 
+def parent_menu_func(self, context):
+    self.layout.separator()
+    self.layout.operator("object.make_parent_apply_inverse")
+
+def parent_button(self, context):
+    self.layout.operator("object.parent_apply_inverse")
+
 classes = (
     DUIK_ikfk_prop,
     DUIK_OT_ikfk,
@@ -937,6 +975,8 @@ classes = (
     DUIK_OT_armature_display_as,
     DUIK_OT_show_hide_metadata,
     DUIK_OT_swap_ikfk,
+    DUIK_OT_parent_apply_inverse,
+    DUIK_OT_make_parent_apply_inverse,
     DUIK_MT_pose_menu,
     DUIK_MT_animation_menu,
     DUIK_MT_pie_menu,
@@ -955,8 +995,10 @@ def register():
     if not hasattr( bpy.types.PoseBone, 'duik_ikfk' ):
         bpy.types.PoseBone.duik_ikfk = bpy.props.PointerProperty ( type = DUIK_ikfk_prop )
 
-    # menus
+    # menus and panels
     bpy.types.VIEW3D_MT_pose.append(menu_func)
+    bpy.types.VIEW3D_MT_object_parent.append(parent_menu_func)
+    bpy.types.OBJECT_PT_relations.append(parent_button)
 
     # keymaps
     kc = bpy.context.window_manager.keyconfigs.addon
@@ -979,6 +1021,8 @@ def unregister():
 
     # menu
     bpy.types.VIEW3D_MT_pose.remove(menu_func)
+    bpy.types.VIEW3D_MT_object_parent.remove(parent_menu_func)
+    bpy.types.OBJECT_PT_relations.remove(parent_button)
 
     # keymaps
     for km, kmi in addon_keymaps:
