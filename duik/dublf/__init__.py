@@ -134,7 +134,6 @@ class DuBLF_rna():
             # "prop" -> [("prop","")]
             # "prop[12]" -> [("prop","12")]
             matches = re.findall( r'(\w+)?(?:\[([^\]]+)\])?' , path )
-            print(matches)
             for i,match in enumerate(matches) :
                 attr = match[0]
                 arr = match[1]
