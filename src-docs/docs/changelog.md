@@ -4,6 +4,12 @@
 
 This is the list of what has changed since the first version of *Duik for Blender*.
 
+## 0.2.0
+
+#### New
+
+- [Camera Linker](objects.md)
+
 ## 0.0.20
 
 #### Bugfixes
@@ -27,8 +33,8 @@ This is the list of what has changed since the first version of *Duik for Blende
 #### New
 
 - [Pie menu with animation tools](animation-tools.md).
-- Added a [Pie menu for the armature display options](tools.md).
-- Added a [Pie menu for the auto-rig](tools.md) tools.
+- Added a [Pie menu for the armature display options](armatures.md).
+- Added a [Pie menu for the auto-rig](armatures.md) tools.
 - Automatically [swap IK and FK](animation-tools.md).
 
 #### Bugfixes

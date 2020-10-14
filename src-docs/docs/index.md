@@ -1,6 +1,6 @@
 Welcome to the official *Duik for Blender* documentation.
 
-![cel anim panel](img\logo-blender.png)
+![](img/logo-blender.png)
 
 *Duik* is originally a comprehensive animation and rigging toolset for __*Adobe After Effects*__.  
 It all began as a joke... __When will *Duik* be available for *Blender*?__

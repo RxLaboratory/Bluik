@@ -3,13 +3,13 @@ This is a way to expose and group the controls needed by the animator using the 
 
 [TOC]
 
-![](img\ui-controls-intro.png)
+![](img/ui-controls-intro.png)
 
 # Create and manage controls
 
 In the `Armature data` tab of the `Properties` panel, you'll find the *Duik UI Contrlos* Panel.
 
-![](img\ui-controls-config.png)
+![](img/ui-controls-config.png)
 
 Select a bone and click on the `+` button to create a UI Control.
 
@@ -21,7 +21,7 @@ This control will be automatically added on the selected bone. You can add and r
 
 These *Duik Controls* are available in the *sidebar* of the *3D View*, in the `Item` tab.
 
-![](img\ui-controls.png)
+![](img/ui-controls.png)
 
 Duik will try to build a nice layout, depending on the names of the controls, and their order in the list. Each time an *.R* suffix followed by an *.L* suffix is found, the two controls are showed in a row.
 
@@ -34,7 +34,7 @@ Duik will try to build a nice layout, depending on the names of the controls, an
 
 # Configuration of the controls
 
-![](img\ui-controls-config-details.png)
+![](img/ui-controls-config-details.png)
 
 There are three types of UI Controls:
 

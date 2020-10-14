@@ -9,8 +9,6 @@
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="../img/favicon.ico">
   <title>Introduction - Duik for Blender Documentation</title>
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
-
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -20,8 +18,8 @@
   <script>
     // Current page data
     var mkdocs_page_name = "Introduction";
-    var mkdocs_page_input_path = "tools.md";
-    var mkdocs_page_url = "/tools/";
+    var mkdocs_page_input_path = "objects.md";
+    var mkdocs_page_url = "/objects/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
@@ -67,20 +65,11 @@
           
             <li class="toctree-l1">
 		
-    <span class="caption-text">(Auto)-Rigging</span>
+    <span class="caption-text">Armatures</span>
     <ul class="subnav">
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">Introduction</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#menus">Menus</a></li>
-    
-
-    <li class="toctree-l3"><a href="#controls-bones-and-layers">Controls, bones and layers</a></li>
-    
-
-    </ul>
+    <a class="" href="../armatures/">Introduction</a>
                 </li>
                 <li class="">
                     
@@ -93,6 +82,29 @@
                 <li class="">
                     
     <a class="" href="../bbone/">BBone Controllers</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Objects</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">Introduction</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#object-level-tools">Object level tools</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#camera-linker">Camera Linker</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -194,14 +206,14 @@
     
       
         
-          <li>(Auto)-Rigging &raquo;</li>
+          <li>Objects &raquo;</li>
         
       
     
     <li>Introduction</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/Rainbox-dev/DuBLF_Duik/edit/master/src-docs/docs/tools.md"
+        <a href="https://github.com/Rainbox-dev/DuBLF_Duik/edit/master/src-docs/docs/objects.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -211,25 +223,21 @@
           <div role="main">
             <div class="section">
               
-                <div class="toc">
+                <h1 id="object-level-tools">Object level tools</h1>
+<div class="toc">
 <ul>
-<li><a href="#menus">Menus</a></li>
-<li><a href="#controls-bones-and-layers">Controls, bones and layers</a></li>
+<li><a href="#object-level-tools">Object level tools</a><ul>
+<li><a href="#camera-linker">Camera Linker</a></li>
+</ul>
+</li>
 </ul>
 </div>
-<h2 id="menus">Menus</h2>
-<p>With an <em>Armature</em> in <em>Pose</em> mode, you&rsquo;ll find a <em>Duik</em> section in the <code>Pose</code> menu of the <em>3D View</em>, which contains the rigging tools available.</p>
-<p><img alt="Pose menu" src="../img/pose-menu.png" /></p>
-<p>These rigging tools are also quickly accessible through a <em>pie menu</em>, using the <code>[SHIFT] + [R]</code> keyboard shortcut in the <em>3D View</em> in <em>Pose</em> mode.</p>
-<p><img alt="Pie menu" src="../img/pie_menu_autorig.png" /></p>
-<p>Another pie menu accessible with the <code>[SHIFT] + [V]</code> keyboard shortcut allows you to change the display of the active armature very quickly.</p>
-<p><img alt="Armature display Pie menu" src="../img/armature_display_pie_menu.png" /></p>
-<h2 id="controls-bones-and-layers">Controls, bones and layers</h2>
-<p>All these tools are bits of auto-rigs, and create nice controls.</p>
-<p>The controllers are bones which are named with the &ldquo;.Ctrl&rdquo; suffix to make them easy to find.</p>
-<p>These tools create some other bones needed for the rig, but the ones you&rsquo;ll need to influence your mesh objects are always the ones you&rsquo;ve created yourself before using these tools, located by default in the 8th layer.</p>
-<p><img alt="Layers" src="../img/default-layers.png" /></p>
-<p>You can change the layers used by Duik in the <a href="../settings/">settings</a> of the add-on.</p>
+<p>Some tools are available for all objects.</p>
+<h2 id="camera-linker">Camera Linker</h2>
+<p><img alt="" src="../img/cam_linker.png" /></p>
+<p>With the camera linker, you can keep a list of properties which have to target the current scene camera, even if this camera changes. For example, you can link the target of a <em>Track To</em> constraint to the scene camera.</p>
+<p>All the properties listed there will automatically be updated if the current scene camera changes.</p>
+<p>Just copy the path of the property and paste it in the camera linker list.</p>
 <p><sub><em>Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script></em></sub></p>
               
             </div>
@@ -238,10 +246,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../ikfk/" class="btn btn-neutral float-right" title="IK/FK Rig">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../texanim/" class="btn btn-neutral float-right" title="The TexAnim module">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../settings/" class="btn btn-neutral" title="Settings"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../bbone/" class="btn btn-neutral" title="BBone Controllers"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -271,10 +279,10 @@
           <a href="https://github.com/Rainbox-dev/DuBLF_Duik/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../settings/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../bbone/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../ikfk/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../texanim/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

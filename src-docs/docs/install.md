@@ -28,7 +28,7 @@ Click on the `Install...` button, then navigate to the folder where you have dow
 
 The add-on will appear in the list below, and needs to be activated. If you do not find it, it is located in the *Rigging* category.
 
-![Settings](img\settings.png)
+![Settings](img/settings.png)
 
 Once activated, a few options are available. See the [Settings](settings.md) section for more information.
 

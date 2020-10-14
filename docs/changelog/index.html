@@ -9,8 +9,6 @@
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="../img/favicon.ico">
   <title>Changelog - Duik for Blender Documentation</title>
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
-
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -67,11 +65,11 @@
           
             <li class="toctree-l1">
 		
-    <span class="caption-text">(Auto)-Rigging</span>
+    <span class="caption-text">Armatures</span>
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../tools/">Introduction</a>
+    <a class="" href="../armatures/">Introduction</a>
                 </li>
                 <li class="">
                     
@@ -84,6 +82,17 @@
                 <li class="">
                     
     <a class="" href="../bbone/">BBone Controllers</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Objects</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../objects/">Introduction</a>
                 </li>
     </ul>
 	    </li>
@@ -141,6 +150,8 @@
     <li class="toctree-l2"><a href="#changelog">Changelog</a></li>
     
         <ul>
+        
+            <li><a class="toctree-l3" href="#020">0.2.0</a></li>
         
             <li><a class="toctree-l3" href="#0020">0.0.20</a></li>
         
@@ -230,6 +241,10 @@
 <div class="toc">
 <ul>
 <li><a href="#changelog">Changelog</a><ul>
+<li><a href="#020">0.2.0</a><ul>
+<li><a href="#new">New</a></li>
+</ul>
+</li>
 <li><a href="#0020">0.0.20</a><ul>
 <li><a href="#bugfixes">Bugfixes</a></li>
 </ul>
@@ -240,17 +255,17 @@
 </li>
 <li><a href="#0017">0.0.17</a><ul>
 <li><a href="#bugfixes_2">Bugfixes</a></li>
-<li><a href="#new">New</a></li>
+<li><a href="#new_1">New</a></li>
 <li><a href="#bugfixes_3">Bugfixes</a></li>
 </ul>
 </li>
 <li><a href="#006">0.0.6</a><ul>
-<li><a href="#new_1">New</a></li>
+<li><a href="#new_2">New</a></li>
 <li><a href="#bugfixes_4">Bugfixes</a></li>
 </ul>
 </li>
 <li><a href="#005">0.0.5</a><ul>
-<li><a href="#new_2">New</a></li>
+<li><a href="#new_3">New</a></li>
 </ul>
 </li>
 <li><a href="#004">0.0.4</a><ul>
@@ -262,7 +277,7 @@
 </ul>
 </li>
 <li><a href="#002">0.0.2</a><ul>
-<li><a href="#new_3">New</a></li>
+<li><a href="#new_4">New</a></li>
 <li><a href="#improvements_1">Improvements</a></li>
 <li><a href="#fixes">Fixes</a></li>
 </ul>
@@ -273,6 +288,11 @@
 </ul>
 </div>
 <p>This is the list of what has changed since the first version of <em>Duik for Blender</em>.</p>
+<h2 id="020">0.2.0</h2>
+<h4 id="new">New</h4>
+<ul>
+<li><a href="../objects/">Camera Linker</a></li>
+</ul>
 <h2 id="0020">0.0.20</h2>
 <h4 id="bugfixes">Bugfixes</h4>
 <ul>
@@ -290,11 +310,11 @@
 <li>The <a href="../texanim/">TexAnim</a> keyframes are now correctly updated when modifying the list of images if the list already has keyframes.</li>
 <li>The <a href="../texanim/">TexAnim</a> is now correctly updated when navigating the timeline with the keyboard shortcuts ( [-&gt;] and [&lt;-] )</li>
 </ul>
-<h4 id="new">New</h4>
+<h4 id="new_1">New</h4>
 <ul>
 <li><a href="../animation-tools/">Pie menu with animation tools</a>.</li>
-<li>Added a <a href="../tools/">Pie menu for the armature display options</a>.</li>
-<li>Added a <a href="../tools/">Pie menu for the auto-rig</a> tools.</li>
+<li>Added a <a href="../armatures/">Pie menu for the armature display options</a>.</li>
+<li>Added a <a href="../armatures/">Pie menu for the auto-rig</a> tools.</li>
 <li>Automatically <a href="../animation-tools/">swap IK and FK</a>.</li>
 </ul>
 <h4 id="bugfixes_3">Bugfixes</h4>
@@ -302,7 +322,7 @@
 <li>Lots of bugfixes</li>
 </ul>
 <h2 id="006">0.0.6</h2>
-<h4 id="new_1">New</h4>
+<h4 id="new_2">New</h4>
 <ul>
 <li>Added the <a href="../texanim/">Texture Animation</a> tool.</li>
 </ul>
@@ -311,7 +331,7 @@
 <li>Lots of bugfixes</li>
 </ul>
 <h2 id="005">0.0.5</h2>
-<h4 id="new_2">New</h4>
+<h4 id="new_3">New</h4>
 <ul>
 <li>Added a <a href="../ui-layers/">ui for bone layers</a> in the 3D View</li>
 </ul>
@@ -328,7 +348,7 @@
 <li><a href="../fk/"><em>FK Controller</em></a>: the property for the &ldquo;follow&rdquo; option has been moved to the bone instead of the controller. Use a Duik <a href="../ui-controls/"><em>UI Control</em></a> to expose it on the controller if needed. Also, the way to rig the FK controller has been simplified a lot.</li>
 </ul>
 <h2 id="002">0.0.2</h2>
-<h4 id="new_3">New</h4>
+<h4 id="new_4">New</h4>
 <ul>
 <li><a href="../ui-controls/"><em>UI Controls</em></a></li>
 </ul>

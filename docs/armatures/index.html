@@ -8,7 +8,7 @@
   
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>The TexAnim module - Duik for Blender Documentation</title>
+  <title>Introduction - Duik for Blender Documentation</title>
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "The TexAnim module";
-    var mkdocs_page_input_path = "texanim.md";
-    var mkdocs_page_url = "/texanim/";
+    var mkdocs_page_name = "Introduction";
+    var mkdocs_page_input_path = "armatures.md";
+    var mkdocs_page_url = "/armatures/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
@@ -67,9 +67,23 @@
 		
     <span class="caption-text">Armatures</span>
     <ul class="subnav">
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../armatures/">Introduction</a>
+    <a class="current" href="./">Introduction</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#armature-tools">Armature tools</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#menus">Menus</a></li>
+        
+            <li><a class="toctree-l4" href="#controls-bones-and-layers">Controls, bones and layers</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
                 <li class="">
                     
@@ -101,12 +115,9 @@
 		
     <span class="caption-text">Texture Animation</span>
     <ul class="subnav">
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">The TexAnim module</a>
-    <ul class="subnav">
-            
-    </ul>
+    <a class="" href="../texanim/">The TexAnim module</a>
                 </li>
     </ul>
 	    </li>
@@ -197,14 +208,14 @@
     
       
         
-          <li>Texture Animation &raquo;</li>
+          <li>Armatures &raquo;</li>
         
       
     
-    <li>The TexAnim module</li>
+    <li>Introduction</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/Rainbox-dev/DuBLF_Duik/edit/master/src-docs/docs/texanim.md"
+        <a href="https://github.com/Rainbox-dev/DuBLF_Duik/edit/master/src-docs/docs/armatures.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -214,49 +225,29 @@
           <div role="main">
             <div class="section">
               
-                <p>Duik includes a tool to make it easy to <em>animate</em> textures, i.e. to be able to change and keyframe which texture is displayed. For example, this can be used to switch different mouth shapes for a very cartoonish render where mouthes of the characters are drawn in 2D in another software. It&rsquo;s also an easy way to animate a frame sequence with a precise control, not just playing it at a specific frame rate.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This could be achieved using actual frame sequences and a scripted driver on the <em>offset</em> property, but this tool fixes three issues:  </p>
+                <h1 id="armature-tools">Armature tools</h1>
+<div class="toc">
 <ul>
-<li>
-<p>With frame sequences, each frame is not kept in memory, and this has a bad impact on the playback performance in the viewport when textures are displayed. This is not an issue with the way Duik handles this <em>Texture Animation</em> tool.</p>
-</li>
-<li>
-<p>On the contrary to frame sequences, you can animate the actual list of images, and not a number corresponding to a frame. This is a lot easier to select specific images/frames instead of having to remember their numbers.</p>
-</li>
-<li>
-<p>This <em>Texture Animation</em> tool allows you to select individual images, which may not be numbered, named the same way or even not stored in the same folder.</p>
+<li><a href="#armature-tools">Armature tools</a><ul>
+<li><a href="#menus">Menus</a></li>
+<li><a href="#controls-bones-and-layers">Controls, bones and layers</a></li>
+</ul>
 </li>
 </ul>
 </div>
-<p>The <em>Duik TexAnim</em> section appears in the sidebar of the Shader Editor when an <em>Image Texture</em> node is selected.</p>
-<p><img alt="Duik TexAnim Section" src="../img/texanim-shadereditor.png" /></p>
-<p>There you can use the <em>+</em> and <em>-</em> buttons to add and remove images, and change their order.</p>
-<p>The <em>Current image</em> property shows the number of the selected image and you can choose a name for this specific <em>TexAnim</em>.</p>
-<p>You can use the <em>Copy control to active object</em> and <em>Remove control from active object</em> buttons to add or remove a copy of the list in the sidebar of the 3D View (N), when the active object is selected. This is a nice way to expose the list to make it more accessible for animation. <strong>This list can be keyframed</strong>.</p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>You can keep the active shader in the shader editor while selecting another object using the pin in the top bar.
-<img alt="" src="../img/shader-editor-pin.png" /></p>
-</div>
-<p><img alt="Duik TexAnim Section" src="../img/texanim-3dsidebar.png" /></p>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p>Most of the time, when you use this list, you may want to set the keyframes interpolation to <em>constant</em> unless you want to display all the images between two keyframes, in case you can keep the interpolation to <em>linear</em>.</p>
-</div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>If the active object is a bone in <em>Pose</em> mode, the list is displayed only when this bone is selected, not the whole armature. Out of the <em>Pose</em> mode, the list is linked to the armature object and not any specific bone.</p>
-</div>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p>The list is actually linked to the node in the shader, not any object. This means the keyframes are shown by default in the <em>dope sheet</em> and <em>graph editor</em> only when the node is selected. Deselect the &ldquo;<em>Only Selected</em>&rdquo; option to see these keyframes even when the shader editor is closed, and use the filters (especially the <em>collection</em> filter) to better sort all the keyframes.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>When ungrouping a node group containing an image node, the original image node will continue to live in the node group, which is not removed from the scene. This means if  a control for a TexAnim has been added from this node group, the control will still be linked to the previous image node inside the node group, and not the new image node outside of it. Don&rsquo;t forget to remove the control <strong>before</strong> ungrouping, and adding it again after from the new image node outside of the group.</p>
-</div>
+<h2 id="menus">Menus</h2>
+<p>With an <em>Armature</em> in <em>Pose</em> mode, you&rsquo;ll find a <em>Duik</em> section in the <code>Pose</code> menu of the <em>3D View</em>, which contains the rigging tools available.</p>
+<p><img alt="Pose menu" src="../img/pose-menu.png" /></p>
+<p>These rigging tools are also quickly accessible through a <em>pie menu</em>, using the <code>[SHIFT] + [R]</code> keyboard shortcut in the <em>3D View</em> in <em>Pose</em> mode.</p>
+<p><img alt="Pie menu" src="../img/pie_menu_autorig.png" /></p>
+<p>Another pie menu accessible with the <code>[SHIFT] + [V]</code> keyboard shortcut allows you to change the display of the active armature very quickly.</p>
+<p><img alt="Armature display Pie menu" src="../img/armature_display_pie_menu.png" /></p>
+<h2 id="controls-bones-and-layers">Controls, bones and layers</h2>
+<p>All these tools are bits of auto-rigs, and create nice controls.</p>
+<p>The controllers are bones which are named with the &ldquo;.Ctrl&rdquo; suffix to make them easy to find.</p>
+<p>These tools create some other bones needed for the rig, but the ones you&rsquo;ll need to influence your mesh objects are always the ones you&rsquo;ve created yourself before using these tools, located by default in the 8th layer.</p>
+<p><img alt="Layers" src="../img/default-layers.png" /></p>
+<p>You can change the layers used by Duik in the <a href="../settings/">settings</a> of the add-on.</p>
 <p><sub><em>Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script></em></sub></p>
               
             </div>
@@ -265,10 +256,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../ui/" class="btn btn-neutral float-right" title="Introduction">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../ikfk/" class="btn btn-neutral float-right" title="IK/FK Rig">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../objects/" class="btn btn-neutral" title="Introduction"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../settings/" class="btn btn-neutral" title="Settings"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -298,10 +289,10 @@
           <a href="https://github.com/Rainbox-dev/DuBLF_Duik/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../objects/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../settings/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../ui/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../ikfk/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
