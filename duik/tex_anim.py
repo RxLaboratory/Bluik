@@ -371,6 +371,7 @@ def update_image_handler( scene ):
         for node in nodeGroup.nodes:
             if node.bl_idname == 'ShaderNodeTexImage':
                 update_image(node)
+
 classes = (
     Duik_TexAnimControl,
     DUIK_TexAnimImage,
