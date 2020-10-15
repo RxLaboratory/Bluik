@@ -141,7 +141,7 @@ def register():
     if not hasattr( bpy.types.Armature, 'duik_rig_type' ):
         rig_types = [
             ('custom', "Custom", "A custom character.", '', 0),
-            ('biped', "Biped", "Character with two arms, two legs and a tail.", '', 1),
+            ('biped', "Biped", "Character with two arms and two legs.", '', 1),
             ('quadruped', "Quadruped", "Character with two arms, two legs and a tail.", '', 2),
         ]
         bpy.types.Armature.duik_rig_type = bpy.props.EnumProperty (
