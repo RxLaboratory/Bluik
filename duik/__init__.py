@@ -139,10 +139,12 @@ def register():
 
     # add options to armature
     if not hasattr( bpy.types.Armature, 'duik_rig_type' ):
-        rig_types = [
+        rig_types = rig_types = [
             ('custom', "Custom", "A custom character.", '', 0),
-            ('biped', "Biped", "Character with two arms and two legs.", '', 1),
+            ('biped', "Biped", "Character with two arms, two legs and a tail.", '', 1),
             ('quadruped', "Quadruped", "Character with two arms, two legs and a tail.", '', 2),
+            ('insect', "Insect", "Character with six legs.", '', 3),
+            ('arachnid', "Arachnid", "Character with eight legs.", '', 4),
         ]
         bpy.types.Armature.duik_rig_type = bpy.props.EnumProperty (
             items=rig_types,
