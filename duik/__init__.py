@@ -22,8 +22,8 @@ bl_info = {
     "category": "Rigging",
     "blender": (2, 80, 0),
     "author": "Nicolas 'Duduf' Dufresne",
-    "location": "Armature properties, Pose Menu, View3d sidebar (N), Shader Editor sidebar (N).",
-    "version": (0,2,0),
+    "location": "Armature properties, Pose Menu, View3d sidebar (N), Shader Editor sidebar (N), File > Import.",
+    "version": (0,3,0),
     "description": "Advanced yet easy to use rigging tools.",
     "wiki_url": "https://duik-blender-docs.rainboxlab.org/",
 }
@@ -38,6 +38,8 @@ from . import (
     ui_layers,
     tex_anim,
     dublf,
+    layers,
+    oca,
 )
 
 class DUIK_Preferences( bpy.types.AddonPreferences ):
@@ -114,15 +116,15 @@ classes = (
 )
 
 def register():
-
-    # TODO in dev&debug only
+    importlib.reload(dublf)
     importlib.reload(autorig)
     importlib.reload(selection_sets)
     importlib.reload(cam_linker)
     importlib.reload(ui_controls)
     importlib.reload(ui_layers)
     importlib.reload(tex_anim)
-    importlib.reload(dublf)
+    importlib.reload(layers)
+    importlib.reload(oca)
 
     # register
     for cls in classes:
@@ -136,6 +138,8 @@ def register():
     ui_controls.register()
     ui_layers.register()
     tex_anim.register()
+    layers.register()
+    oca.register()
 
     # add options to armature
     if not hasattr( bpy.types.Armature, 'duik_rig_type' ):
@@ -175,12 +179,16 @@ def unregister():
     del bpy.types.Armature.duik_layers_arm_ikfk
 
     # modules
+    dublf.unregister()
     autorig.unregister()
     selection_sets.unregister()
     ui_controls.unregister()
     ui_layers.unregister()
     tex_anim.unregister()
     cam_linker.unregister()
+    layers.unregister()
+    oca.unregister()
+
 
 if __name__ == "__main__":
     register()
