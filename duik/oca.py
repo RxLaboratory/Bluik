@@ -71,6 +71,9 @@ class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
         description="Axis to use for the depth"
         )
 
+    # Utils
+    current_index=0 # the index of the layer being imported
+
     def draw(self, context):
         layout = self.layout
         box = layout.box()
@@ -123,26 +126,41 @@ class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
         print("Importing OCA: " + ocaDocument['name'])
 
         # Setup 2D Scene
-        scene_collection = layers.create_scene(context, ocaDocument['name'], ocaDocument['width'], ocaDocument['height'], ocaDocument['backgroundColor'], self.depth_axis, self.scene_type)
-
+        scene_collection = layers.create_scene(context, ocaDocument['name'], ocaDocument['width'], ocaDocument['height'], ocaDocument['backgroundColor'], self.depth_axis, self.scene_type, self.shader)
+        self.current_index = self.current_index + 1
+        
         # Layers
         for layer in ocaDocument['layers']:
             self.import_layer(context, layer, scene_collection)
+
+        # Move to the beginning of the time line to update texanim
+        bpy.context.scene.frame_set(1)
+        bpy.context.scene.frame_set(0)
 
     def import_layer(self, context, ocaLayer, containing_group):
         layer_type = ocaLayer['type']
         
         if layer_type == 'grouplayer':
-            group = layers.create_group(context, ocaLayer['name'], containing_group)
+            group = layers.create_group(context, ocaLayer['name'], containing_group, ocaLayer['width'], ocaLayer['height'])
+            layers.set_layer_index( group.duik_group.root, self.current_index, containing_group)
             for layer in ocaLayer['childLayers']:
                 self.import_layer(context, layer, group)
-            x = ocaLayer['position'][0]/100 
-            y = ocaLayer['position'][1]/100 
-            layers.translate_group_to( group, (x,y))
+            layers.set_group_position( group, ocaLayer['position'])
             group.hide_viewport = not ocaLayer['visible']
             group.hide_render = ocaLayer['reference']
         elif layer_type == 'paintlayer':
-            pass
+            layer = layers.create_layer(context, ocaLayer['name'], ocaLayer['width'], ocaLayer['height'], containing_group)
+            layers.set_layer_position( containing_group, layer, ocaLayer['position'] )
+            layers.set_layer_index( layer, self.current_index, containing_group)
+            self.update_frame_paths(ocaLayer['frames'])
+            framesShader = layers.create_layer_shader(ocaLayer['name'], ocaLayer['frames'], ocaLayer['animated'], self.shader)
+            layer.data.materials.append(framesShader)
+            self.current_index = self.current_index + 1
+
+    def update_frame_paths( self, frames ):
+        for f in frames:
+            f['fileName'] = self.directory + '/' + f['fileName']
+
 
 def import_oca_button(self, context):
     self.layout.operator(IMPORT_OCA_OT_import.bl_idname, text="OCA as Duik 2D Scene", icon='ONIONSKIN_ON')

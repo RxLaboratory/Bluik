@@ -20,8 +20,10 @@
 # 2D Layers for Blender
 
 import bpy # pylint: disable=import-error
+from bpy_extras.image_utils import load_image  # pylint: disable=import-error
 from .dublf import (DuBLF_collections, DuBLF_materials)
 from .dublf.rigging import DUBLF_rigging
+from . import tex_anim
 from math import pi
 
 class DUIK_SceneSettings( bpy.types.PropertyGroup ):
@@ -70,9 +72,7 @@ class DUIK_GroupSettings( bpy.types.PropertyGroup ):
 
 def create_scene(context, scene_name="", width=1920, height=1080, background_color = [0.0,0.0,0.0,0.0], depth_axis = 'Z', scene_type = '2D', shader='SHADELESS'):
     # The scene
-    scene = create_group(context, 'Duik.' + scene_name)
-    scene.duik_group.width = width
-    scene.duik_group.height = height
+    scene = create_group(context, 'Duik.' + scene_name, None, width, height)
     scene.duik_group.containing_scene = scene
     scene.duik_scene.background_color = background_color
     scene.duik_scene.depth_axis = depth_axis
@@ -81,17 +81,12 @@ def create_scene(context, scene_name="", width=1920, height=1080, background_col
     # Move the root to the top left corner
     root = scene.duik_group.root
     root.name = scene_name + '.Root'
-    x = width/200
-    y = height/200
     if depth_axis == 'Z':
-        root.location = (x, -y, 0.0)
         root.rotation_euler.y = pi
     elif depth_axis == 'Y':
-        root.location = (x, 0.0, y)
         root.rotation_euler.z = pi
         root.rotation_euler.y = pi/2
     else:
-        root.location = (0.0, -x, y)
         root.rotation_euler.z = pi
         root.rotation_euler.x = pi
 
@@ -101,6 +96,7 @@ def create_scene(context, scene_name="", width=1920, height=1080, background_col
     cam.name = scene_name + '.Camera'
     if scene_type == '2D':
         cam.data.type = 'ORTHO'
+        bpy.context.object.data.ortho_scale = width/100
     if depth_axis == 'Z':
         cam.location = (0.0, 0.0, width/50)
     elif depth_axis == 'Y':
@@ -118,15 +114,13 @@ def create_scene(context, scene_name="", width=1920, height=1080, background_col
     # The background
     if background_color[3] > 0:
         colorShader = DuBLF_materials.create_color_material( background_color, 'OCA.Background Color', shader )
-        bgLayer = create_layer(context, 'Background', width, height, depth_axis)
+        bgLayer = create_layer(context, 'Background', width, height, scene)
         bgLayer.data.materials.append(colorShader)
-        DuBLF_collections.move_to_collection(scene, bgLayer)
-        DUBLF_rigging.set_object_parent(context, (bgLayer,), scene.duik_group.root)
         scene.duik_scene.background = bgLayer
 
     return scene
 
-def create_group(context, group_name="", containing_group=None):
+def create_group(context, group_name="", containing_group=None, width = 1920, height = 1080):
     """Creates a group of layers"""
     collection = DuBLF_collections.add_collection_to_scene(context.scene, group_name)
     group_name = group_name.split('.')[-1]
@@ -138,6 +132,8 @@ def create_group(context, group_name="", containing_group=None):
     # Duik infos
     collection.duik_type = 'GROUP'
     collection.duik_group.root = empty
+    collection.duik_group.width = width
+    collection.duik_group.height = height
     # Move to containing group
     if containing_group is not None:
         move_to_group( containing_group, collection)
@@ -149,7 +145,11 @@ def move_to_group( containing_group, group):
     group.duik_group.containing_scene = containing_group.duik_group.containing_scene
     group.duik_group.root.parent = containing_group.duik_group.root
 
-def create_layer(context, name, width, height, depth_axis='Z'):
+def move_layer_to_group( context, containing_group, layer ):
+    DuBLF_collections.move_to_collection(containing_group, layer)
+    DUBLF_rigging.set_object_parent(context, (layer,), containing_group.duik_group.root)
+
+def create_layer(context, name, width, height, containing_group=None):
     """Creates a plane used as a layer in a 2D scene"""
     width = width/100
     height = height/100
@@ -163,27 +163,101 @@ def create_layer(context, name, width, height, depth_axis='Z'):
     plane.dimensions = width, height, 0.0
     plane.data.name = plane.name = name
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+
+    if containing_group is not None:
+        depth_axis = containing_group.duik_group.containing_scene.duik_scene.depth_axis
+        # Location and rotation
+        if depth_axis == 'Y':
+            plane.rotation_euler.x = -pi/2
+            plane.rotation_euler.y = pi
+        elif depth_axis == 'X':
+            plane.rotation_euler.x = -pi/2
+            plane.rotation_euler.z = -pi/2
+            plane.rotation_euler.y = pi
+        # Add to group
+        move_layer_to_group( context, containing_group, plane )
     
-    if depth_axis == 'Y':
-        plane.rotation_euler.x = -pi/2
-    elif depth_axis == 'X':
-        plane.rotation_euler.x = -pi/2
-        plane.rotation_euler.z = -pi/2
-        
     return plane
 
 # 2D Transformations
 
-def translate_group_to( group, location ):
+def convert_position_from_px( position, containing_group=None):
+    """Converts pixel coordinates to actual location in Blender"""
+    fac = .01
+    x = position[0]
+    y = position[1]
+    if containing_group is not None:
+        x = x - containing_group.duik_group.width / 2
+        y = y - containing_group.duik_group.height / 2
+    x = x*fac
+    y = -y*fac
+    result = [x,y]
+    if len(position) == 3:
+        result.append(position[2]*fac)
+    return result
+
+def set_group_position( group, position ):
     """Translates a group, converting the 2D location to the actual 3D location depenting on the depth axis"""
     root = group.duik_group.root
-    depth_axis = group.duik_group.containing_scene.duik_scene.depth_axis
+    location = convert_position_from_px( position, group )
+    set_location( group, root, location )
+
+def set_layer_position( group, layer, position ):
+    """Translates an object, converting the 2D location to the actual 3D location depenting on the depth axis"""
+    location = convert_position_from_px(position, group)
+    set_location( group, layer, location)
+
+def set_layer_index( layer, index, containing_group ):
+    """Sets the depth coordinate of a layer according to its index"""
+    depth_axis = get_depth_axis( containing_group )
+    fac = .01
+    index = index*fac
     if depth_axis == 'Z':
-        root.location = (location[0], location[1], root.location[2])
+        layer.location = (layer.location[0], layer.location[1], index)
     elif depth_axis == 'Y':
-        root.location = (location[1], root.location[1], location[0])
+        layer.location = (layer.location[0], index, layer.location[2])
     else:
-        root.location = (root.location[0], location[0], location[1])
+        layer.location = (index, layer.location[1], layer.location[2])
+
+def set_location( group, obj, location ):
+    """Sets the 3D location, adapting it to the depth axis"""
+    depth_axis = get_depth_axis( group )
+    if depth_axis == 'Z':
+        obj.location = (location[0], location[1], obj.location[2])
+    elif depth_axis == 'Y':
+        obj.location = (location[0], obj.location[1], location[1])
+    else:
+        obj.location = (obj.location[0], location[0], location[1])
+
+# Shaders
+
+def create_layer_shader( layer_name, frames, animated = False, shader='SHADELESS'):
+    """Creates an image shader"""
+    mat, texture_node = DuBLF_materials.create_image_material(frames[0]['fileName'], layer_name, shader)
+    if animated:
+        # create curve for anim
+        anim_data = mat.node_tree.animation_data_create()
+        action = bpy.data.actions.new('OCA.' + layer_name )
+        anim_data.action = action
+        curve = action.fcurves.new( 'nodes[\"' + texture_node.name + '\"].duik_texanim_current_index' )
+        for frame in frames:
+            if frame['fileName'] == "" or  frame['name'] == "_blank":
+                im = DuBLF_materials.get_blank_image()
+            else:
+                im = load_image(frame['fileName'], check_existing=True, force_reload=True)
+                im.name = frame['name']
+            texAnimIm = texture_node.duik_texanim_images.add()
+            texAnimIm.image = im
+            texAnimIm.name = im.name
+            key = curve.keyframe_points.insert( frame['frameNumber'], len(texture_node.duik_texanim_images) -1 )
+            key.interpolation = 'CONSTANT'
+    return mat
+
+# Utils
+
+def get_depth_axis( group ):
+    """Returns the depth axis of the group, according to its containing scene"""
+    return group.duik_group.containing_scene.duik_scene.depth_axis
 
 classes = (
     DUIK_GroupSettings,
