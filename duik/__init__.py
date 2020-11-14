@@ -18,13 +18,13 @@
 # <pep8 compliant>
 
 bl_info = {
-    "name": "Rx Experimental Rigging & Anim Tools",
+    "name": "Rainbox Experimental Rigging & Anim Tools",
     "category": "Rigging",
     "blender": (2, 80, 0),
     "author": "Nicolas 'Duduf' Dufresne",
-    "location": "Armature properties, Pose Menu, View3d sidebar (N), Shader Editor sidebar (N), File > Import.",
-    "version": (0,3,0),
-    "description": "Advanced yet easy to use rigging tools.",
+    "location": "Armature properties Pose Menu, View3d sidebar (N), Shader Editor sidebar (N), File > Import.",
+    "version": (0,4,0),
+    "description": "Experimental tools from Rainbox Lab. which may end up in Duik for Blender.",
     "wiki_url": "https://duik-blender-docs.rainboxlab.org/",
 }
 
