@@ -71,8 +71,23 @@ class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
         description="Axis to use for the depth"
         )
 
-    # Utils
-    current_index=0 # the index of the layer being imported
+    update_timeline: bpy.props.BoolProperty(
+        name="Update frame range",
+        description="Updates the frame range of the scene according to the imported animation",
+        default=False
+    )
+
+    update_resolution: bpy.props.BoolProperty(
+        name="Update render resolution",
+        description="Updates the output resolution according to the size of the imported document",
+        default=False
+    )
+
+    update_fps: bpy.props.BoolProperty(
+        name="Update frame rate",
+        description="Updates the frames per second of the scene according to the imported animation",
+        default=True
+    )
 
     def draw(self, context):
         layout = self.layout
@@ -89,6 +104,12 @@ class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
         box.label(text="Material Settings:", icon='MATERIAL')
         row = box.row()
         row.prop(self, 'shader', expand=True)
+        # Scene options
+        box = layout.box()
+        box.label(text="Scene and Render Settings:", icon='SCENE')
+        box.prop(self, 'update_timeline')
+        box.prop(self, 'update_fps')
+        box.prop(self, 'update_resolution')
 
     def invoke(self, context, event):
         engine = context.scene.render.engine
@@ -125,37 +146,49 @@ class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
 
         print("Importing OCA: " + ocaDocument['name'])
 
+        # Scene and render settings
+        if self.update_timeline:
+            context.scene.frame_start = ocaDocument['startTime']
+            context.scene.frame_end = ocaDocument['endTime']
+        if self.update_fps:
+            context.scene.render.fps = ocaDocument['frameRate']
+        if self.update_resolution:
+            context.scene.render.resolution_x = ocaDocument['width']
+            context.scene.render.resolution_y = ocaDocument['height']
+        
         # Setup 2D Scene
-        scene_collection = layers.create_scene(context, ocaDocument['name'], ocaDocument['width'], ocaDocument['height'], ocaDocument['backgroundColor'], self.depth_axis, self.scene_type, self.shader)
-        self.current_index = self.current_index + 1
+        scene = layers.create_scene(context, ocaDocument['name'], ocaDocument['width'], ocaDocument['height'], ocaDocument['backgroundColor'], self.depth_axis, self.scene_type, self.shader)
         
         # Layers
-        for layer in ocaDocument['layers']:
-            self.import_layer(context, layer, scene_collection)
+        for i, layer in enumerate(ocaDocument['layers']):
+            self.import_layer(context, layer, scene, i)
 
         # Move to the beginning of the time line to update texanim
         bpy.context.scene.frame_set(1)
         bpy.context.scene.frame_set(0)
 
-    def import_layer(self, context, ocaLayer, containing_group):
+        print("OCA correctly imported")
+
+    def import_layer(self, context, ocaLayer, containing_group, index=0):
         layer_type = ocaLayer['type']
         
         if layer_type == 'grouplayer':
+            print('Importing OCA Group: ' + ocaLayer['name'])
             group = layers.create_group(context, ocaLayer['name'], containing_group, ocaLayer['width'], ocaLayer['height'])
-            layers.set_layer_index( group.duik_group.root, self.current_index, containing_group)
-            for layer in ocaLayer['childLayers']:
-                self.import_layer(context, layer, group)
-            layers.set_group_position( group, ocaLayer['position'])
-            group.hide_viewport = not ocaLayer['visible']
-            group.hide_render = ocaLayer['reference']
+            group.duik_layer.index = index
+            for i,layer in enumerate(ocaLayer['childLayers']):
+                self.import_layer(context, layer, group, i)
+            layers.set_layer_position( group, ocaLayer['position'])
+            group.duik_layer.default_collection.hide_viewport = not ocaLayer['visible']
+            group.duik_layer.default_collection.hide_render = ocaLayer['reference']
         elif layer_type == 'paintlayer':
+            print('Importing OCA Layer: ' + ocaLayer['name'])
             layer = layers.create_layer(context, ocaLayer['name'], ocaLayer['width'], ocaLayer['height'], containing_group)
-            layers.set_layer_position( containing_group, layer, ocaLayer['position'] )
-            layers.set_layer_index( layer, self.current_index, containing_group)
+            layers.set_layer_position( layer, ocaLayer['position'] )
+            layer.duik_layer.index = index
             self.update_frame_paths(ocaLayer['frames'])
             framesShader = layers.create_layer_shader(ocaLayer['name'], ocaLayer['frames'], ocaLayer['animated'], self.shader)
             layer.data.materials.append(framesShader)
-            self.current_index = self.current_index + 1
 
     def update_frame_paths( self, frames ):
         for f in frames:

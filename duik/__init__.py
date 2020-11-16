@@ -150,15 +150,18 @@ classes = (
 
 def register_experimental_2d():
     # Reload
+    importlib.reload(tex_anim)
     importlib.reload(layers)
     importlib.reload(oca)
     # Modules
+    tex_anim.register()
     layers.register()
     oca.register()
 
 def unregister_experimental_2d():
-    layers.unregister()
     oca.unregister()
+    layers.unregister()
+    tex_anim.unregister()
     
 def unregister_experimental_rig():
     # Attributes
@@ -170,7 +173,6 @@ def unregister_experimental_rig():
     selection_sets.unregister()
     ui_controls.unregister()
     ui_layers.unregister()
-    tex_anim.unregister()
     cam_linker.unregister()
 
 def register_experimental_rig():
