@@ -178,6 +178,11 @@ def create_layer(context, name, width, height, containing_group=None):
 
     return plane
 
+def is_layer( obj ):
+    if obj is None: return False
+    scene = get_containing_scene( obj )
+    return scene is not None
+
 # 2D Transformations
 
 def convert_position_from_px( position, containing_group=None):
@@ -361,10 +366,7 @@ class DUIK_PT_layer_controls( bpy.types.Panel ):
 
     @classmethod
     def poll(self, context):
-        obj = context.active_object
-        if obj is None: return False
-        scene = get_containing_scene( obj )
-        return scene is not None
+        return is_layer(context.active_object)
 
     def draw(self, context):
         layout = self.layout
