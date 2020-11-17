@@ -24,6 +24,7 @@ import idprop # pylint: disable=import-error
 from .dublf import (
     DUBLF_utils,
     DuBLF_rna,
+    DuBLF_bl_ui,
 )
 from .dublf.rigging import (
     DUBLF_rigging,
@@ -141,6 +142,9 @@ class DUIK_OT_new_ui_control( bpy.types.Operator ):
         else:
             ui_control.set_bones( [] )
 
+        # Let's redraw
+        DuBLF_bl_ui.redraw()
+
         return {'FINISHED'}
 
 class DUIK_OT_duplicate_ui_control( bpy.types.Operator ):
@@ -178,6 +182,9 @@ class DUIK_OT_duplicate_ui_control( bpy.types.Operator ):
 
         ui_controls.move(len(ui_controls) -1, armature.active_ui_control+1)
 
+        # Let's redraw
+        DuBLF_bl_ui.redraw()
+
         return {'FINISHED'}
 
 class DUIK_OT_remove_ui_control( bpy.types.Operator ):
@@ -194,6 +201,9 @@ class DUIK_OT_remove_ui_control( bpy.types.Operator ):
         ui_controls = context.active_object.data.ui_controls
         active_control = context.active_object.data.active_ui_control
         ui_controls.remove(active_control)
+
+        # Let's redraw
+        DuBLF_bl_ui.redraw()
 
         return {'FINISHED'}
 
@@ -229,6 +239,9 @@ class DUIK_OT_ui_control_move( bpy.types.Operator ):
             ui_controls.move(active, active+1)
             armature.active_ui_control = active+1
 
+        # Let's redraw
+        DuBLF_bl_ui.redraw()
+
         return {'FINISHED'}
 
 class DUIK_OT_assign_ui_control_to_bone( bpy.types.Operator ):
@@ -251,6 +264,9 @@ class DUIK_OT_assign_ui_control_to_bone( bpy.types.Operator ):
                 bones.append(b.name)
             ui_control.add_bones(bones)
 
+        # Let's redraw
+        DuBLF_bl_ui.redraw()
+
         return {'FINISHED'}
 
 class DUIK_OT_remove_ui_control_from_bone( bpy.types.Operator ):
@@ -272,6 +288,10 @@ class DUIK_OT_remove_ui_control_from_bone( bpy.types.Operator ):
             for b in context.selected_pose_bones:
                 bones.append(b.name)
             ui_control.remove_bones(bones)
+        
+        # Let's redraw
+        DuBLF_bl_ui.redraw()
+        
         return {'FINISHED'}
 
 class DUIK_UL_ui_controls( bpy.types.UIList ):

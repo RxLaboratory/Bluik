@@ -168,9 +168,8 @@ class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
             self.import_layer(context, layer, scene)
             self.current_index = self.current_index + 1
 
-        # Move to the beginning of the time line to update texanim
-        bpy.context.scene.frame_set(1)
-        bpy.context.scene.frame_set(0)
+        # Let's redraw
+        DuBLF_bl_ui.redraw()
 
         print("OCA correctly imported")
 
