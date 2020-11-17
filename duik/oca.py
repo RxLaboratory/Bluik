@@ -26,7 +26,6 @@ from bpy_extras.object_utils import ( # pylint: disable=import-error
 from .dublf import (oca, DuBLF_collections, DuBLF_materials)
 from . import layers
 
-
 class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
     """Imports Open Cel Animation as mesh planes"""
     bl_idname = "import_oca.import"
@@ -88,6 +87,9 @@ class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
         description="Updates the frames per second of the scene according to the imported animation",
         default=True
     )
+
+    # Utils
+    current_index = 0
 
     def draw(self, context):
         layout = self.layout
@@ -160,8 +162,10 @@ class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
         scene = layers.create_scene(context, ocaDocument['name'], ocaDocument['width'], ocaDocument['height'], ocaDocument['backgroundColor'], self.depth_axis, self.scene_type, self.shader)
         
         # Layers
-        for i, layer in enumerate(ocaDocument['layers']):
-            self.import_layer(context, layer, scene, i)
+        self.current_index = 0
+        for layer in ocaDocument['layers']:
+            self.import_layer(context, layer, scene)
+            self.current_index = self.current_index + 1
 
         # Move to the beginning of the time line to update texanim
         bpy.context.scene.frame_set(1)
@@ -169,15 +173,15 @@ class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
 
         print("OCA correctly imported")
 
-    def import_layer(self, context, ocaLayer, containing_group, index=0):
+    def import_layer(self, context, ocaLayer, containing_group):
         layer_type = ocaLayer['type']
         
         if layer_type == 'grouplayer':
             print('Importing OCA Group: ' + ocaLayer['name'])
             group = layers.create_group(context, ocaLayer['name'], containing_group, ocaLayer['width'], ocaLayer['height'])
-            group.duik_layer.index = index
-            for i,layer in enumerate(ocaLayer['childLayers']):
-                self.import_layer(context, layer, group, i)
+            group.duik_layer.depth = -self.current_index*.1
+            for layer in ocaLayer['childLayers']:
+                self.import_layer(context, layer, group)
             layers.set_layer_position( group, ocaLayer['position'])
             group.duik_layer.default_collection.hide_viewport = not ocaLayer['visible']
             group.duik_layer.default_collection.hide_render = ocaLayer['reference']
@@ -185,15 +189,15 @@ class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
             print('Importing OCA Layer: ' + ocaLayer['name'])
             layer = layers.create_layer(context, ocaLayer['name'], ocaLayer['width'], ocaLayer['height'], containing_group)
             layers.set_layer_position( layer, ocaLayer['position'] )
-            layer.duik_layer.index = index
+            layer.duik_layer.depth = -self.current_index*.1
             self.update_frame_paths(ocaLayer['frames'])
             framesShader = layers.create_layer_shader(ocaLayer['name'], ocaLayer['frames'], ocaLayer['animated'], self.shader)
             layer.data.materials.append(framesShader)
+            self.current_index = self.current_index + 1
 
     def update_frame_paths( self, frames ):
         for f in frames:
             f['fileName'] = self.directory + '/' + f['fileName']
-
 
 def import_oca_button(self, context):
     self.layout.operator(IMPORT_OCA_OT_import.bl_idname, text="OCA as Duik 2D Scene", icon='ONIONSKIN_ON')

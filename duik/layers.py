@@ -21,6 +21,8 @@
 
 import bpy # pylint: disable=import-error
 from bpy_extras.image_utils import load_image  # pylint: disable=import-error
+from bpy_extras.object_utils import world_to_camera_view # pylint: disable=import-error
+from mathutils import Matrix # pylint: disable=import-error
 from .dublf import (DuBLF_collections, DuBLF_materials)
 from .dublf.rigging import DUBLF_rigging
 from . import tex_anim
@@ -44,6 +46,9 @@ def create_group(context, group_name="", containing_group=None, width = 1920, he
     group.duik_type = 'SCENE'
     # Move to containing group
     move_to_group( group, containing_group )
+    group.lock_rotation[0] = True
+    group.lock_rotation[1] = True
+    group.lock_rotation[2] = True
     return group
 
 def create_scene(context, scene_name="", width=1920, height=1080, background_color = [0.0,0.0,0.0,0.0], depth_axis = 2, scene_type = '2D', shader='SHADELESS'):
@@ -191,10 +196,23 @@ def convert_position_from_px( position, containing_group=None):
     return result
 
 def set_layer_position( layer, position ):
-    """Translates an object, converting the 2D location to the actual 3D location depenting on the depth axis"""
+    """Translates an object, converting the 2D position to the actual 3D location depenting on the depth axis"""
     group = get_containing_group( layer )
     location = convert_position_from_px(position, group)
     set_layer_location( layer, location)
+
+def get_layer_camera_position( self ):
+    layer = self.id_data
+    scene = get_containing_scene(layer)
+    if scene is None: return (0.0,0.0)
+    cam = scene.duik_scene.camera
+    if cam is None: return  (0.0,0.0)
+    bl_scene = bpy.context.scene
+    coord = layer.matrix_world.decompose()[0]
+    position = world_to_camera_view( bl_scene, cam, coord )
+    position[0] = position[0]*100-scene.duik_layer.width/2
+    position[1] = position[1]*100-scene.duik_layer.height/2
+    return (position[0], position[1])
 
 def set_layer_location( layer, location ):
     """Sets the 3D location, adapting it to the depth axis"""
@@ -208,7 +226,7 @@ def set_layer_location( layer, location ):
 
 # Layer Indices (depth location)
 
-def get_layer_depth_axis( self ):
+def get_depth_axis( self ):
     layer = self.id_data
     scene = get_containing_scene(layer)
     if scene is not None:
@@ -218,84 +236,35 @@ def get_layer_depth_axis( self ):
         if axis == 'Z': return 2
     return 2
 
-def set_layer_index( self, index ):
-    """Sets the depth coordinate of a layer according to its index
-    And updates other layers locations"""
-
-    fac = -.1
-
+def get_depth( self ):
     layer = self.id_data
+    if layer.duik_type == 'SCENE': return 0.0
+    scene = get_containing_scene(layer)
+    if scene is None: return 0.0
+    cam = scene.duik_scene.camera
+    if cam is None: return 0.0
+    bl_scene = bpy.context.scene
+    coord = layer.matrix_world.decompose()[0]
+    position = world_to_camera_view( bl_scene, cam, coord )
+    scene_coord = scene.matrix_world.decompose()[0]
+    scene_position = world_to_camera_view( bl_scene, cam, scene_coord )
+    return position[2] - scene_position[2]
 
-    group = get_containing_group( layer )
-
-    # clamp between 0 and depth
-    if index < 0: index = 0
-    maxIndex = get_group_depth(group)
-    if index >= maxIndex: index = maxIndex
-
-    current_index = self.index
-    if current_index == index: return
-
-    # If it's a group, offset others by its size
-    offset = 1
-    if layer.duik_type == 'GROUP':
-        offset = get_group_depth(layer)
-
-    for l in group.children:
-        if l.name is layer.name:
-            set_layer_depth_location(layer, index*fac)
-            continue
-        i = l.duik_layer.index
-        if index < current_index:
-            if i >= index:
-                set_layer_depth_location(l, (i+offset)*fac)
-            continue
-        if index > current_index:
-            if i <= index:
-                set_layer_depth_location(l, (i-offset)*fac)
-
-def get_group_depth(group):
-    """A recursive method to get the depth of a group"""
-    if group is None: return 0
-    index = -1
-    for child in group.children:
-        i = child.duik_layer.index
-        if i > index:
-            index = i
-            if child.duik_type == 'GROUP':
-                index = index + get_group_depth(child)        
-    return index+1
-
-def set_layer_depth_location(layer, index):
-    group = get_containing_group( layer )
-    if group is None: return
-        
-    depth_axis = layer.duik_layer.depth_axis
-
-    if depth_axis == 'Z':
-        layer.location = (layer.location[0], layer.location[1], index)
-    elif depth_axis == 'Y':
-        layer.location = (layer.location[0], index, layer.location[2])
-    else:
-        layer.location = (index, layer.location[1], layer.location[2])
-        
-def get_layer_index( self ):
-    """Gets the index of a layer according to its depth coordinate"""
+def set_depth(self, depth):
     layer = self.id_data
-
-    group = get_containing_group( layer )
-    if group is None: return 0
-
-    depth_axis = self.depth_axis
-    fac = -.1
-
-    if depth_axis == 'Z':
-        return int(layer.location[2]/fac)
-    if depth_axis == 'Y':
-        return int(layer.location[1]/fac)
-
-    return int(layer.location[0]/fac)
-
+    scene = get_containing_scene(layer)
+    if scene is None: return 
+    cam = scene.duik_scene.camera
+    if cam is None: return
+    matrix_cam = layer.matrix_world @ cam.matrix_world
+    # translate
+    offset_depth = self.depth - depth
+    print(offset_depth)
+    matrix_cam = matrix_cam @ Matrix.Translation((0.0,0.0,offset_depth))
+    invert_cam = cam.matrix_world.copy()
+    invert_cam.invert()
+    layer.matrix_world = matrix_cam @ invert_cam
+        
 # Shaders
 
 def create_layer_shader( layer_name, frames, animated = False, shader='SHADELESS'):
@@ -359,28 +328,54 @@ class DUIK_SceneSettings( bpy.types.PropertyGroup ):
     background: bpy.props.PointerProperty( type=bpy.types.Object )
 
 class DUIK_LayerSettings ( bpy.types.PropertyGroup ):
-    index: bpy.props.IntProperty(
-            name="Layer index",
-            description='The index of this layer in the Duik 2D Scene',
-            default=0,
-            min=0,
-            set=set_layer_index,
-            get=get_layer_index
-            )
+    camera_position: bpy.props.FloatVectorProperty(
+        name="2D Position",
+        description="The camera coordinates of the layer",
+        get=get_layer_camera_position
+    )
+    depth:bpy.props.FloatProperty(
+        name="Depth",
+        description="The layer depth coordinate",
+        subtype='DISTANCE',
+        unit='LENGTH',
+        get=get_depth,
+        set=set_depth
+    )
     depth_axis: bpy.props.EnumProperty(
         name="Depth axis",
         items=axis,
         default=2,
         description="Axis to use for the depth",
-        get=get_layer_depth_axis
-        )
+        get=get_depth_axis
+    )
     width: bpy.props.IntProperty(default=1920, subtype='PIXEL')
     height: bpy.props.IntProperty(default=1080, subtype='PIXEL')
     default_collection: bpy.props.PointerProperty( type=bpy.types.Collection )
 
+class DUIK_PT_layer_controls( bpy.types.Panel ):
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_label = "Duik Layer Controls"
+    bl_idname = "DUIK_PT_layer_controls"
+    bl_category = 'Item'
+
+    @classmethod
+    def poll(self, context):
+        obj = context.active_object
+        if obj is None: return False
+        scene = get_containing_scene( obj )
+        return scene is not None
+
+    def draw(self, context):
+        layout = self.layout
+        obj = context.active_object
+        duik = obj.duik_layer
+        layout.prop( duik, 'depth')
+
 classes = (
     DUIK_LayerSettings,
     DUIK_SceneSettings,
+    DUIK_PT_layer_controls,
 )
 
 def register():
