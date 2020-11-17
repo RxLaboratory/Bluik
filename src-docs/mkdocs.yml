@@ -34,8 +34,6 @@ nav:
         - BBone Controllers: bbone.md
     - Objects:
         - Introduction: objects.md
-    - Texture Animation:
-        - The TexAnim module: texanim.md
     - UI Creation:
         - Introduction: ui.md
         - Selection Sets: selection-sets.md
@@ -43,6 +41,8 @@ nav:
         - Layers UI: ui-layers.md
     - Animation:
         - Animation tools: animation-tools.md
+    - Texture Animation:
+        - The TexAnim module: texanim.md
     - OCA:
         - Import OCA: oca.md
     - Changelog: changelog.md

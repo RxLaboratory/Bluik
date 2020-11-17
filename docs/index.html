@@ -53,15 +53,17 @@
     <a class="current" href=".">About</a>
     <ul class="subnav">
             
-    <li class="toctree-l2"><a href="#introduction">Introduction</a></li>
+    <li class="toctree-l2"><a href="#rxlab-experimental-tools">RxLab Experimental Tools</a></li>
     
         <ul>
         
-            <li><a class="toctree-l3" href="#3d">3D</a></li>
+            <li><a class="toctree-l3" href="#introduction">Introduction</a></li>
         
-            <li><a class="toctree-l3" href="#2d-cut-out">2D (Cut-out)</a></li>
+            <li><a class="toctree-l3" href="#contents">Contents</a></li>
         
-            <li><a class="toctree-l3" href="#plans">Plans</a></li>
+            <li><a class="toctree-l3" href="#duik">Duik</a></li>
+        
+            <li><a class="toctree-l3" href="#license">License</a></li>
         
         </ul>
     
@@ -115,17 +117,6 @@
           
             <li class="toctree-l1">
 		
-    <span class="caption-text">Texture Animation</span>
-    <ul class="subnav">
-                <li class="">
-                    
-    <a class="" href="texanim/">The TexAnim module</a>
-                </li>
-    </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
     <span class="caption-text">UI Creation</span>
     <ul class="subnav">
                 <li class="">
@@ -154,6 +145,28 @@
                 <li class="">
                     
     <a class="" href="animation-tools/">Animation tools</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Texture Animation</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="texanim/">The TexAnim module</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">OCA</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="oca/">Import OCA</a>
                 </li>
     </ul>
 	    </li>
@@ -223,30 +236,62 @@
           <div role="main">
             <div class="section">
               
-                <p>Welcome to the official <em>Duik for Blender</em> documentation.</p>
+                <h1 id="rxlab-experimental-tools">RxLab Experimental Tools</h1>
+<p>Welcome to the Rainbox Experimental tools add-on for Blender documentation.</p>
+<div class="toc">
+<ul>
+<li><a href="#rxlab-experimental-tools">RxLab Experimental Tools</a><ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#contents">Contents</a></li>
+<li><a href="#duik">Duik</a></li>
+<li><a href="#license">License</a><ul>
+<li><a href="#software">Software</a></li>
+<li><a href="#this-documentation">This Documentation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="introduction">Introduction</h2>
+<p>This add-on contains some different tools being developped at <a href="https://rainboxlab.org"><em>Rainbox Laboratory</em></a>, which will ultimately be included in <em>Duik</em> for <em>Blender</em>.</p>
+<p><em>Duik</em> for <em>Blender</em> will be a rigging and animation add-on, focused in 2D and cut-out rigging, but also adding nice 3D rigging tools. It is called <em>Duik</em> like the rigging and animation tool set for <em>After Effects</em> also developped by <em>Rainbox Lab.</em> and it is going to share the same rigging process.</p>
+<p>All these tools are still experimental as we&rsquo;re very early in the development process, but we&rsquo;ve deciced to make the add-on available anyway so you can already test and use some of these tools, as the development will probably be a long process.</p>
+<h2 id="contents">Contents</h2>
+<ul>
+<li><a href="install/">Installation</a></li>
+<li><a href="settings/">Settings</a></li>
+<li>Rigging<ul>
+<li><a href="armatures/">Armature Tools</a></li>
+<li><a href="objects/">Object tools</a></li>
+<li><a href="ui/">UI controls</a></li>
+</ul>
+</li>
+<li><a href="animation-tools/">Animation tools</a></li>
+<li>2D Animation<ul>
+<li><a href="texanim/">Texture Animation</a></li>
+<li><a href="oca/">OCA Import</a></li>
+</ul>
+</li>
+<li><a href="changelog/">Changelog</a></li>
+</ul>
+<h2 id="duik">Duik</h2>
 <p><img alt="" src="img/logo-blender.png" /></p>
 <p><em>Duik</em> is originally a comprehensive animation and rigging toolset for <strong><em>Adobe After Effects</em></strong>.<br />
 It all began as a joke&hellip; <strong>When will <em>Duik</em> be available for <em>Blender</em>?</strong></p>
 <p><em>Duik for Blender</em> aims to reproduce the rigging process developped in After Effects but in blender, with predefined Armatures and bones for limbs or complete characters and a comprehensive yet easy to animate auto-rig, along with some advanced rigging and animation tools for experts.</p>
-<p><strong>It is in an early phase of the development</strong>, but it may already be useful for 3D riggers.<br />
-Rigging is already very nice natively in <em>Blender</em>, but there are always some automations that can be done to make your process faster and easier.</p>
-<h1 id="introduction">Introduction</h1>
-<p>The first tools which have been developped are some bits of automations for creating nice controllers for very common techniques in 3D rigging, like animatable IK/FK (with bend and stretch controls), FK controllers, intuitive bendy-bone controllers, and some nice UI components&hellip;</p>
-<p>The goal is to add more low-level tools first, and then build upon them to have nice auto-rigs and animation tools, both for 3D and 2D cut-out animation.</p>
-<h2 id="3d">3D</h2>
-<p>Blender already includes an auto-rig add-on called <em>Rigify</em> but it&rsquo;s a tool which only rigs complete characters at once. Sometimes it&rsquo;s better to be able to customize a lot the character and to have some low-level tools too, more modular. Another issue with rigify is that the rigs it creates may be too complex for animators, as there are a lot of unnecessary controls, or at least controls which should be deactivated or hidden by default. This can be a big issue for animators; character rigs have to stay intuitive, easy-to-use and with as few main controls as possible, hiding less useful controls for details.</p>
-<p>Duik for Blender tries to address these issues by using a modular system, with low, mid and high-level tools. Low-level tools are more advanced and modular, as high-level tools are pretty standard auto-rigs for limbs or complete characters. The rigs created by Duik have all controls needed for a perfect animation (there are no compromise on usability), but always built with a priority on intuitivity and easiness (controls are sorted out based on their importance, there are no unnecessary control).</p>
-<p>For now, Duik for Blender only includes low-level tools for controllers creation, which will be used to build high-level auto-rigs.<br />
-The first goal for the upcoming versions of <em>Duik for Blender</em>, is to build robust, useful, and modular tools for advanced and professionnal riggers.<br />
-Another goal for future development of <em>Duik for Blender</em> is to make it easy to use for beginners with automatic tools and auto-rigs working the same way as <em>Duik for After Effects</em>, with the same process (Armature -&gt; Autorig -&gt; Details).</p>
-<h2 id="2d-cut-out">2D (Cut-out)</h2>
-<p>The other important goal for the development of <em>Duik for Blender</em> is to develop a way to quickly and easily rig cut-out characters, with or without deformations, exactly the same way as in <em>After Effects</em>. This would make the animation step with this style of animation really easier and quicker than in After Effects, thanks to the performance of <em>Blender</em>.</p>
-<p>Then, Duik could ease the process of exporting or rendering the character and its animation from <em>Blender</em> to import in After Effects for compositing.</p>
-<p>One could even imagine that characters could be rigged either in After Effects or in Blender, and animated in both, with Duik developped for both softwares.</p>
-<h2 id="plans">Plans</h2>
-<p>There&rsquo;s no precise schedule to develop all of this yet, as the only revenue for these development (and the support of the tools, the maintainment of the website, etc) is what <a href="http://duduf.com">Duduf</a> (the developper) gets on <a href="https://patreon.com/duduf">Patreon</a>, and this is going to be a huge work. But, step by step, we&rsquo;ll see how it goes.</p>
-<p>Maybe after building a few more tools it could be time for a crowdfunding campaign. But absolutely nothing&rsquo;s sure yet, these are just assumptions!</p>
-<p><sub><em>Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script></em></sub></p>
+<h2 id="license">License</h2>
+<h3 id="software">Software</h3>
+<p><strong>Copyright (C)  2020 Nicolas Dufresne and Contributors.</strong><br />
+This program is free software; you can redistribute them and/or modify them under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
+<p>You should have received a copy of the <em>GNU General Public License</em> along with <em>DuBuilder</em>. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
+<h3 id="this-documentation">This Documentation</h3>
+<p><strong>Copyright (C)  2020 Nicolas Dufresne and Contributors.</strong><br />
+Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation;<br />
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+A copy of the license is included in the section entitled &ldquo;<a href="licenses/gfdl/">Documentation License</a>&rdquo;.</p>
+<p><img alt="GNU" src="img/gnu.png" /> <img alt="GFDL" src="img/gfdl-logo.png" /></p>
               
             </div>
           </div>
@@ -300,5 +345,5 @@ Another goal for future development of <em>Duik for Blender</em> is to make it e
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2020-10-14 15:22:35
+Build Date UTC : 2020-11-17 14:08:34
 -->

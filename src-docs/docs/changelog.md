@@ -4,6 +4,12 @@
 
 This is the list of what has changed since the first version of *Duik for Blender*.
 
+## 0.4.0
+
+#### New
+
+- Added the [OCA Importer](oca.md)
+
 ## 0.2.0
 
 #### New

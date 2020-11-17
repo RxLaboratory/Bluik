@@ -8,7 +8,7 @@
   
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Installation - Duik for Blender Documentation</title>
+  <title>Import OCA - Duik for Blender Documentation</title>
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Installation";
-    var mkdocs_page_input_path = "install.md";
-    var mkdocs_page_url = "/install/";
+    var mkdocs_page_name = "Import OCA";
+    var mkdocs_page_input_path = "oca.md";
+    var mkdocs_page_url = "/oca/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
@@ -53,26 +53,9 @@
     <a class="" href="..">About</a>
 	    </li>
           
-            <li class="toctree-l1 current">
+            <li class="toctree-l1">
 		
-    <a class="current" href="./">Installation</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l2"><a href="#supported-versions-of-blender">Supported versions of Blender</a></li>
-    
-
-    <li class="toctree-l2"><a href="#installation">Installation</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l3" href="#download">Download</a></li>
-        
-            <li><a class="toctree-l3" href="#install">Install</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="../install/">Installation</a>
 	    </li>
           
             <li class="toctree-l1">
@@ -163,9 +146,26 @@
 		
     <span class="caption-text">OCA</span>
     <ul class="subnav">
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../oca/">Import OCA</a>
+    <a class="current" href="./">Import OCA</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#oca-in-blender">OCA in Blender</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#features">Features</a></li>
+        
+            <li><a class="toctree-l4" href="#options">Options</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l3"><a href="#use">Use</a></li>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -221,11 +221,15 @@
     <li><a href="..">Docs</a> &raquo;</li>
     
       
+        
+          <li>OCA &raquo;</li>
+        
+      
     
-    <li>Installation</li>
+    <li>Import OCA</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/Rainbox-dev/DuBLF_Duik/edit/master/src-docs/docs/install.md"
+        <a href="https://github.com/Rainbox-dev/DuBLF_Duik/edit/master/src-docs/docs/oca.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -235,57 +239,63 @@
           <div role="main">
             <div class="section">
               
-                <div class="toc">
+                <h1 id="oca-in-blender">OCA in Blender</h1>
+<p>OCA is an open format to ease the exchange of traditionnal/frame-by-frame/cel animation between different applications. e.g. you can now import a 2D animation made in <a href="http://krita.org"><em>Krita</em></a> in <em>Blender</em>, keeping all the layers, the keyframes, etc.</p>
+<div class="toc">
 <ul>
-<li><a href="#supported-versions-of-blender">Supported versions of Blender</a></li>
-<li><a href="#installation">Installation</a><ul>
-<li><a href="#download">Download</a></li>
-<li><a href="#install">Install</a></li>
+<li><a href="#oca-in-blender">OCA in Blender</a><ul>
+<li><a href="#features">Features</a></li>
+<li><a href="#options">Options</a><ul>
+<li><a href="#shading">Shading</a></li>
+<li><a href="#keyframes-and-opacity">Keyframes and opacity</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li><a href="#use">Use</a></li>
 </ul>
 </div>
-<h1 id="supported-versions-of-blender">Supported versions of Blender</h1>
-<p><strong><em>Duik for Blender</em> has been developped for Blender 2.80</strong> and is tested on the most recent versions.</p>
-<p><strong>It will not work on Blender 2.79</strong> and previous versions.</p>
-<h1 id="installation">Installation</h1>
-<p>There is no official release yet, as Duik is in its early phase of development.</p>
-<h2 id="download">Download</h2>
-<p>You can get it either:</p>
+<p>With this add-on, you can import the <a href="https://rainboxlab.org/tools/oca">OCA</a> Format in Blender.</p>
+<p>It is able to import all animation keyframes from an OCA document, keeping the layer structure, and a lot of other information.</p>
+<p>The documentation about OCA is available on <a href="htpp://oca-docs.rainboxlab.org">oca-docs.rainboxlab.org</a>.</p>
+<h2 id="features">Features</h2>
+<p>This OCA importer will import the most common features of all drawing/animation software:</p>
 <ul>
-<li>
-<p>On <a href="https://github.com/Rainbox-dev/DuBLF_Duik">Github</a> by yourself, where you can download the latest build. In this case it&rsquo;s not guaranteed to be working, you do this on your own responsibility. It may not be stable at all. It won&rsquo;t break your computer, but it may break your <em>Blender</em> installation and you may have to reset all your preferences in this case.</p>
-</li>
-<li>
-<p><strong><a href="https://patreon.com/duduf">By supporting Duduf on Patreon</a></strong>. In this case you&rsquo;ll get an early access to a recent stable version, and Duduf will help you if anything goes wrong. Most of all, you&rsquo;ll be effectively supporting the development of the addon, which is very needed, as the addon itself is free.</p>
-</li>
+<li>Import the layers as planes</li>
+<li>Layer groups as Collections and a parent empty</li>
+<li>Layer labels as viewport display color</li>
+<li>Layer visibility</li>
+<li>Keyframes as animated textures</li>
+<li>Opacity keyframes</li>
+<li>Layer sizes and coordinates <em>only for non-animated layers</em></li>
+<li>Document background color as a background plane</li>
 </ul>
-<h2 id="install">Install</h2>
-<p>The add-on is installed very simply through the <em>Blender</em> preferences (<code>Edit/Preferences</code> menu), in the <code>Add-ons</code> tab.</p>
-<p>Click on the <code>Install...</code> button, then navigate to the folder where you have downloaded the add-on (.zip file) and select it.</p>
-<p>The add-on will appear in the list below, and needs to be activated. If you do not find it, it is located in the <em>Rigging</em> category.</p>
-<p><img alt="Settings" src="../img/experimental-tools.png" /></p>
-<p>You will then need to check the boxes bellow to activate the tool sets you need.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To import animated layers, they must be exported as document size and not keeping the layer size.</p>
+</div>
+<h2 id="options">Options</h2>
+<p><img alt="" src="../img/oca-options.png" /></p>
+<p>You can change a few options when importing your OCA file:</p>
 <ul>
-<li>
-<p><em>Experimental 2D Features</em> includes</p>
+<li><strong><em><code>2D/2.5D</code></em></strong> will set the camera as orthogonal or perspective. In the future, this option will also change how depth is handled.</li>
+<li><strong><em><code>Depth axis</code></em></strong> lets you choose which axis is facing the depth of the scene.</li>
+<li><strong><em><code>Material Settings</code></em></strong> lets you change the way the shading is handled on the planes.</li>
+<li><strong><em><code>Scene and Render settings</code></em></strong> lets you update the scene settings to match the incoming animation.</li>
+</ul>
+<h3 id="shading">Shading</h3>
 <ul>
-<li><a href="../texanim/">Texture Animation</a></li>
-<li><a href="../oca/">OCA Importer</a></li>
+<li><strong><em>Principled</em></strong> is a standard shader.</li>
+<li><strong><em>Shadeless</em></strong> renders the layer as it is, without taking any light and without having any influence in the scene and indirect illumination.</li>
+<li><strong><em>Emit</em></strong> uses an emission shader, and, in <em>Cycles</em>, the other objects will get the color of the layer. In <em>Eevee</em> it is the same as <em>shadeless</em>.</li>
 </ul>
-</li>
-<li>
-<p><em>Experimental rigging features</em> includes:</p>
-<ul>
-<li><a href="../armatures/">Armature tools</a></li>
-<li><a href="../objects/">Object tools</a></li>
-<li><a href="../ui/">UI tools</a></li>
-<li><a href="../animation-tools/">Animation tools</a></li>
-</ul>
-</li>
-</ul>
-<p>Once activated, a few options are available. See the <a href="../settings/">Settings</a> section for more information.</p>
-<p><sub><em>Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script></em></sub></p>
+<h3 id="keyframes-and-opacity">Keyframes and opacity</h3>
+<p>Layer animation (i.e. keyframes) are imported as animated textures, using the <a href="../texanim/"><em>Texture Animation</em></a> module.</p>
+<p>Opacity keyframes are imported on a <em>Math</em> node in the shader which multiplies the <em>alpha</em> of the image. Opacity keyframe interpolation is set to <em>constant</em> by default.</p>
+<h1 id="use">Use</h1>
+<p>The add-on will set your 2D scene up automatically, and adds a camera to view it.</p>
+<p><img alt="" src="../img/oca-depth.png" /></p>
+<p>In the item parameters, when an imported layer is selected, you can easily move the layer along the depth axis using the <code>Depth</code> value in the <code>Duik Layer Controls</code> group.</p>
               
             </div>
           </div>
@@ -293,10 +303,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../settings/" class="btn btn-neutral float-right" title="Settings">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../changelog/" class="btn btn-neutral float-right" title="Changelog">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href=".." class="btn btn-neutral" title="About"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../texanim/" class="btn btn-neutral" title="The TexAnim module"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -326,10 +336,10 @@
           <a href="https://github.com/Rainbox-dev/DuBLF_Duik/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../texanim/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../settings/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../changelog/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

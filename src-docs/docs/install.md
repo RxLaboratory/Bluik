@@ -20,17 +20,26 @@ You can get it either:
 
 ## Install
 
-The add-on can be either a python *Duik.py* single file or a *Duik-Blender_X.Y.Z.zip* file.
+The add-on is installed very simply through the *Blender* preferences (`Edit/Preferences` menu), in the `Add-ons` tab.
 
-In either case, it is installed very simply throught the *Blender* preferences (`Edit/Preferences` menu), in the `Add-ons` tab.
-
-Click on the `Install...` button, then navigate to the folder where you have downloaded the add-on and select it.
+Click on the `Install...` button, then navigate to the folder where you have downloaded the add-on (.zip file) and select it.
 
 The add-on will appear in the list below, and needs to be activated. If you do not find it, it is located in the *Rigging* category.
 
-![Settings](img/settings.png)
+![Settings](img/experimental-tools.png)
+
+You will then need to check the boxes bellow to activate the tool sets you need.
+
+- *Experimental 2D Features* includes
+    - [Texture Animation](texanim.md)
+    - [OCA Importer](oca.md)
+
+- *Experimental rigging features* includes:
+    - [Armature tools](armatures.md)
+    - [Object tools](objects.md)
+    - [UI tools](ui.md)
+    - [Animation tools](animation-tools.md)
 
 Once activated, a few options are available. See the [Settings](settings.md) section for more information.
-
 
 <sub>*Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script>*</sub>
