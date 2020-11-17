@@ -26,6 +26,7 @@ import re
 from .dublf import (
     DUBLF_fs,
     DUBLF_handlers,
+    DuBLF_bl_ui,
     )
 
 class Duik_TexAnimControl( bpy.types.PropertyGroup ):
@@ -202,6 +203,8 @@ class DUIK_OT_texanim_add_control( bpy.types.Operator ):
                 obj.duik_texanim_controls.remove(i)
             i = i-1
 
+        DuBLF_bl_ui.redraw()
+
         return {'FINISHED'}
 
 class DUIK_OT_texanim_remove_control( bpy.types.Operator ):
@@ -222,6 +225,8 @@ class DUIK_OT_texanim_remove_control( bpy.types.Operator ):
         if obj is None and bone is None:
             return False
         return node.bl_idname == 'ShaderNodeTexImage'
+
+    DuBLF_bl_ui.redraw()
 
     def execute( self, context):
         obj = context.active_pose_bone
