@@ -202,8 +202,10 @@ def convert_position_from_px( position, containing_group=None):
 
 def set_layer_position( layer, position ):
     """Translates an object, converting the 2D position to the actual 3D location depenting on the depth axis"""
+    print(position)
     group = get_containing_group( layer )
     location = convert_position_from_px(position, group)
+    print(location)
     set_layer_location( layer, location)
 
 def get_layer_camera_position( self ):
@@ -264,7 +266,6 @@ def set_depth(self, depth):
     matrix_cam = layer.matrix_world @ cam.matrix_world
     # translate
     offset_depth = self.depth - depth
-    print(offset_depth)
     matrix_cam = matrix_cam @ Matrix.Translation((0.0,0.0,offset_depth))
     invert_cam = cam.matrix_world.copy()
     invert_cam.invert()
@@ -281,6 +282,7 @@ def create_layer_shader( layer_name, frames, animated = False, shader='SHADELESS
         action = bpy.data.actions.new('OCA.' + layer_name )
         anim_data.action = action
         curve = action.fcurves.new( 'nodes[\"' + texture_node.name + '\"].duik_texanim_current_index' )
+        opacity_curve = action.fcurves.new( 'nodes[\"Opacity\"].inputs[1].default_value' )
         for frame in frames:
             if frame['fileName'] == "" or  frame['name'] == "_blank":
                 im = DuBLF_materials.get_blank_image()
@@ -290,8 +292,22 @@ def create_layer_shader( layer_name, frames, animated = False, shader='SHADELESS
             texAnimIm = texture_node.duik_texanim_images.add()
             texAnimIm.image = im
             texAnimIm.name = im.name
-            key = curve.keyframe_points.insert( frame['frameNumber'], len(texture_node.duik_texanim_images) -1 )
+            current_frame = frame['frameNumber']
+            key = curve.keyframe_points.insert( current_frame, len(texture_node.duik_texanim_images) -1 )
             key.interpolation = 'CONSTANT'
+            current_opacity = opacity_curve.evaluate(current_frame)
+            new_opacity = frame['opacity']
+            if current_opacity != new_opacity:
+                num_keys = len(opacity_curve.keyframe_points)
+                if num_keys == 0 and new_opacity == 1.0: continue
+                if num_keys == 0:
+                    opacity_key = opacity_curve.keyframe_points.insert( 0, current_opacity)
+                    opacity_key.interpolation = 'CONSTANT'
+                opacity_key = opacity_curve.keyframe_points.insert( current_frame, new_opacity)
+                opacity_key.interpolation = 'CONSTANT'
+    else:
+        # just set opacity
+        mat.node_tree.nodes['Opacity'].inputs[1].default_value = frames[0]['opacity']
     return mat
 
 # Classes

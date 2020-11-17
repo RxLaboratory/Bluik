@@ -23,7 +23,8 @@ import bpy # pylint: disable=import-error
 from bpy_extras.object_utils import ( # pylint: disable=import-error
     AddObjectHelper,
 )
-from .dublf import (oca, DuBLF_collections, DuBLF_materials)
+from .dublf import (DuBLF_collections, DuBLF_materials)
+from .dupyf import oca
 from . import layers
 
 class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
@@ -188,10 +189,12 @@ class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
         elif layer_type == 'paintlayer':
             print('Importing OCA Layer: ' + ocaLayer['name'])
             layer = layers.create_layer(context, ocaLayer['name'], ocaLayer['width'], ocaLayer['height'], containing_group)
-            layers.set_layer_position( layer, ocaLayer['position'] )
             layer.duik_layer.depth = -self.current_index*.1
+            layers.set_layer_position( layer, ocaLayer['position'] )
             self.update_frame_paths(ocaLayer['frames'])
             framesShader = layers.create_layer_shader(ocaLayer['name'], ocaLayer['frames'], ocaLayer['animated'], self.shader)
+            if ocaLayer['label'] != 0:
+                framesShader.diffuse_color = oca.OCALabels[ ocaLayer['label'] % 8 +1 ]
             layer.data.materials.append(framesShader)
             self.current_index = self.current_index + 1
 

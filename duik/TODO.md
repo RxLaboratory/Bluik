@@ -7,8 +7,7 @@
 - [ ] 2D/2.5D Switch (on root empty)
 - [ ] View side panel: 2D/3D Button
 - [x] Import layers - ignore blank
-- [ ] Layer labels as object colors
-- [ ] Frames opacity
-- [ ] Group opacity
-- [ ] Layer opacity
+- [x] Layer labels as object colors
+- [x] Frames opacity
+- [ ] option for opacity interpolation
 - [ ] Setup render layers (optional)
