@@ -23,7 +23,7 @@ bl_info = {
     "blender": (2, 80, 0),
     "author": "Nicolas 'Duduf' Dufresne",
     "location": "Armature properties Pose Menu, View3d sidebar (N), Shader Editor sidebar (N), File > Import.",
-    "version": (0,4,0),
+    "version": (0,5,0),
     "description": "Experimental tools from Rainbox Lab. which may end up in Duik for Blender.",
     "wiki_url": "https://duik-blender-docs.rainboxlab.org/",
 }
@@ -228,6 +228,15 @@ def register():
 
     # modules
     dublf.register()
+
+    # preferences
+    preferences = bpy.context.preferences.addons[__name__].preferences
+
+    if preferences.use_experimental_rig:
+        register_experimental_rig()
+
+    if preferences.use_experimental_2d:
+        register_experimental_2d()
            
 def unregister():
     # preferences
