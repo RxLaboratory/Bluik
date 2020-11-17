@@ -23,7 +23,7 @@ bl_info = {
     "blender": (2, 80, 0),
     "author": "Nicolas 'Duduf' Dufresne",
     "location": "Armature properties Pose Menu, View3d sidebar (N), Shader Editor sidebar (N), File > Import.",
-    "version": (0,5,0),
+    "version": (0,4,1),
     "description": "Experimental tools from Rainbox Lab. which may end up in Duik for Blender.",
     "wiki_url": "https://duik-blender-docs.rainboxlab.org/",
 }
