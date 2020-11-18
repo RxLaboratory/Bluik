@@ -68,14 +68,30 @@ def update_image_handler( scene ):
 # UTILS
 
 def has_texanim(context):
-    bone = context.active_pose_bone
+    return obj_has_texanim(context) or bone_has_texanim(context)
+
+def obj_has_texanim(context):
     obj = context.active_object
     numControls = 0
-    if not (bone is None):
-        numControls = numControls + len(bone.duik_linked_texanims) + len(bone.duik_copied_texanims)
     if not (obj is None):
         numControls += numControls + len(obj.duik_linked_texanims) + len(obj.duik_copied_texanims)
     return numControls != 0
+
+def bone_has_texanim(context):
+    bone = context.active_pose_bone
+    numControls = 0
+    if not (bone is None):
+        numControls = numControls + len(bone.duik_linked_texanims) + len(bone.duik_copied_texanims)
+    return numControls != 0
+
+def draw_texanims_lists(obj,layout):
+    layout.label(text="Linked TexAnims:")
+    layout.template_list("DUIK_UL_linked_texanim", "", obj, 'duik_linked_texanims', obj, 'duik_linked_texanims_current', rows=3)
+    #box = layout.box()
+    #box.prop( obj.duik_linked_texanims[obj.duik_linked_texanims_current], 'node', text = 'Node')
+    layout.operator( "texanim.remove_control" , text = "Remove").control_index = obj.duik_linked_texanims_current
+    layout.label(text="Copied TexAnims:")
+    layout.template_list("DUIK_UL_copied_texanim", "", obj, 'duik_copied_texanims', obj, 'duik_copied_texanims_current', rows=3)
 
 # CLASSES
 
@@ -262,13 +278,15 @@ class DUIK_OT_texanim_link_control( bpy.types.Operator ):
 
         return {'FINISHED'}
 
-class DUIK_OT_texanim_remove_control( bpy.types.Operator ):
+class DUIK_OT_texanim_unlink_control( bpy.types.Operator ):
     """Removes the copy of the list from the 3D View > UI > Item panel
     """
     bl_idname = "texanim.remove_control"
     bl_label = "Remove from active object/bone"
     bl_description = "Removes the control from the 3D View > UI > Item panel for the active object or pose bone"
     bl_options = {'REGISTER','UNDO'}
+
+    control_index: bpy.props.IntProperty(default=-1)
 
     @classmethod
     def poll(cls, context):
@@ -278,19 +296,25 @@ class DUIK_OT_texanim_remove_control( bpy.types.Operator ):
         obj = context.active_pose_bone
         if obj is None:
             obj = context.active_object
-        # Check if already there 
-        node = context.active_node
-        i = len(obj.duik_linked_texanims) - 1
-        while i >= 0:
-            control = obj.duik_linked_texanims[i]
-            nodeTree = control.nodeTree
-            try:
-                test = nodeTree.nodes[control.node]
-            except:
-                obj.duik_linked_texanims.remove(i)
-            if node.id_data is nodeTree and node.name == control.node:
-                obj.duik_linked_texanims.remove(i)
-            i = i-1
+
+        # If we don't know which one, get from active node
+        if self.control_index < 0:
+            # Check if already there 
+            node = context.active_node
+            i = len(obj.duik_linked_texanims) - 1
+            while i >= 0:
+                control = obj.duik_linked_texanims[i]
+                nodeTree = control.nodeTree
+                try:
+                    test = nodeTree.nodes[control.node]
+                except:
+                    obj.duik_linked_texanims.remove(i)
+                if node.id_data is nodeTree and node.name == control.node:
+                    obj.duik_linked_texanims.remove(i)
+                i = i-1
+        # if we know, just remove
+        else:
+            obj.duik_linked_texanims.remove(self.control_index)
 
         DuBLF_bl_ui.redraw()
 
@@ -302,6 +326,27 @@ class DUIK_UL_texanim( bpy.types.UIList ):
 
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
         layout.prop(item, "name", text="", emboss=False, icon = 'FILE_IMAGE')
+
+class DUIK_UL_linked_texanim( bpy.types.UIList ):
+    """The list of linked texanims on an object"""
+    bl_idename = "DUIK_UL_linked_texanim"
+
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
+        # get the texanim
+        nodeTree = item.nodeTree
+        node = item.node
+        try:
+            texanim = nodeTree.nodes[node]
+            layout.prop(texanim, "duik_texanim_name", text="", emboss=False)
+        except:
+            layout.label(text='Broken Link')
+
+class DUIK_UL_copied_texanim( bpy.types.UIList ):
+    """The List of copied texanims on an object"""
+    bl_idname = "DUIK_UL_copied_texanim"
+
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
+        pass
 
 class DUIK_PT_texanim_ui( bpy.types.Panel ):
     """The panel for managing the images (adding, removing, etc)"""
@@ -396,10 +441,26 @@ class DUIK_PT_texanim_object_settings( bpy.types.Panel ):
 
     @classmethod
     def poll(cls, context):
-        return has_texanim(context)
+        return obj_has_texanim(context)
 
     def draw(self, context):
-        layout = self.layout
+        obj = context.active_object
+        draw_texanims_lists(obj, self.layout)
+        
+class DUIK_PT_texanim_bone_settings( bpy.types.Panel ):
+    bl_label = "Duik TexAnim"
+    bl_idname = "DUIK_PT_texanim_bone_settings"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = "bone"
+
+    @classmethod
+    def poll(cls, context):
+        return bone_has_texanim(context)
+
+    def draw(self, context):
+        bone = context.active_pose_bone
+        draw_texanims_lists(bone, self.layout)
 
 classes = (
     Duik_TexAnimControl,
@@ -408,11 +469,14 @@ classes = (
     DUIK_OT_remove_texanim_image,
     DUIK_OT_texanim_image_move,
     DUIK_OT_texanim_link_control,
-    DUIK_OT_texanim_remove_control,
+    DUIK_OT_texanim_unlink_control,
     DUIK_UL_texanim,
+    DUIK_UL_linked_texanim,
+    DUIK_UL_copied_texanim,
     DUIK_PT_texanim_ui,
     DUIK_PT_texanim_control,
     DUIK_PT_texanim_object_settings,
+    DUIK_PT_texanim_bone_settings,
 )
 
 def register():
@@ -431,12 +495,20 @@ def register():
     # Add controls on pose bones and objects
     if not hasattr( bpy.types.Object, 'duik_linked_texanims' ):
         bpy.types.Object.duik_linked_texanims = bpy.props.CollectionProperty( type = Duik_TexAnimControl )
+    if not hasattr( bpy.types.Object, 'duik_linked_texanims_current' ):
+        bpy.types.Object.duik_linked_texanims_current = bpy.props.IntProperty( )
     if not hasattr( bpy.types.Object, 'duik_copied_texanims' ):
         bpy.types.Object.duik_copied_texanims = bpy.props.CollectionProperty( type = Duik_TexAnimControl )
+    if not hasattr( bpy.types.Object, 'duik_copied_texanims_current' ):
+        bpy.types.Object.duik_copied_texanims_current = bpy.props.IntProperty( )
     if not hasattr( bpy.types.PoseBone, 'duik_linked_texanims' ):
         bpy.types.PoseBone.duik_linked_texanims = bpy.props.CollectionProperty( type = Duik_TexAnimControl )
+    if not hasattr( bpy.types.PoseBone, 'duik_linked_texanims_current' ):
+        bpy.types.PoseBone.duik_linked_texanims_current = bpy.props.IntProperty( )
     if not hasattr( bpy.types.PoseBone, 'duik_copied_texanims' ):
         bpy.types.PoseBone.duik_copied_texanims = bpy.props.CollectionProperty( type = Duik_TexAnimControl )
+    if not hasattr( bpy.types.PoseBone, 'duik_copied_texanims_current' ):
+        bpy.types.PoseBone.duik_copied_texanims_current = bpy.props.IntProperty( )
 
     # Add handler
     DUBLF_handlers.frame_change_post_append( update_image_handler )
