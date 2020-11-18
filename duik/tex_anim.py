@@ -29,6 +29,42 @@ from .dublf import (
     DuBLF_bl_ui,
     )
 
+# ===================================================
+# methods to update images on frame change and update
+# ===================================================
+
+def update_image(node):
+    numImages = len(node.duik_texanim_images)
+    if numImages > 0:
+        index = node.duik_texanim_current_index
+        if index < 0:
+            index = 0
+            node.duik_texanim_current_index = index
+            return
+        elif index >= numImages:
+            index = numImages
+            node.duik_texanim_current_index = index
+            return
+        node.image = node.duik_texanim_images[index].image
+
+def update_current_image( node, context ):
+    """Changes the image used in the Texture Image node"""
+    update_image(node)
+
+@persistent
+def update_image_handler( scene ):
+    """Updates all TexAnim_images, as the update function does not work on playback"""
+    # get all texanims in the scene
+    for material in bpy.data.materials:
+        if material.node_tree is not None:
+            for node in material.node_tree.nodes:
+                if node.bl_idname == 'ShaderNodeTexImage':
+                    update_image(node)
+    for nodeGroup in bpy.data.node_groups:
+        for node in nodeGroup.nodes:
+            if node.bl_idname == 'ShaderNodeTexImage':
+                update_image(node)
+
 class Duik_TexAnimControl( bpy.types.PropertyGroup ):
     """A texanim control on an object or a pose_bone"""
     nodeTree: bpy.props.PointerProperty( type = bpy.types.ShaderNodeTree )
@@ -136,7 +172,7 @@ class DUIK_OT_texanim_image_move( bpy.types.Operator ):
         images = node.duik_texanim_images
 
         if self.up and current_index <= 0: return {'CANCELLED'}
-        elif current_index >= len(images) - 1: return {'CANCELLED'}
+        if not self.up and current_index >= len(images) - 1: return {'CANCELLED'}
 
         new_index = 0
         if self.up: new_index = current_index - 1
@@ -157,12 +193,12 @@ class DUIK_OT_texanim_image_move( bpy.types.Operator ):
 
         return {'FINISHED'}
 
-class DUIK_OT_texanim_add_control( bpy.types.Operator ):
+class DUIK_OT_texanim_link_control( bpy.types.Operator ):
     """Adds a copy of the list to be animated on the 3D View > UI > Item panel
        Displayed only with a specific object selected
     """
-    bl_idname = "texanim.add_control"
-    bl_label = "Copy control to active object"
+    bl_idname = "texanim.link_control"
+    bl_label = "Link to active object/bone"
     bl_description = "Add a control in the 3D View > UI > Item panel for the active object or pose bone"
     bl_options = {'REGISTER','UNDO'}
 
@@ -226,8 +262,6 @@ class DUIK_OT_texanim_remove_control( bpy.types.Operator ):
             return False
         return node.bl_idname == 'ShaderNodeTexImage'
 
-    DuBLF_bl_ui.redraw()
-
     def execute( self, context):
         obj = context.active_pose_bone
         if obj is None:
@@ -245,6 +279,8 @@ class DUIK_OT_texanim_remove_control( bpy.types.Operator ):
             if node.id_data is nodeTree and node.name == control.node:
                 obj.duik_texanim_controls.remove(i)
             i = i-1
+
+        DuBLF_bl_ui.redraw()
 
         return {'FINISHED'}
 
@@ -275,6 +311,8 @@ class DUIK_PT_texanim_ui( bpy.types.Panel ):
 
         node = context.active_node
 
+        layout.prop( node, 'duik_texanim_name', text = "Name")
+
         row = layout.row()
 
         # template_list now takes two new args.
@@ -291,11 +329,10 @@ class DUIK_PT_texanim_ui( bpy.types.Panel ):
         col.operator("texanim.image_move", icon='TRIA_DOWN', text="").up = False
 
         layout.prop( node, 'duik_texanim_current_index', text = "Current Image" )
-        layout.prop( node, 'duik_texanim_name', text = "Name")
 
         layout.separator()
 
-        layout.operator( "texanim.add_control" )
+        layout.operator( "texanim.link_control" )
         layout.operator( "texanim.remove_control" )
 
 class DUIK_PT_texanim_control( bpy.types.Panel ):
@@ -345,45 +382,13 @@ class DUIK_PT_texanim_control( bpy.types.Panel ):
         self.addControls( context.active_pose_bone, layout )
         self.addControls( context.active_object, layout )
 
-# ===================================================
-# methods to update images on frame change and update
-# ===================================================
-
-def update_image(node):
-    numImages = len(node.duik_texanim_images)
-    if numImages > 0:
-        index = node.duik_texanim_current_index
-        if index < 0:
-            index = 0
-        elif index >= numImages:
-            index = numImages
-        node.image = node.duik_texanim_images[index].image
-
-def update_current_image( node, context ):
-    """Changes the image used in the Texture Image node"""
-    update_image(node)
-
-@persistent
-def update_image_handler( scene ):
-    """Updates all TexAnim_images, as the update function does not work on playback"""
-    # get all texanims in the scene
-    for material in bpy.data.materials:
-        if material.node_tree is not None:
-            for node in material.node_tree.nodes:
-                if node.bl_idname == 'ShaderNodeTexImage':
-                    update_image(node)
-    for nodeGroup in bpy.data.node_groups:
-        for node in nodeGroup.nodes:
-            if node.bl_idname == 'ShaderNodeTexImage':
-                update_image(node)
-
 classes = (
     Duik_TexAnimControl,
     DUIK_TexAnimImage,
     DUIK_OT_new_texanim_images,
     DUIK_OT_remove_texanim_image,
     DUIK_OT_texanim_image_move,
-    DUIK_OT_texanim_add_control,
+    DUIK_OT_texanim_link_control,
     DUIK_OT_texanim_remove_control,
     DUIK_UL_texanim,
     DUIK_PT_texanim_ui,
@@ -401,7 +406,7 @@ def register():
     if not hasattr( bpy.types.ShaderNodeTexImage, 'duik_texanim_current_index' ):
         bpy.types.ShaderNodeTexImage.duik_texanim_current_index = bpy.props.IntProperty( update=update_current_image )
     if not hasattr( bpy.types.ShaderNodeTexImage, 'duik_texanim_name' ):
-        bpy.types.ShaderNodeTexImage.duik_texanim_name = bpy.props.StringProperty( default="TexAnim Name" )
+        bpy.types.ShaderNodeTexImage.duik_texanim_name = bpy.props.StringProperty( default="Name" )
 
     # Add controls on pose bones and objects
     if not hasattr( bpy.types.Object, 'duik_texanim_controls' ):
