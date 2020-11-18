@@ -65,6 +65,20 @@ def update_image_handler( scene ):
             if node.bl_idname == 'ShaderNodeTexImage':
                 update_image(node)
 
+# UTILS
+
+def has_texanim(context):
+    bone = context.active_pose_bone
+    obj = context.active_object
+    numControls = 0
+    if not (bone is None):
+        numControls = numControls + len(bone.duik_linked_texanims) + len(bone.duik_copied_texanims)
+    if not (obj is None):
+        numControls += numControls + len(obj.duik_linked_texanims) + len(obj.duik_copied_texanims)
+    return numControls != 0
+
+# CLASSES
+
 class Duik_TexAnimControl( bpy.types.PropertyGroup ):
     """A texanim control on an object or a pose_bone"""
     nodeTree: bpy.props.PointerProperty( type = bpy.types.ShaderNodeTree )
@@ -211,6 +225,14 @@ class DUIK_OT_texanim_link_control( bpy.types.Operator ):
         bone = context.active_pose_bone
         if obj is None and bone is None:
             return False
+        if obj is not None:
+            for c in obj.duik_linked_texanims:
+                if c.nodeTree is node.id_data and c.node == node.name:
+                    return False
+        if bone is not None:
+            for c in bone.duik_linked_texanims:
+                if c.nodeTree is node.id_data and c.node == node.name:
+                    return False
         return node.bl_idname == 'ShaderNodeTexImage'
 
     def execute( self, context):
@@ -219,24 +241,21 @@ class DUIK_OT_texanim_link_control( bpy.types.Operator ):
             obj = context.active_object
         # Check if not already there 
         node = context.active_node
-        for control in obj.duik_texanim_controls:
-            if node.id_data is control.nodeTree and node.name == control.node:
-                return {'FINISHED'}
 
-        texanimControl = obj.duik_texanim_controls.add()
+        texanimControl = obj.duik_linked_texanims.add()
         texanimControl.nodeTree = node.id_data
         texanimControl.node = node.name
 
         # cleaning! remove any node not available anymore
         # check if everything still exists
-        i = len(obj.duik_texanim_controls) - 1
+        i = len(obj.duik_linked_texanims) - 1
         while i >= 0:
-            control = obj.duik_texanim_controls[i]
+            control = obj.duik_linked_texanims[i]
             nodeTree = control.nodeTree
             try:
                 test = nodeTree.nodes[control.node]
             except:
-                obj.duik_texanim_controls.remove(i)
+                obj.duik_linked_texanims.remove(i)
             i = i-1
 
         DuBLF_bl_ui.redraw()
@@ -247,20 +266,13 @@ class DUIK_OT_texanim_remove_control( bpy.types.Operator ):
     """Removes the copy of the list from the 3D View > UI > Item panel
     """
     bl_idname = "texanim.remove_control"
-    bl_label = "Remove control from active object"
+    bl_label = "Remove from active object/bone"
     bl_description = "Removes the control from the 3D View > UI > Item panel for the active object or pose bone"
     bl_options = {'REGISTER','UNDO'}
 
     @classmethod
     def poll(cls, context):
-        node = context.active_node
-        if node is None:
-            return False
-        obj = context.active_object
-        bone = context.active_pose_bone
-        if obj is None and bone is None:
-            return False
-        return node.bl_idname == 'ShaderNodeTexImage'
+        return has_texanim(context)
 
     def execute( self, context):
         obj = context.active_pose_bone
@@ -268,16 +280,16 @@ class DUIK_OT_texanim_remove_control( bpy.types.Operator ):
             obj = context.active_object
         # Check if already there 
         node = context.active_node
-        i = len(obj.duik_texanim_controls) - 1
+        i = len(obj.duik_linked_texanims) - 1
         while i >= 0:
-            control = obj.duik_texanim_controls[i]
+            control = obj.duik_linked_texanims[i]
             nodeTree = control.nodeTree
             try:
                 test = nodeTree.nodes[control.node]
             except:
-                obj.duik_texanim_controls.remove(i)
+                obj.duik_linked_texanims.remove(i)
             if node.id_data is nodeTree and node.name == control.node:
-                obj.duik_texanim_controls.remove(i)
+                obj.duik_linked_texanims.remove(i)
             i = i-1
 
         DuBLF_bl_ui.redraw()
@@ -345,14 +357,7 @@ class DUIK_PT_texanim_control( bpy.types.Panel ):
 
     @classmethod
     def poll(cls, context):
-        bone = context.active_pose_bone
-        obj = context.active_object
-        numControls = 0
-        if not (bone is None):
-            numControls = numControls + len(bone.duik_texanim_controls)
-        if not (obj is None):
-            numControls += numControls + len(obj.duik_texanim_controls)
-        return numControls != 0
+        return has_texanim(context)
 
     def addList( self, layout, texanimControl ):
         # check if everything still exists
@@ -369,7 +374,7 @@ class DUIK_PT_texanim_control( bpy.types.Panel ):
     def addControls( self, obj, layout ):
         if obj is None:
             return
-        controls = obj.duik_texanim_controls
+        controls = obj.duik_linked_texanims
         i = len( controls ) - 1
         while i >= 0:
             control = controls[i]
@@ -382,6 +387,20 @@ class DUIK_PT_texanim_control( bpy.types.Panel ):
         self.addControls( context.active_pose_bone, layout )
         self.addControls( context.active_object, layout )
 
+class DUIK_PT_texanim_object_settings( bpy.types.Panel ):
+    bl_label = "Duik TexAnim"
+    bl_idname = "DUIK_PT_texanim_object_settings"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = "object"
+
+    @classmethod
+    def poll(cls, context):
+        return has_texanim(context)
+
+    def draw(self, context):
+        layout = self.layout
+
 classes = (
     Duik_TexAnimControl,
     DUIK_TexAnimImage,
@@ -393,6 +412,7 @@ classes = (
     DUIK_UL_texanim,
     DUIK_PT_texanim_ui,
     DUIK_PT_texanim_control,
+    DUIK_PT_texanim_object_settings,
 )
 
 def register():
@@ -409,23 +429,27 @@ def register():
         bpy.types.ShaderNodeTexImage.duik_texanim_name = bpy.props.StringProperty( default="Name" )
 
     # Add controls on pose bones and objects
-    if not hasattr( bpy.types.Object, 'duik_texanim_controls' ):
-        bpy.types.Object.duik_texanim_controls = bpy.props.CollectionProperty( type = Duik_TexAnimControl )
-    if not hasattr( bpy.types.PoseBone, 'duik_texanim_controls' ):
-        bpy.types.PoseBone.duik_texanim_controls = bpy.props.CollectionProperty( type = Duik_TexAnimControl )
+    if not hasattr( bpy.types.Object, 'duik_linked_texanims' ):
+        bpy.types.Object.duik_linked_texanims = bpy.props.CollectionProperty( type = Duik_TexAnimControl )
+    if not hasattr( bpy.types.Object, 'duik_copied_texanims' ):
+        bpy.types.Object.duik_copied_texanims = bpy.props.CollectionProperty( type = Duik_TexAnimControl )
+    if not hasattr( bpy.types.PoseBone, 'duik_linked_texanims' ):
+        bpy.types.PoseBone.duik_linked_texanims = bpy.props.CollectionProperty( type = Duik_TexAnimControl )
+    if not hasattr( bpy.types.PoseBone, 'duik_copied_texanims' ):
+        bpy.types.PoseBone.duik_copied_texanims = bpy.props.CollectionProperty( type = Duik_TexAnimControl )
 
     # Add handler
     DUBLF_handlers.frame_change_post_append( update_image_handler )
 
 def unregister():
+    # Remove handler
+    DUBLF_handlers.frame_change_post_remove( update_image_handler )
+
+    del bpy.types.ShaderNodeTexImage.duik_texanim_images
+    del bpy.types.ShaderNodeTexImage.duik_texanim_current_index
+    del bpy.types.Object.duik_linked_texanims
+    del bpy.types.PoseBone.duik_linked_texanims
+
     # unregister
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-  
-    del bpy.types.ShaderNodeTexImage.duik_texanim_images
-    del bpy.types.ShaderNodeTexImage.duik_texanim_current_index
-    del bpy.types.Object.duik_texanim_controls
-    del bpy.types.PoseBone.duik_texanim_controls
-
-    # Remove handler
-    DUBLF_handlers.frame_change_post_remove( update_image_handler )
