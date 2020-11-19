@@ -40,6 +40,7 @@ from . import (
     dublf,
     layers,
     oca,
+    tests,
 )
 
 def update_experimental_2d(self, context):
@@ -55,6 +56,13 @@ def update_experimental_rig(self, context):
         register_experimental_rig()
     else:
         unregister_experimental_rig()
+
+def update_dev_tests(self, context):
+    preferences = context.preferences.addons[__name__].preferences
+    if preferences.use_dev_tests:
+        register_dev_tests()
+    else:
+        unregister_dev_tests()
 
 class DUIK_Preferences( bpy.types.AddonPreferences ):
     # this must match the add-on name, use '__package__'
@@ -74,6 +82,13 @@ class DUIK_Preferences( bpy.types.AddonPreferences ):
         default=False,
         update=update_experimental_2d
         )
+
+    use_dev_tests: bpy.props.BoolProperty(
+        description="You should keep this disabled if you don't know what it is",
+        name="Activate development tests",
+        default=False,
+        update=update_dev_tests
+    )
 
     layer_controllers: bpy.props.IntProperty(
         name="Layer for All controllers",
@@ -112,14 +127,16 @@ class DUIK_Preferences( bpy.types.AddonPreferences ):
         if self.use_experimental_rig:
             box = layout.box()
             box.label(text="Layers:")
-            row = box.row()
+            row = box.row(align=True)
             row.prop(self, "layer_controllers", text="Controllers")
             row.prop(self, "layer_skin", text="Influences")
-            row.prop(self, "layer_rig", text="Other bones")
+            row.prop(self, "layer_rig", text="Other")
             box.label(text="Pie menus:")
             box.prop(self, "pie_menu_autorig")
             box.prop(self, "pie_menu_armature_display")
-            box.prop(self, "pie_menu_animation")           
+            box.prop(self, "pie_menu_animation")
+
+        layout.prop(self, 'use_dev_tests')     
 
 class DUIK_PT_armature_options( bpy.types.Panel ):
     bl_label = "Duik Layers UI"
@@ -162,6 +179,15 @@ def unregister_experimental_2d():
     oca.unregister()
     layers.unregister()
     tex_anim.unregister()
+
+def register_dev_tests():
+    # Reload
+    importlib.reload(tests)
+    # Modules
+    tests.register()
+
+def unregister_dev_tests():
+    tests.unregister()
     
 def unregister_experimental_rig():
     # Attributes
@@ -237,6 +263,9 @@ def register():
 
     if preferences.use_experimental_2d:
         register_experimental_2d()
+
+    if preferences.use_dev_tests:
+        register_dev_tests()
            
 def unregister():
     # preferences
@@ -247,6 +276,9 @@ def unregister():
 
     if preferences.use_experimental_2d:
         unregister_experimental_2d()
+
+    if preferences.use_dev_tests:
+        unregister_dev_tests()
 
     # modules
     dublf.unregister()   
