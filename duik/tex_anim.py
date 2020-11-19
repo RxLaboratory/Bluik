@@ -137,6 +137,8 @@ class DUIK_OT_new_texanim_images( bpy.types.Operator ):
             texAnimImage.image = image
             texAnimImage.name = name
         
+        DuBLF_bl_ui.redraw()
+
         return {'FINISHED'}
 
     def invoke(self, context, event):
@@ -156,6 +158,8 @@ class DUIK_OT_remove_texanim_image( bpy.types.Operator ):
         if node is None:
             return False
         return node.bl_idname == 'ShaderNodeTexImage'
+
+    DuBLF_bl_ui.redraw()
 
     def execute(self, context):
         node = context.active_node
