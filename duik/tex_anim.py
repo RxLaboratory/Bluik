@@ -27,6 +27,7 @@ from .dublf import (
     DUBLF_fs,
     DUBLF_handlers,
     DuBLF_bl_ui,
+    DuBLF_context,
     )
 from .dublf.rigging import (
     DUBLF_rigging,
@@ -88,26 +89,13 @@ def bone_has_texanim(context):
     return numControls != 0
 
 def has_texanim_node(context, node):
-    obj = get_active_poseBone_or_object(context)
+    obj = DuBLF_context.get_active_poseBone_or_object(context)
     if obj is not None:
         for c in obj.duik_linked_texanims:
             if c.nodeTree is node.id_data and c.node == node.name:
                 return True
     return False
 
-def get_active_poseBone_or_object(context):
-    obj = context.active_pose_bone
-    if obj is None:
-        obj = context.active_object
-    return obj
-
-def get_active_node(context):
-    try:
-        node = context.active_node
-        return node
-    except AttributeError:
-        return None
-    
 def draw_texanims_lists(obj,layout):
     layout.label(text="Linked TexAnims:")
     layout.template_list("DUIK_UL_linked_texanim", "", obj, 'duik_linked_texanims', obj, 'duik_linked_texanims_current', rows=3)
@@ -138,13 +126,13 @@ class DUIK_OT_new_texanim_images( bpy.types.Operator ):
 
     @classmethod
     def poll(cls, context):
-        node = get_active_node(context)
+        node = DuBLF_context.get_active_node(context)
         if node is None:
             return False
         return node.bl_idname == 'ShaderNodeTexImage'
 
     def execute(self, context):
-        node = get_active_node(context)
+        node = DuBLF_context.get_active_node(context)
 
         filepath = re.split(r"[\\/]+", self.filepath)
         filepath = "/".join(filepath[0:-1])
@@ -174,7 +162,7 @@ class DUIK_OT_remove_texanim_image( bpy.types.Operator ):
 
     @classmethod
     def poll(cls, context):
-        node = get_active_node(context)
+        node = DuBLF_context.get_active_node(context)
         if node is None:
             return False
         if node.bl_idname == 'ShaderNodeTexImage':
@@ -184,7 +172,7 @@ class DUIK_OT_remove_texanim_image( bpy.types.Operator ):
     DuBLF_bl_ui.redraw()
 
     def execute(self, context):
-        node = get_active_node(context)
+        node = DuBLF_context.get_active_node(context)
         # remove all keyframes referencing this image
         # and adjust values of other keyframes to continue referencing the right images
         current_index = node.duik_texanim_current_index
@@ -217,7 +205,7 @@ class DUIK_OT_texanim_image_move( bpy.types.Operator ):
 
     @classmethod
     def poll(cls, context):
-        node = get_active_node(context)
+        node = DuBLF_context.get_active_node(context)
         if node is None:
             return False
         if node.bl_idname == 'ShaderNodeTexImage':
@@ -225,7 +213,7 @@ class DUIK_OT_texanim_image_move( bpy.types.Operator ):
         return False
 
     def execute(self, context):
-        node = get_active_node(context)
+        node = DuBLF_context.get_active_node(context)
         current_index = node.duik_texanim_current_index
         images = node.duik_texanim_images
 
@@ -262,13 +250,13 @@ class DUIK_OT_texanim_link_control( bpy.types.Operator ):
 
     @classmethod
     def poll(cls, context):
-        node = get_active_node(context)
+        node = DuBLF_context.get_active_node(context)
         if node is None: return False
         if has_texanim_node(context, node): return False
         return node.bl_idname == 'ShaderNodeTexImage'
 
     def execute( self, context):
-        obj = get_active_poseBone_or_object(context)
+        obj = DuBLF_context.get_active_poseBone_or_object(context)
         node = context.active_node
 
         texanimControl = obj.duik_linked_texanims.add()
@@ -306,12 +294,12 @@ class DUIK_OT_texanim_unlink_control( bpy.types.Operator ):
         return has_texanim(context)
 
     def execute( self, context):
-        obj = get_active_poseBone_or_object(context)
+        obj = DuBLF_context.get_active_poseBone_or_object(context)
 
         # If we don't know which one, get from active node
         if self.control_index < 0:
             # Check if already there 
-            node = get_active_node(context)
+            node = DuBLF_context.get_active_node(context)
             if node is None: return {'CANCELLED'}
             i = len(obj.duik_linked_texanims) - 1
             while i >= 0:
