@@ -54,32 +54,34 @@ class DUIK_PT_rig_layers( bpy.types.Panel ):
                            
             if rig_type == 'biped' or rig_type == 'quadruped':
                 if ( armature.duik_layers_arm_ikfk ):
-                    row = layout.row()
+                    col = layout.column(align=True)
+                    row = col.row(align=True)
                     row.prop(context.active_object.data, 'layers', index=2, toggle=True, text='Arm.R (IK)')
                     row.prop(context.active_object.data, 'layers', index=6, toggle=True, text='Arm.L (IK)')
-                    row = layout.row()
+                    row = col.row(align=True)
                     row.prop(context.active_object.data, 'layers', index=1, toggle=True, text='Arm.R (FK)')
                     row.prop(context.active_object.data, 'layers', index=7, toggle=True, text='Arm.L (FK)')
                 else:
-                    row = layout.row()
+                    row = layout.row(align=True)
                     row.prop(context.active_object.data, 'layers', index=2, toggle=True, text='Arm.R')
                     row.prop(context.active_object.data, 'layers', index=6, toggle=True, text='Arm.L')
 
-                row = layout.row()
+                row = layout.row(align=True)
                 row.prop(context.active_object.data, 'layers', index=3, toggle=True, text='Hand.R')
                 row.prop(context.active_object.data, 'layers', index=5, toggle=True, text='Hand.L')
             
             layout.prop(context.active_object.data, 'layers', index=20, toggle=True, text='Spine')
             
             if ( armature.duik_layers_leg_ikfk ):
-                row = layout.row()
+                col = layout.column(align=True)
+                row = col.row(align=True)
                 row.prop(context.active_object.data, 'layers', index=17, toggle=True, text='Leg.R (IK)')
                 row.prop(context.active_object.data, 'layers', index=22, toggle=True, text='Leg.L (IK)')
-                row = layout.row()
+                row = col.row(align=True)
                 row.prop(context.active_object.data, 'layers', index=16, toggle=True, text='Leg.R (FK)')
                 row.prop(context.active_object.data, 'layers', index=23, toggle=True, text='Leg.L (FK)')
             else:
-                row = layout.row()
+                row = layout.row(align=True)
                 row.prop(context.active_object.data, 'layers', index=17, toggle=True, text='Leg.R')
                 row.prop(context.active_object.data, 'layers', index=22, toggle=True, text='Leg.L')
 
