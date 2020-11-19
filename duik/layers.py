@@ -312,18 +312,9 @@ def create_layer_shader( layer_name, frames, animated = False, shader='SHADELESS
 
 # Classes
 
-axis=(
-    ('X',"X","Use the X axis for the depth",0),
-    ('Y', "Y", "Use the Y axis for the depth",1),
-    ('Z', "Z", "Use the Z axis for the depth",2),
-    )
-
-class DUIK_SceneSettings( bpy.types.PropertyGroup ):
-    background_color: bpy.props.FloatVectorProperty(size=4, subtype='COLOR', min=0.0, max=0.0)
-    depth_axis: bpy.props.EnumProperty(
-        name="Depth axis",
+axis=(22
         items=axis,
-        default=2,
+        default='Z',
         description="Axis to use for the depth"
         )
     scene_type: bpy.props.EnumProperty(
@@ -365,7 +356,7 @@ class DUIK_LayerSettings ( bpy.types.PropertyGroup ):
     depth_axis: bpy.props.EnumProperty(
         name="Depth axis",
         items=axis,
-        default=2,
+        default='Z',
         description="Axis to use for the depth",
         get=get_depth_axis
     )

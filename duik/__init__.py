@@ -62,14 +62,14 @@ class DUIK_Preferences( bpy.types.AddonPreferences ):
     bl_idname = __name__
 
     use_experimental_rig: bpy.props.BoolProperty(
-        description="Enable experimental rigging features.",
+        description="Enable experimental rigging features",
         name="Use experimental rigging features",
         default=False,
         update=update_experimental_rig
         )
 
     use_experimental_2d: bpy.props.BoolProperty(
-        description="Enable experimental 2D features like TexAnim, 2D scenes and OCA import.",
+        description="Enable experimental 2D features like TexAnim, 2D scenes and OCA import",
         name="Use experimental 2D features",
         default=False,
         update=update_experimental_2d
