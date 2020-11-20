@@ -2,9 +2,13 @@
 
 [TOC]
 
+`Properties Panel ‣ Object Tab`
+
 Some tools are available for all objects.
 
 ## Camera Linker
+
+`Properties Panel ‣ Object Tab ‣ Duik Camera Linker`
 
 ![](img/cam_linker.png)
 

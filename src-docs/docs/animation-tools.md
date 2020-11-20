@@ -1,6 +1,7 @@
 *Duik* provides some tools to ease the work of the animator, in conjunction with its rigging tools.
 
-These tools are available in the *Pose* menu in *Pose* mode.
+`3D View ‣ Menu ‣ Pose`  
+Available in *pose mode* only
 
 ![Animation Menu](img/pose-menu-animation.png)
 

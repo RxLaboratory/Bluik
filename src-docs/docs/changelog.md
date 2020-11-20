@@ -4,6 +4,16 @@
 
 This is the list of what has changed since the first version of *Duik for Blender*.
 
+## 0.5.0
+
+#### New
+
+- [Dope Sheet and Graph Editor filters](dopesheet-filters.md)
+
+#### Bugfixes
+
+- Improved [TexAnim](texanim.md) and fixed a few bugs.
+
 ## 0.4.0
 
 #### New

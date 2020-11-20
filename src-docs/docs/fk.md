@@ -1,3 +1,7 @@
+`3D View ‣ Menu ‣ Pose ‣ Duik Auto-Rig`  
+`3D View ‣ [SHIFT + R]`  
+Available in *pose mode* only
+
 Select one bone and launch the tool.
 
 This will create a single FK controller for the bone, which will control the rotation and the scale of the bone. If the bone was not connected to its parent, it will also control its location.

@@ -1,3 +1,7 @@
+`3D View ‣ Menu ‣ Pose ‣ Duik Auto-Rig`  
+`3D View ‣ [SHIFT + R]`  
+Available in *pose mode* only
+
 Select a chain of two bones parented together, and launch the tool.
 
 It will create a comprehensive IK/FK rig for these two bones, with the ability to switch between IK and FK, curve the limb, and adjust the stretchiness.

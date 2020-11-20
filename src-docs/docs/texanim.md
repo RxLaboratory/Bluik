@@ -9,6 +9,8 @@ Duik includes a tool to make it easy to *animate* textures, i.e. to be able to c
 
     - This *Texture Animation* tool allows you to select individual images, which may not be numbered, named the same way or even not stored in the same folder.
 
+`Shader editor ‣ Sidebar ‣ Item Tab ‣ Duik TexAnim`
+
 The *Duik TexAnim* section appears in the sidebar of the Shader Editor when an *Image Texture* node is selected.
 
 ![Duik TexAnim Section](img/texanim-shadereditor.png)
@@ -23,6 +25,8 @@ You can use the *Copy control to active object* and *Remove control from active 
     You can keep the active shader in the shader editor while selecting another object using the pin in the top bar.
     ![](img/shader-editor-pin.png)
 
+
+`3D View ‣ Sidebar ‣ Item Tab ‣ Duik TexAnim`
 
 ![Duik TexAnim Section](img/texanim-3dsidebar.png)
 

@@ -1,8 +1,12 @@
 With *Duik*, you can easily create nice selectors for the bone layers on your armatures.
 
+`Properties Panel ‣ Armature Data Tab ‣ Duik Layers UI`
+
 In the `Armature data` tab of the `Properties` panel, you'll find the *Duik Layers UI* Panel.
 
 ![](img/ui-layers-config.png)
+
+`3D View ‣ Sidebar ‣ Tool Tab ‣ Duik Layers`
 
 These controls change which layers are displayed in the `Tool` tab of the *sidebar* of the *3D View*.
 

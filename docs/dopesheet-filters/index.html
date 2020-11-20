@@ -8,7 +8,7 @@
   
   <meta name="author" content="Nicolas Dufresne and contributors">
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Introduction - Duik for Blender Documentation</title>
+  <title>Dope Sheet Filters - Duik for Blender Documentation</title>
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Introduction";
-    var mkdocs_page_input_path = "ui.md";
-    var mkdocs_page_url = "/ui/";
+    var mkdocs_page_name = "Dope Sheet Filters";
+    var mkdocs_page_input_path = "dopesheet-filters.md";
+    var mkdocs_page_url = "/dopesheet-filters/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
@@ -101,12 +101,9 @@
 		
     <span class="caption-text">UI Creation</span>
     <ul class="subnav">
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">Introduction</a>
-    <ul class="subnav">
-            
-    </ul>
+    <a class="" href="../ui/">Introduction</a>
                 </li>
                 <li class="">
                     
@@ -131,9 +128,23 @@
                     
     <a class="" href="../animation-tools/">Animation tools</a>
                 </li>
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../dopesheet-filters/">Dope Sheet Filters</a>
+    <a class="current" href="./">Dope Sheet Filters</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#dope-sheet-and-graph-editor-filters">Dope Sheet and Graph Editor filters</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#timeline">Timeline</a></li>
+        
+            <li><a class="toctree-l4" href="#armatures-and-custom-filters">Armatures and custom filters</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
     </ul>
 	    </li>
@@ -212,14 +223,14 @@
     
       
         
-          <li>UI Creation &raquo;</li>
+          <li>Animation &raquo;</li>
         
       
     
-    <li>Introduction</li>
+    <li>Dope Sheet Filters</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/Rainbox-dev/DuBLF_Duik/edit/master/src-docs/docs/ui.md"
+        <a href="https://github.com/Rainbox-dev/DuBLF_Duik/edit/master/src-docs/docs/dopesheet-filters.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -229,9 +240,41 @@
           <div role="main">
             <div class="section">
               
-                <p>When rigging characters, you usually add some custom properties and controls on the controller objects. These are mainly values or buttons needed to set options or animate details, without adding more controllers in the view in order not to crowd it too much with secondary controls.</p>
-<p>Duik provides some tools to easily build better UI for these custom properties and controls.</p>
-<p><sub><em>Last Modified on <script type="text/javascript"> document.write(document.lastModified) </script></em></sub></p>
+                <h1 id="dope-sheet-and-graph-editor-filters">Dope Sheet and Graph Editor filters</h1>
+<p>The add-on will add a few tools in the side panel of the Dope Sheet and the Graph Editor to ease the process of filtering displayed properties.</p>
+<p><img alt="" src="../img/timeline-filters.png" /></p>
+<h2 id="timeline">Timeline</h2>
+<p><code>Dope Sheet Panel ‣ Sidebar ‣ View Tab</code><br />
+<code>Graph Editor Panel ‣ Sidebar ‣ View Tab</code></p>
+<p><img alt="" src="../img/display-filters.png" /></p>
+<h3 id="options">Options</h3>
+<ul>
+<li>Change the <strong>collection</strong> to display only properties from a specitif collection</li>
+<li>Use the <strong>search field</strong> to input custom names</li>
+<li>The <strong>remove</strong> button will clear all filters and turn on the <em>Only show selected</em> option.</li>
+<li>Next to the remove button, there are two options:<ul>
+<li><strong><em>Only show selected</em></strong> will display properties only for selected objects.</li>
+<li><strong><em>Fuzzy/Multi-Word name filtering</em></strong> matches word snippets/partial words, instead of having to match everything. It breaks down the search string based on white-space placement. e.g. “lo ro” will filter all location and rotation, while “lc rt” will not work.</li>
+</ul>
+</li>
+</ul>
+<h3 id="filters">Filters</h3>
+<p>The add-on adds three filters by default, to display only the location, rotation or scale of the selected objects.</p>
+<p>Under these default filters, the add-on adds custom filters, which you can manage on armature objects</p>
+<h2 id="armatures-and-custom-filters">Armatures and custom filters</h2>
+<p>Custom filters are managed on armature objects. Each armarture adds its own filters to the list.</p>
+<p><code>Properties Panel ‣ Armature Data ‣ Dopesheet Display Filters</code></p>
+<p><img alt="" src="../img/dopesheet-filters-armature.png" /></p>
+<p>You can re-organize the filters with the up and down button; they will be sorted in the same order in the <em>Dope Sheet</em> and <em>Graph Editor</em> panel.</p>
+<p>Each filter has two options:</p>
+<ul>
+<li><strong><em>Only show selected</em></strong> will filter only among the selected objects.</li>
+<li><strong><em>Fuzzy/Multi-Word name filtering</em></strong> matches word snippets/partial words, instead of having to match everything. It breaks down the search string based on white-space placement. e.g. “lo ro” will filter all location and rotation, while “lc rt” will not work.</li>
+</ul>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>To add filters if don&rsquo;t have any armature, just add one to the scene.</p>
+</div>
               
             </div>
           </div>
@@ -239,10 +282,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../selection-sets/" class="btn btn-neutral float-right" title="Selection Sets">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../texanim/" class="btn btn-neutral float-right" title="The TexAnim module">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../objects/" class="btn btn-neutral" title="Introduction"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../animation-tools/" class="btn btn-neutral" title="Animation tools"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -272,10 +315,10 @@
           <a href="https://github.com/Rainbox-dev/DuBLF_Duik/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../objects/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../animation-tools/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../selection-sets/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../texanim/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

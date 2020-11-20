@@ -20,7 +20,9 @@ All these tools are still experimental as we're very early in the development pr
     - [Armature Tools](armatures.md)
     - [Object tools](objects.md)
     - [UI controls](ui.md)
-- [Animation tools](animation-tools.md)
+- Animation
+    - [Animation tools](animation-tools.md)
+    - [Dope Sheet and Graph Editor filters](dopesheet-filters.md)
 - 2D Animation
     - [Texture Animation](texanim.md)
     - [OCA Import](oca.md)

@@ -1,4 +1,8 @@
- Select one bone (with some bendy bones subdivision) and launch the tool.
+`3D View ‣ Menu ‣ Pose ‣ Duik Auto-Rig`  
+`3D View ‣ [SHIFT + R]`  
+Available in *pose mode* only
+
+Select one bone (with some bendy bones subdivision) and launch the tool.
 
 ![B-Bone Controllers](img/bbone.png)
 

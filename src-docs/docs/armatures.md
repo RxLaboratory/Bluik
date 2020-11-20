@@ -4,6 +4,9 @@
 
 ## Menus
 
+`3D View ‣ Menu ‣ Pose`  
+Available in *pose mode* only
+
 With an *Armature* in *Pose* mode, you'll find a *Duik* section in the `Pose` menu of the *3D View*, which contains the rigging tools available.
 
 ![Pose menu](img/pose-menu.png)

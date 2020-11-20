@@ -114,17 +114,13 @@
     <a class="current" href="./">UI Controls</a>
     <ul class="subnav">
             
-    <li class="toctree-l3"><a href="#create-and-manage-controls">Create and manage controls</a></li>
-    
-
-    <li class="toctree-l3"><a href="#the-ui">The UI</a></li>
-    
-
-    <li class="toctree-l3"><a href="#configuration-of-the-controls">Configuration of the controls</a></li>
+    <li class="toctree-l3"><a href="#ui-controls">UI Controls</a></li>
     
         <ul>
         
-            <li><a class="toctree-l4" href="#single-property">Single property</a></li>
+            <li><a class="toctree-l4" href="#the-ui">The UI</a></li>
+        
+            <li><a class="toctree-l4" href="#create-and-manage-controls">Create and manage controls</a></li>
         
         </ul>
     
@@ -145,6 +141,10 @@
                 <li class="">
                     
     <a class="" href="../animation-tools/">Animation tools</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../dopesheet-filters/">Dope Sheet Filters</a>
                 </li>
     </ul>
 	    </li>
@@ -240,26 +240,27 @@
           <div role="main">
             <div class="section">
               
-                <p>With <em>Duik</em>, you can create nice UI controls for any (custom) property on the <em>Armature</em> or other objects you&rsquo;re working on.
+                <h1 id="ui-controls">UI Controls</h1>
+<p>With <em>Duik</em>, you can create nice UI controls for any (custom) property on the <em>Armature</em> or other objects you&rsquo;re working on.
 This is a way to expose and group the controls needed by the animator using the rig in the <code>Item</code> tab of the <em>sidebar</em> of the <em>3D View</em> (with the transform properties), while keeping any other custom property hidden on bones not used as controllers. These controls have a better display than the native custom properties too.</p>
+<p><img alt="" src="../img/ui-controls-intro.png" /></p>
 <div class="toc">
 <ul>
-<li><a href="#create-and-manage-controls">Create and manage controls</a></li>
+<li><a href="#ui-controls">UI Controls</a><ul>
 <li><a href="#the-ui">The UI</a></li>
+<li><a href="#create-and-manage-controls">Create and manage controls</a><ul>
 <li><a href="#configuration-of-the-controls">Configuration of the controls</a><ul>
 <li><a href="#single-property">Single property</a></li>
 </ul>
 </li>
 </ul>
+</li>
+</ul>
+</li>
+</ul>
 </div>
-<p><img alt="" src="../img/ui-controls-intro.png" /></p>
-<h1 id="create-and-manage-controls">Create and manage controls</h1>
-<p>In the <code>Armature data</code> tab of the <code>Properties</code> panel, you&rsquo;ll find the <em>Duik UI Contrlos</em> Panel.</p>
-<p><img alt="" src="../img/ui-controls-config.png" /></p>
-<p>Select a bone and click on the <code>+</code> button to create a UI Control.</p>
-<p>You can also duplicate an existing control using the menu under the down arrow, which will automatically be updated depending on the bone currently selected, to quickly create another control for a property with the same name on another bone.</p>
-<p>This control will be automatically added on the selected bone. You can add and remove any UI Control to any other bone using the <code>Assign</code> and <code>Remove</code> button.</p>
-<h1 id="the-ui">The UI</h1>
+<h2 id="the-ui">The UI</h2>
+<p><code>3D View ‣ Sidebar ‣ Item Tab ‣ Duik Controls</code></p>
 <p>These <em>Duik Controls</em> are available in the <em>sidebar</em> of the <em>3D View</em>, in the <code>Item</code> tab.</p>
 <p><img alt="" src="../img/ui-controls.png" /></p>
 <p>Duik will try to build a nice layout, depending on the names of the controls, and their order in the list. Each time an <em>.R</em> suffix followed by an <em>.L</em> suffix is found, the two controls are showed in a row.</p>
@@ -272,7 +273,14 @@ Their UI is also nicer than the UI of the native custom properties.</p>
 <p class="admonition-title">Note</p>
 <p>Keep in mind that you can have the same UI Control on several bones at once, which is a nice way to be able to animate the same property from different places</p>
 </div>
-<h1 id="configuration-of-the-controls">Configuration of the controls</h1>
+<h2 id="create-and-manage-controls">Create and manage controls</h2>
+<p><code>Properties Panel ‣ Armature Data Tab ‣ Duik UI Controls</code></p>
+<p>In the <code>Armature data</code> tab of the <code>Properties</code> panel, you&rsquo;ll find the <em>Duik UI Contrlos</em> Panel.</p>
+<p><img alt="" src="../img/ui-controls-config.png" /></p>
+<p>Select a bone and click on the <code>+</code> button to create a UI Control.</p>
+<p>You can also duplicate an existing control using the menu under the down arrow, which will automatically be updated depending on the bone currently selected, to quickly create another control for a property with the same name on another bone.</p>
+<p>This control will be automatically added on the selected bone. You can add and remove any UI Control to any other bone using the <code>Assign</code> and <code>Remove</code> button.</p>
+<h3 id="configuration-of-the-controls">Configuration of the controls</h3>
 <p><img alt="" src="../img/ui-controls-config-details.png" /></p>
 <p>There are three types of UI Controls:</p>
 <ul>
@@ -280,7 +288,7 @@ Their UI is also nicer than the UI of the native custom properties.</p>
 <li><strong><em>Separator</em></strong> is a blank space.</li>
 <li><strong><em>Single Property</em></strong> is an actual control.</li>
 </ul>
-<h2 id="single-property">Single property</h2>
+<h4 id="single-property">Single property</h4>
 <p>When set on <em>Single Property</em>, the control has some options, which work the same way as in the <em>Edit driver</em> panel.</p>
 <ul>
 <li><em>Prop:</em> is the object where to find the controlled property.</li>

@@ -28,6 +28,8 @@ This OCA importer will import the most common features of all drawing/animation 
 
 ## Options
 
+`Top bar ‣ File Menu ‣ Import ‣ OCA as Duik 2D scene`
+
 ![](img/oca-options.png)
 
 You can change a few options when importing your OCA file:
