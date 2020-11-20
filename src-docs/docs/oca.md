@@ -26,6 +26,8 @@ This OCA importer will import the most common features of all drawing/animation 
 !!! Note
     To import animated layers, they must be exported as document size and not keeping the layer size.
 
+![YOUTUBE](8ErpYasa16o)
+
 ## Options
 
 `Top bar ‣ File Menu ‣ Import ‣ OCA as Duik 2D scene`
