@@ -28,7 +28,7 @@ class DUIK_DopesheetFilter(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(default='New Filter')
     filter_string: bpy.props.StringProperty(name='Filter', default='filter')
     use_multi_word_filter: bpy.props.BoolProperty( name="Multi word filter", default=False, description="" )
-    show_only_selected: bpy.props.BoolProperty( name="Multi word filter", default=False, description="" )
+    show_only_selected: bpy.props.BoolProperty( name="Show only selected", default=False, description="" )
 
 class DUIK_UL_dopesheet_filters( bpy.types.UIList ):
     """The list of dopesheet filters"""
@@ -88,6 +88,7 @@ class Dopesheet_filters_panel( bpy.types.Panel ):
         op = split.operator( "dopesheet.filter", text = "Remove", icon='X')
         op.filter = ""
         op.use_multi_word_filter = False
+        op.show_only_selected = True
         row = split.row(align=True)
         row.prop(context.space_data.dopesheet, 'show_only_selected', text='')
         row.prop(context.space_data.dopesheet, 'use_multi_word_filter', text='', icon="LONGDISPLAY")
