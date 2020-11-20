@@ -23,7 +23,7 @@ import bpy # pylint: disable=import-error
 from bpy_extras.object_utils import ( # pylint: disable=import-error
     AddObjectHelper,
 )
-from .dublf import (DuBLF_collections, DuBLF_materials)
+from .dublf import (DuBLF_collections, DuBLF_materials, DuBLF_bl_ui)
 from .dupyf import oca
 from . import layers
 
