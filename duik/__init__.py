@@ -18,12 +18,12 @@
 # <pep8 compliant>
 
 bl_info = {
-    "name": "Rainbox Experimental Rigging & Anim Tools",
+    "name": "Rainbox Experimental Tools",
     "category": "Rigging",
     "blender": (2, 80, 0),
     "author": "Nicolas 'Duduf' Dufresne",
     "location": "Armature properties Pose Menu, View3d sidebar (N), Shader Editor sidebar (N), File > Import.",
-    "version": (0,4,1),
+    "version": (0,5,0),
     "description": "Experimental tools from Rainbox Lab. which may end up in Duik for Blender.",
     "wiki_url": "https://duik-blender-docs.rainboxlab.org/",
 }
@@ -41,6 +41,7 @@ from . import (
     layers,
     oca,
     tests,
+    dopesheet_filters,
 )
 
 def update_experimental_2d(self, context):
@@ -56,6 +57,13 @@ def update_experimental_rig(self, context):
         register_experimental_rig()
     else:
         unregister_experimental_rig()
+
+def update_experimental_animation(self, context):
+    preferences = context.preferences.addons[__name__].preferences
+    if preferences.use_experimental_animation:
+        register_experimental_animation()
+    else:
+        unregister_experimental_animation()
 
 def update_dev_tests(self, context):
     preferences = context.preferences.addons[__name__].preferences
@@ -81,6 +89,13 @@ class DUIK_Preferences( bpy.types.AddonPreferences ):
         name="Use experimental 2D features",
         default=False,
         update=update_experimental_2d
+        )
+        
+    use_experimental_animation: bpy.props.BoolProperty(
+        description="Enable experimental animation features like the dope sheet filters",
+        name="Use experimental animation features",
+        default=False,
+        update=update_experimental_animation
         )
 
     use_dev_tests: bpy.props.BoolProperty(
@@ -122,6 +137,8 @@ class DUIK_Preferences( bpy.types.AddonPreferences ):
         layout = self.layout
         
         layout.prop(self, 'use_experimental_2d')
+
+        layout.prop(self, 'use_experimental_animation')
         
         layout.prop(self, 'use_experimental_rig')
         if self.use_experimental_rig:
@@ -179,6 +196,15 @@ def unregister_experimental_2d():
     oca.unregister()
     layers.unregister()
     tex_anim.unregister()
+
+def register_experimental_animation():
+    # Reload
+    importlib.reload(dopesheet_filters)
+    # Modules
+    dopesheet_filters.register()
+
+def unregister_experimental_animation():
+    dopesheet_filters.unregister()
 
 def register_dev_tests():
     # Reload
@@ -264,6 +290,9 @@ def register():
     if preferences.use_experimental_2d:
         register_experimental_2d()
 
+    if preferences.use_experimental_animation:
+        register_experimental_animation()
+
     if preferences.use_dev_tests:
         register_dev_tests()
            
@@ -276,6 +305,9 @@ def unregister():
 
     if preferences.use_experimental_2d:
         unregister_experimental_2d()
+
+    if preferences.use_experimental_animation:
+        unregister_experimental_animation()
 
     if preferences.use_dev_tests:
         unregister_dev_tests()

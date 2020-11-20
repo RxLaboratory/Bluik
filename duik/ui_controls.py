@@ -235,7 +235,7 @@ class DUIK_OT_ui_control_move( bpy.types.Operator ):
         if self.up and active > 0:
             ui_controls.move(active, active-1)
             armature.active_ui_control = active-1
-        elif active < len(ui_controls) - 1:
+        elif not self.up and active < len(ui_controls) - 1:
             ui_controls.move(active, active+1)
             armature.active_ui_control = active+1
 

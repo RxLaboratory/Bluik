@@ -14,7 +14,7 @@
 
 # Dopesheet filters
 
-- [ ] Attach to armature instead of scene
-- [ ] Add/remove operator
-- [ ] Move operator
+- [x] Attach to armature instead of scene
+- [x] Add/remove operator
+- [x] Move operator
 - [ ] Panel looks for all armatures in the scene
