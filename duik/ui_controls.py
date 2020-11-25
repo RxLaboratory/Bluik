@@ -21,14 +21,7 @@
 
 import bpy # pylint: disable=import-error
 import idprop # pylint: disable=import-error
-from .dublf import (
-    DUBLF_utils,
-    DuBLF_rna,
-    DuBLF_bl_ui,
-)
-from .dublf.rigging import (
-    DUBLF_rigging,
-)
+from . import dublf
 
 class DUIK_UiControlBone( bpy.types.PropertyGroup ):
     name: bpy.props.StringProperty()
@@ -121,9 +114,8 @@ class DUIK_OT_new_ui_control( bpy.types.Operator ):
     bl_label = "New UI control"
     bl_options = {'REGISTER','UNDO'}
 
-    Dublf = DUBLF_utils()
+    Dublf = dublf.DuBLF()
     Dublf.toolName = "Duik"
-    Duik = DUBLF_rigging()
 
     def execute(self, context):
         armature = context.active_object.data
@@ -143,7 +135,7 @@ class DUIK_OT_new_ui_control( bpy.types.Operator ):
             ui_control.set_bones( [] )
 
         # Let's redraw
-        DuBLF_bl_ui.redraw()
+        dublf.ui.redraw()
 
         return {'FINISHED'}
 
@@ -153,9 +145,8 @@ class DUIK_OT_duplicate_ui_control( bpy.types.Operator ):
     bl_label = "Duplicate UI control"
     bl_options = {'REGISTER','UNDO'}
 
-    Dublf = DUBLF_utils()
+    Dublf = dublf.DuBLF()
     Dublf.toolName = "Duik"
-    Duik = DUBLF_rigging()
 
     def execute(self, context):
         armature = context.active_object.data
@@ -183,7 +174,7 @@ class DUIK_OT_duplicate_ui_control( bpy.types.Operator ):
         ui_controls.move(len(ui_controls) -1, armature.active_ui_control+1)
 
         # Let's redraw
-        DuBLF_bl_ui.redraw()
+        dublf.ui.redraw()
 
         return {'FINISHED'}
 
@@ -193,9 +184,8 @@ class DUIK_OT_remove_ui_control( bpy.types.Operator ):
     bl_label = "Remove UI control"
     bl_options = {'REGISTER','UNDO'}
 
-    Dublf = DUBLF_utils()
+    Dublf = dublf.DuBLF()
     Dublf.toolName = "Duik"
-    Duik = DUBLF_rigging()
 
     def execute(self, context):
         ui_controls = context.active_object.data.ui_controls
@@ -203,7 +193,7 @@ class DUIK_OT_remove_ui_control( bpy.types.Operator ):
         ui_controls.remove(active_control)
 
         # Let's redraw
-        DuBLF_bl_ui.redraw()
+        dublf.ui.redraw()
 
         return {'FINISHED'}
 
@@ -215,9 +205,8 @@ class DUIK_OT_ui_control_move( bpy.types.Operator ):
 
     up: bpy.props.BoolProperty(default = True)
 
-    Dublf = DUBLF_utils()
+    Dublf = dublf.DuBLF()
     Dublf.toolName = "Duik"
-    Duik = DUBLF_rigging()
 
     @classmethod
     def poll(cls, context):
@@ -240,7 +229,7 @@ class DUIK_OT_ui_control_move( bpy.types.Operator ):
             armature.active_ui_control = active+1
 
         # Let's redraw
-        DuBLF_bl_ui.redraw()
+        dublf.ui.redraw()
 
         return {'FINISHED'}
 
@@ -250,9 +239,8 @@ class DUIK_OT_assign_ui_control_to_bone( bpy.types.Operator ):
     bl_label = "Assign"
     bl_options = {'REGISTER','UNDO'}
 
-    Dublf = DUBLF_utils()
+    Dublf = dublf.DuBLF()
     Dublf.toolName = "Duik"
-    Duik = DUBLF_rigging()
 
     def execute(self, context):
         armature = context.active_object.data
@@ -265,7 +253,7 @@ class DUIK_OT_assign_ui_control_to_bone( bpy.types.Operator ):
             ui_control.add_bones(bones)
 
         # Let's redraw
-        DuBLF_bl_ui.redraw()
+        dublf.ui.redraw()
 
         return {'FINISHED'}
 
@@ -275,9 +263,8 @@ class DUIK_OT_remove_ui_control_from_bone( bpy.types.Operator ):
     bl_label = "Remove"
     bl_options = {'REGISTER','UNDO'}
 
-    Dublf = DUBLF_utils()
+    Dublf = dublf.DuBLF()
     Dublf.toolName = "Duik"
-    Duik = DUBLF_rigging()
 
     def execute(self, context):
         armature = context.active_object.data
@@ -290,7 +277,7 @@ class DUIK_OT_remove_ui_control_from_bone( bpy.types.Operator ):
             ui_control.remove_bones(bones)
         
         # Let's redraw
-        DuBLF_bl_ui.redraw()
+        dublf.ui.redraw()
         
         return {'FINISHED'}
 
@@ -404,7 +391,7 @@ class DUIK_PT_controls_ui( bpy.types.Panel ):
                     current_layout.label( text = ui_control.name )
                 elif ui_control.control_type == 'PROPERTY':
                     if (ui_control.target_rna != '' and not (ui_control.target is None)):
-                        target = DuBLF_rna.get_bpy_struct(ui_control.target, ui_control.target_rna)
+                        target = dublf.rna.get_bpy_struct(ui_control.target, ui_control.target_rna)
                         if not (target is None):
                             current_layout.prop( target[0], target[1] , text = ui_control.name , slider = ui_control.slider, toggle = ui_control.toggle )
 

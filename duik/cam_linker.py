@@ -22,10 +22,7 @@
 import bpy # pylint: disable=import-error
 import idprop # pylint: disable=import-error
 from bpy.app.handlers import persistent # pylint: disable=import-error
-from .dublf import (
-    DuBLF_rna,
-    DUBLF_handlers,
-)
+from . import dublf
 
 class DUIK_CamLinker( bpy.types.PropertyGroup ):
     """A control to link the scene camera to specific properties"""
@@ -185,7 +182,7 @@ def update_camera_links( scene ):
     for obj in scene.collection.all_objects:
         for cam_linker in obj.cam_linkers:
             if (cam_linker.target_rna != ''):
-                struct = DuBLF_rna.get_bpy_struct(obj, cam_linker.target_rna)
+                struct = dublf.rna.get_bpy_struct(obj, cam_linker.target_rna)
                 if not (struct is None):
                     #bpy.context.object.pose.bones["pupil"].constraints["Track To"].target = scene.camera
                     setattr(struct[0], struct[1], scene.camera)
@@ -213,7 +210,7 @@ def register():
         bpy.types.Object.active_cam_linker = bpy.props.IntProperty()
 
     # Add handler
-    DUBLF_handlers.frame_change_post_append( update_camera_links )
+    dublf.handlers.frame_change_post_append( update_camera_links )
 
 def unregister():
     # unregister
@@ -224,4 +221,4 @@ def unregister():
     del bpy.types.Object.active_cam_linker
 
     # Remove handler
-    DUBLF_handlers.frame_change_post_remove( update_camera_links )
+    dublf.handlers.frame_change_post_remove( update_camera_links )

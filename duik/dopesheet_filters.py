@@ -20,9 +20,7 @@
 # Tests and stuff in active development.
 
 import bpy # pylint: disable=import-error
-from .dublf import (
-    DuBLF_bl_ui,
-)
+from . import dublf
 
 class DUIK_DopesheetFilter(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(default='New Filter')
@@ -169,7 +167,7 @@ class DUIK_OT_remove_dopesheet_filter( bpy.types.Operator ):
         armature.dopesheet_filters.remove(armature.dopesheet_filters_current)
 
         # Let's redraw
-        DuBLF_bl_ui.redraw()
+        dublf.ui.redraw()
 
         return {'FINISHED'}
 
@@ -203,7 +201,7 @@ class DUIK_OT_move_dopesheet_filter( bpy.types.Operator ):
             armature.dopesheet_filters_current = active+1
 
         # Let's redraw
-        DuBLF_bl_ui.redraw()
+        dublf.ui.redraw()
 
         return {'FINISHED'}
 

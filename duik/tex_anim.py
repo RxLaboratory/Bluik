@@ -23,15 +23,7 @@ import bpy # pylint: disable=import-error
 import bpy.utils.previews # pylint: disable=import-error
 from bpy.app.handlers import persistent # pylint: disable=import-error
 import re
-from .dublf import (
-    DUBLF_fs,
-    DUBLF_handlers,
-    DuBLF_bl_ui,
-    DuBLF_context,
-    )
-from .dublf.rigging import (
-    DUBLF_rigging,
-)
+from . import dublf
 
 # ===================================================
 # methods to update images on frame change and update
@@ -89,7 +81,7 @@ def bone_has_texanim(context):
     return numControls != 0
 
 def has_texanim_node(context, node):
-    obj = DuBLF_context.get_active_poseBone_or_object(context)
+    obj = dublf.context.get_active_poseBone_or_object(context)
     if obj is not None:
         for c in obj.duik_linked_texanims:
             if c.nodeTree is node.id_data and c.node == node.name:
@@ -126,26 +118,26 @@ class DUIK_OT_new_texanim_images( bpy.types.Operator ):
 
     @classmethod
     def poll(cls, context):
-        node = DuBLF_context.get_active_node(context)
+        node = dublf.context.get_active_node(context)
         if node is None:
             return False
         return node.bl_idname == 'ShaderNodeTexImage'
 
     def execute(self, context):
-        node = DuBLF_context.get_active_node(context)
+        node = dublf.context.get_active_node(context)
 
         filepath = re.split(r"[\\/]+", self.filepath)
         filepath = "/".join(filepath[0:-1])
         
         # File open and add image
         for file in self.files:
-            name = DUBLF_fs.get_fileBaseName(file)
+            name = dublf.fs.get_fileBaseName(file)
             image = bpy.data.images.load( filepath + "/" + file.name, check_existing=True )
             texAnimImage = node.duik_texanim_images.add()
             texAnimImage.image = image
             texAnimImage.name = name
         
-        DuBLF_bl_ui.redraw()
+        dublf.ui.redraw()
 
         return {'FINISHED'}
 
@@ -162,17 +154,17 @@ class DUIK_OT_remove_texanim_image( bpy.types.Operator ):
 
     @classmethod
     def poll(cls, context):
-        node = DuBLF_context.get_active_node(context)
+        node = dublf.context.get_active_node(context)
         if node is None:
             return False
         if node.bl_idname == 'ShaderNodeTexImage':
             return len(node.duik_texanim_images) > 0
         return False
 
-    DuBLF_bl_ui.redraw()
+    dublf.ui.redraw()
 
     def execute(self, context):
-        node = DuBLF_context.get_active_node(context)
+        node = dublf.context.get_active_node(context)
         # remove all keyframes referencing this image
         # and adjust values of other keyframes to continue referencing the right images
         current_index = node.duik_texanim_current_index
@@ -205,7 +197,7 @@ class DUIK_OT_texanim_image_move( bpy.types.Operator ):
 
     @classmethod
     def poll(cls, context):
-        node = DuBLF_context.get_active_node(context)
+        node = dublf.context.get_active_node(context)
         if node is None:
             return False
         if node.bl_idname == 'ShaderNodeTexImage':
@@ -213,7 +205,7 @@ class DUIK_OT_texanim_image_move( bpy.types.Operator ):
         return False
 
     def execute(self, context):
-        node = DuBLF_context.get_active_node(context)
+        node = dublf.context.get_active_node(context)
         current_index = node.duik_texanim_current_index
         images = node.duik_texanim_images
 
@@ -250,13 +242,13 @@ class DUIK_OT_texanim_link_control( bpy.types.Operator ):
 
     @classmethod
     def poll(cls, context):
-        node = DuBLF_context.get_active_node(context)
+        node = dublf.context.get_active_node(context)
         if node is None: return False
         if has_texanim_node(context, node): return False
         return node.bl_idname == 'ShaderNodeTexImage'
 
     def execute( self, context):
-        obj = DuBLF_context.get_active_poseBone_or_object(context)
+        obj = dublf.context.get_active_poseBone_or_object(context)
         node = context.active_node
 
         texanimControl = obj.duik_linked_texanims.add()
@@ -275,7 +267,7 @@ class DUIK_OT_texanim_link_control( bpy.types.Operator ):
                 obj.duik_linked_texanims.remove(i)
             i = i-1
 
-        DuBLF_bl_ui.redraw()
+        dublf.ui.redraw()
 
         return {'FINISHED'}
 
@@ -294,12 +286,12 @@ class DUIK_OT_texanim_unlink_control( bpy.types.Operator ):
         return has_texanim(context)
 
     def execute( self, context):
-        obj = DuBLF_context.get_active_poseBone_or_object(context)
+        obj = dublf.context.get_active_poseBone_or_object(context)
 
         # If we don't know which one, get from active node
         if self.control_index < 0:
             # Check if already there 
-            node = DuBLF_context.get_active_node(context)
+            node = dublf.context.get_active_node(context)
             if node is None: return {'CANCELLED'}
             i = len(obj.duik_linked_texanims) - 1
             while i >= 0:
@@ -316,7 +308,7 @@ class DUIK_OT_texanim_unlink_control( bpy.types.Operator ):
         else:
             obj.duik_linked_texanims.remove(self.control_index)
 
-        DuBLF_bl_ui.redraw()
+        dublf.ui.redraw()
 
         return {'FINISHED'}
 
@@ -331,7 +323,7 @@ class DUIK_UL_texanim( bpy.types.UIList ):
 
 class DUIK_UL_linked_texanim( bpy.types.UIList ):
     """The list of linked texanims on an object"""
-    bl_idename = "DUIK_UL_linked_texanim"
+    bl_idname = "DUIK_UL_linked_texanim"
 
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
         # get the texanim
@@ -495,11 +487,11 @@ def register():
         bpy.types.PoseBone.duik_linked_texanims_current = bpy.props.IntProperty( )
 
     # Add handler
-    DUBLF_handlers.frame_change_post_append( update_image_handler )
+    dublf.handlers.frame_change_post_append( update_image_handler )
 
 def unregister():
     # Remove handler
-    DUBLF_handlers.frame_change_post_remove( update_image_handler )
+    dublf.handlers.frame_change_post_remove( update_image_handler )
 
     del bpy.types.ShaderNodeTexImage.duik_texanim_images
     del bpy.types.ShaderNodeTexImage.duik_texanim_current_index

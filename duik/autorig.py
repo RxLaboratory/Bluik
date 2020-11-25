@@ -23,12 +23,7 @@ import bpy # pylint: disable=import-error
 import mathutils # pylint: disable=import-error
 import math
 import time
-from .dublf import (
-    DUBLF_utils,
-    )
-from .dublf.rigging import (
-    DUBLF_rigging,
-)
+from . import dublf
 
 class DUIK_ikfk_prop ( bpy.types.PropertyGroup ):
     """The property storing all info needed to handle and animate IK/FK rigs"""
@@ -45,9 +40,8 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
     bl_label = "IK/FK Rig"
     bl_options = {'REGISTER','UNDO'}
 
-    Dublf = DUBLF_utils()
+    Dublf = dublf.DuBLF()
     Dublf.toolName = "Duik"
-    Duik = DUBLF_rigging()
 
     @classmethod
     def poll (self, context):
@@ -114,26 +108,26 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
         #-----------------------
             
         # Create IK Controller
-        controller = DUBLF_rigging.extrudeBone( armatureData , tibia , tibia.basename + '.IK.Ctrl', coef = 0.2 , parent = False )
+        controller = dublf.rigging.extrudeBone( armatureData , tibia , tibia.basename + '.IK.Ctrl', coef = 0.2 , parent = False )
         controller.roll = tibia.roll
 
         # Create FK Controllers
-        controllerTibia = DUBLF_rigging.duplicateBone( armatureData , tibia , tibia.basename + '.FK.Ctrl' )
-        controllerFemur = DUBLF_rigging.duplicateBone( armatureData , femur, femur.basename + '.FK.Ctrl' )
+        controllerTibia = dublf.rigging.duplicateBone( armatureData , tibia , tibia.basename + '.FK.Ctrl' )
+        controllerFemur = dublf.rigging.duplicateBone( armatureData , femur, femur.basename + '.FK.Ctrl' )
         controllerTibia.parent = controllerFemur
 
         # Create IK Bones
-        ikTibia = DUBLF_rigging.duplicateBone( armatureData , tibia , tibia.basename + '.IK.Rig' )
-        ikFemur = DUBLF_rigging.duplicateBone( armatureData , femur, femur.basename + '.IK.Rig' )
+        ikTibia = dublf.rigging.duplicateBone( armatureData , tibia , tibia.basename + '.IK.Rig' )
+        ikFemur = dublf.rigging.duplicateBone( armatureData , femur, femur.basename + '.IK.Rig' )
         ikTibia.parent = ikFemur
 
         # Create pole Target Bone
-        ptFemur = DUBLF_rigging.addBone( armatureData , femur.basename + '.IK Pole.Rig' , location = femur.head )
+        ptFemur = dublf.rigging.addBone( armatureData , femur.basename + '.IK Pole.Rig' , location = femur.head )
         ptFemur.tail = controller.head
         ptFemur.tail = ptFemur.head + ptFemur.vector / 2
 
         # Create Knee controller
-        kneeController = DUBLF_rigging.extrudeBone( armatureData, femur , femur.basename + '.Pole.Ctrl', coef = 0.2 , parent = False )
+        kneeController = dublf.rigging.extrudeBone( armatureData, femur , femur.basename + '.Pole.Ctrl', coef = 0.2 , parent = False )
         kneeVector = kneeController.vector
         kneeController.head = kneeController.head + femur.vector - tibia.vector
         kneeController.tail = kneeController.head + kneeVector
@@ -197,76 +191,76 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
         st.show_expanded = False
 
         # Setup IK and custom props
-        DUBLF_rigging.addCustomProperty(controller, "FK / IK Blend", 1.0, {"description": "Blends between IK (1.0) and FK (0.0)",
+        dublf.rigging.addCustomProperty(controller, "FK / IK Blend", 1.0, {"description": "Blends between IK (1.0) and FK (0.0)",
             "default": 1.0,
             "min": 0.0,
             "max": 1.0
             })
 
-        DUBLF_rigging.addCustomProperty(controller, "Stretchy IK", 0.25, {"description": "Controls the IK stretchiness",
+        dublf.rigging.addCustomProperty(controller, "Stretchy IK", 0.25, {"description": "Controls the IK stretchiness",
             "default": 0.25,
             "min": 0.0,
             "max": 1.0
             })
 
-        DUBLF_rigging.addCustomProperty(controller, "Pole Angle", 0.0, {"description": "Controls the pole of the IK",
+        dublf.rigging.addCustomProperty(controller, "Pole Angle", 0.0, {"description": "Controls the pole of the IK",
             "default": 0.0,
             "min": -360.0,
             "max": 360.0
             })
 
-        DUBLF_rigging.addCustomProperty(controller, "Auto-Bend", 0.0, {"description": "Automatic bend of the bones for a nicely curved shape when the limb bends",
+        dublf.rigging.addCustomProperty(controller, "Auto-Bend", 0.0, {"description": "Automatic bend of the bones for a nicely curved shape when the limb bends",
             "default": 0.0,
             "min": -10.0,
             "max": 10.0
             })
 
         # Stretch
-        driver = DUBLF_rigging.addDriver(ikTibia, "ik_stretch", driverType = 'SUM')
-        DUBLF_rigging.addVariable(driver, "ctrl", 'pose.bones["' + controller.name + '"]["Stretchy IK"]', armatureObject)
-        driver = DUBLF_rigging.addDriver(ikFemur, "ik_stretch", driverType = 'SUM')
-        DUBLF_rigging.addVariable(driver, "ctrl", 'pose.bones["' + controller.name + '"]["Stretchy IK"]', armatureObject)
+        driver = dublf.rigging.addDriver(ikTibia, "ik_stretch", driverType = 'SUM')
+        dublf.rigging.addVariable(driver, "ctrl", 'pose.bones["' + controller.name + '"]["Stretchy IK"]', armatureObject)
+        driver = dublf.rigging.addDriver(ikFemur, "ik_stretch", driverType = 'SUM')
+        dublf.rigging.addVariable(driver, "ctrl", 'pose.bones["' + controller.name + '"]["Stretchy IK"]', armatureObject)
 
         # Pole
         ptFemur.rotation_mode = 'XYZ'
-        driver = DUBLF_rigging.addDriver(ptFemur, 'rotation_euler', driverType = 'SCRIPTED')
-        DUBLF_rigging.addVariable(driver[1], "ctrl", 'pose.bones["' + controller.name + '"]["Pole Angle"]', armatureObject)
+        driver = dublf.rigging.addDriver(ptFemur, 'rotation_euler', driverType = 'SCRIPTED')
+        dublf.rigging.addVariable(driver[1], "ctrl", 'pose.bones["' + controller.name + '"]["Pole Angle"]', armatureObject)
         driver[1].expression = "ctrl * pi/180"
 
         # Bendy
 
-        driver = DUBLF_rigging.addDriver(tibia, 'bbone_curveinx', driverType = 'SCRIPTED')
-        DUBLF_rigging.addTransformVariable(driver, "rot", tibia, 'ROT_Z', 'LOCAL_SPACE', armatureObject)
-        DUBLF_rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
+        driver = dublf.rigging.addDriver(tibia, 'bbone_curveinx', driverType = 'SCRIPTED')
+        dublf.rigging.addTransformVariable(driver, "rot", tibia, 'ROT_Z', 'LOCAL_SPACE', armatureObject)
+        dublf.rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
         driver.expression = "( rot * auto ) / 10"
-        driver = DUBLF_rigging.addDriver(tibia, 'bbone_curveoutx', driverType = 'SCRIPTED')
-        DUBLF_rigging.addTransformVariable(driver, "rot", tibia, 'ROT_Z', 'LOCAL_SPACE', armatureObject)
-        DUBLF_rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
+        driver = dublf.rigging.addDriver(tibia, 'bbone_curveoutx', driverType = 'SCRIPTED')
+        dublf.rigging.addTransformVariable(driver, "rot", tibia, 'ROT_Z', 'LOCAL_SPACE', armatureObject)
+        dublf.rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
         driver.expression = "( rot * auto ) / 10"
-        driver = DUBLF_rigging.addDriver(tibia, 'bbone_curveiny', driverType = 'SCRIPTED')
-        DUBLF_rigging.addTransformVariable(driver, "rot", tibia, 'ROT_X', 'LOCAL_SPACE', armatureObject)
-        DUBLF_rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
+        driver = dublf.rigging.addDriver(tibia, 'bbone_curveiny', driverType = 'SCRIPTED')
+        dublf.rigging.addTransformVariable(driver, "rot", tibia, 'ROT_X', 'LOCAL_SPACE', armatureObject)
+        dublf.rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
         driver.expression = "- ( rot * auto ) / 10"
-        driver = DUBLF_rigging.addDriver(tibia, 'bbone_curveouty', driverType = 'SCRIPTED')
-        DUBLF_rigging.addTransformVariable(driver, "rot", tibia, 'ROT_X', 'LOCAL_SPACE', armatureObject)
-        DUBLF_rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
+        driver = dublf.rigging.addDriver(tibia, 'bbone_curveouty', driverType = 'SCRIPTED')
+        dublf.rigging.addTransformVariable(driver, "rot", tibia, 'ROT_X', 'LOCAL_SPACE', armatureObject)
+        dublf.rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
         driver.expression = "- ( rot * auto ) / 10"
   
-        driver = DUBLF_rigging.addDriver(femur, 'bbone_curveinx', driverType = 'SCRIPTED')
-        DUBLF_rigging.addTransformVariable(driver, "rot", tibia, 'ROT_Z', 'LOCAL_SPACE', armatureObject)
-        DUBLF_rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
+        driver = dublf.rigging.addDriver(femur, 'bbone_curveinx', driverType = 'SCRIPTED')
+        dublf.rigging.addTransformVariable(driver, "rot", tibia, 'ROT_Z', 'LOCAL_SPACE', armatureObject)
+        dublf.rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
         driver.expression = "( rot * auto ) / 10"
-        driver = DUBLF_rigging.addDriver(femur, 'bbone_curveoutx', driverType = 'SCRIPTED')
-        DUBLF_rigging.addTransformVariable(driver, "rot", tibia, 'ROT_Z', 'LOCAL_SPACE', armatureObject)
-        DUBLF_rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
+        driver = dublf.rigging.addDriver(femur, 'bbone_curveoutx', driverType = 'SCRIPTED')
+        dublf.rigging.addTransformVariable(driver, "rot", tibia, 'ROT_Z', 'LOCAL_SPACE', armatureObject)
+        dublf.rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
         driver.expression = "( rot * auto ) / 10"
-        driver = DUBLF_rigging.addDriver(femur, 'bbone_curveiny', driverType = 'SCRIPTED')
-        DUBLF_rigging.addTransformVariable(driver, "rot", tibia, 'ROT_X', 'LOCAL_SPACE', armatureObject)
-        DUBLF_rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
+        driver = dublf.rigging.addDriver(femur, 'bbone_curveiny', driverType = 'SCRIPTED')
+        dublf.rigging.addTransformVariable(driver, "rot", tibia, 'ROT_X', 'LOCAL_SPACE', armatureObject)
+        dublf.rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
         driver.expression = "- ( rot * auto ) / 10"
-        driver = DUBLF_rigging.addDriver(femur, 'bbone_curveouty', driverType = 'SCRIPTED')
-        DUBLF_rigging.addTransformVariable(driver, "rot", tibia, 'ROT_X', 'LOCAL_SPACE', armatureObject)
-        DUBLF_rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
+        driver = dublf.rigging.addDriver(femur, 'bbone_curveouty', driverType = 'SCRIPTED')
+        dublf.rigging.addTransformVariable(driver, "rot", tibia, 'ROT_X', 'LOCAL_SPACE', armatureObject)
+        dublf.rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
         driver.expression = "- ( rot * auto ) / 10"
 
         # Setup main bones
@@ -311,8 +305,8 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
         ct.subtarget = controllerTibia.name
         ct.name = 'Copy FK Rotation'
         ct.show_expanded = False
-        driver = DUBLF_rigging.addDriver(ct, 'influence', driverType = 'SCRIPTED')
-        DUBLF_rigging.addVariable(driver, "ctrl", driverPath, armatureObject)
+        driver = dublf.rigging.addDriver(ct, 'influence', driverType = 'SCRIPTED')
+        dublf.rigging.addVariable(driver, "ctrl", driverPath, armatureObject)
         driver.expression = driverExpression
 
         st = tibia.constraints.new('STRETCH_TO')
@@ -322,8 +316,8 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
         st.head_tail = 1.0
         st.rest_length = controllerTibia.bone.vector.length
         st.show_expanded = False
-        driver = DUBLF_rigging.addDriver(st, 'influence', driverType = 'SCRIPTED')
-        DUBLF_rigging.addVariable(driver, "ctrl", driverPath, armatureObject)
+        driver = dublf.rigging.addDriver(st, 'influence', driverType = 'SCRIPTED')
+        dublf.rigging.addVariable(driver, "ctrl", driverPath, armatureObject)
         driver.expression = driverExpression
 
         ct = femur.constraints.new('COPY_ROTATION')
@@ -331,8 +325,8 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
         ct.subtarget = controllerFemur.name
         ct.name = 'Copy FK Rotation'
         ct.show_expanded = False
-        driver = DUBLF_rigging.addDriver(ct, 'influence', driverType = 'SCRIPTED')
-        DUBLF_rigging.addVariable(driver, "ctrl", driverPath, armatureObject)
+        driver = dublf.rigging.addDriver(ct, 'influence', driverType = 'SCRIPTED')
+        dublf.rigging.addVariable(driver, "ctrl", driverPath, armatureObject)
         driver.expression = driverExpression
 
         st = femur.constraints.new('STRETCH_TO')
@@ -342,8 +336,8 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
         st.head_tail = 1.0
         st.rest_length = controllerFemur.bone.vector.length
         st.show_expanded = False
-        driver = DUBLF_rigging.addDriver(st, 'influence', driverType = 'SCRIPTED')
-        DUBLF_rigging.addVariable(driver, "ctrl", driverPath, armatureObject)
+        driver = dublf.rigging.addDriver(st, 'influence', driverType = 'SCRIPTED')
+        dublf.rigging.addVariable(driver, "ctrl", driverPath, armatureObject)
         driver.expression = driverExpression
 
         # ALIGN POLE ANGLE
@@ -369,15 +363,15 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
         # TIDYING
         # -------------------
 
-        DUBLF_rigging.addBoneToLayers( controller.bone , [duik_prefs.layer_controllers] )
-        DUBLF_rigging.addBoneToLayers( femur.bone , [duik_prefs.layer_skin] )
-        DUBLF_rigging.addBoneToLayers( tibia.bone , [duik_prefs.layer_skin] )
-        DUBLF_rigging.addBoneToLayers( controllerTibia.bone , [duik_prefs.layer_controllers] )
-        DUBLF_rigging.addBoneToLayers( controllerFemur.bone , [duik_prefs.layer_controllers] )
-        DUBLF_rigging.addBoneToLayers( ikTibia.bone , [duik_prefs.layer_rig] )
-        DUBLF_rigging.addBoneToLayers( ikFemur.bone , [duik_prefs.layer_rig] )
-        DUBLF_rigging.addBoneToLayers( ptFemur.bone , [duik_prefs.layer_rig] )
-        DUBLF_rigging.addBoneToLayers( kneeController.bone , [duik_prefs.layer_controllers] )
+        dublf.rigging.addBoneToLayers( controller.bone , [duik_prefs.layer_controllers] )
+        dublf.rigging.addBoneToLayers( femur.bone , [duik_prefs.layer_skin] )
+        dublf.rigging.addBoneToLayers( tibia.bone , [duik_prefs.layer_skin] )
+        dublf.rigging.addBoneToLayers( controllerTibia.bone , [duik_prefs.layer_controllers] )
+        dublf.rigging.addBoneToLayers( controllerFemur.bone , [duik_prefs.layer_controllers] )
+        dublf.rigging.addBoneToLayers( ikTibia.bone , [duik_prefs.layer_rig] )
+        dublf.rigging.addBoneToLayers( ikFemur.bone , [duik_prefs.layer_rig] )
+        dublf.rigging.addBoneToLayers( ptFemur.bone , [duik_prefs.layer_rig] )
+        dublf.rigging.addBoneToLayers( kneeController.bone , [duik_prefs.layer_controllers] )
 
         controller.duik_ikfk.ikCtrl_name = controller.name
         controller.duik_ikfk.pole_name = ptFemur.name
@@ -422,9 +416,8 @@ class DUIK_OT_fk( bpy.types.Operator ):
     bl_label = "Add FK Control (No Follow option)"
     bl_options = {'REGISTER','UNDO'}
 
-    Dublf = DUBLF_utils()
+    Dublf = dublf.DuBLF()
     Dublf.toolName = "Duik"
-    Duik = DUBLF_rigging()
 
     @classmethod
     def poll (self, context):
@@ -467,7 +460,7 @@ class DUIK_OT_fk( bpy.types.Operator ):
 
         use_connect = bone.use_connect
 
-        controller = DUBLF_rigging.duplicateBone( armatureData , bone, bone.basename + '.Ctrl' )
+        controller = dublf.rigging.duplicateBone( armatureData , bone, bone.basename + '.Ctrl' )
         controller.use_connect = use_connect
         controller.parent = bone.parent
 
@@ -517,22 +510,22 @@ class DUIK_OT_fk( bpy.types.Operator ):
 
         # No Follow Driver
 
-        DUBLF_rigging.addCustomProperty( bone , "Follow", 1, {"description": "Parent rotation inheritance",
+        dublf.rigging.addCustomProperty( bone , "Follow", 1, {"description": "Parent rotation inheritance",
             "default": 1,
             "min": 0.0,
             "max": 1.0
             })
 
-        driver = DUBLF_rigging.addDriver(controller.bone, 'use_inherit_rotation', driverType = 'SCRIPTED')
-        DUBLF_rigging.addVariable(driver, "ctrl", 'pose.bones["' + bone.name + '"]["Follow"]', armatureObject)
+        driver = dublf.rigging.addDriver(controller.bone, 'use_inherit_rotation', driverType = 'SCRIPTED')
+        dublf.rigging.addVariable(driver, "ctrl", 'pose.bones["' + bone.name + '"]["Follow"]', armatureObject)
         driver.expression = "ctrl == 1"
 
         # -------------------
         # TIDYING
         # -------------------
 
-        DUBLF_rigging.addBoneToLayers( bone.bone , [duik_prefs.layer_skin] )
-        DUBLF_rigging.addBoneToLayers( controller.bone , [duik_prefs.layer_controllers] )
+        dublf.rigging.addBoneToLayers( bone.bone , [duik_prefs.layer_skin] )
+        dublf.rigging.addBoneToLayers( controller.bone , [duik_prefs.layer_controllers] )
 
         bpy.context.object.data.layers[duik_prefs.layer_controllers] = True
 
@@ -546,7 +539,7 @@ class DUIK_OT_bbone( bpy.types.Operator ):
     bl_label = "Add BBone Controls"
     bl_options = {'REGISTER','UNDO'}
 
-    Dublf = DUBLF_utils()
+    Dublf = dublf.DuBLF()
     Dublf.toolName = "Duik"
 
     @classmethod
@@ -587,10 +580,10 @@ class DUIK_OT_bbone( bpy.types.Operator ):
         # CREATE BONES
         #-----------------------
 
-        endCtrl = DUBLF_rigging.extrudeBone( armatureData, bone , 'Upper' + bone.basename + '.Ctrl', coef = 0.25 , parent = False , connected = False )
+        endCtrl = dublf.rigging.extrudeBone( armatureData, bone , 'Upper' + bone.basename + '.Ctrl', coef = 0.25 , parent = False , connected = False )
         endCtrl.roll = bone.roll
 
-        startCtrl = DUBLF_rigging.duplicateBone( armatureData , bone, 'Lower' + bone.basename + '.Ctrl' )
+        startCtrl = dublf.rigging.duplicateBone( armatureData , bone, 'Lower' + bone.basename + '.Ctrl' )
         startCtrl.tail = bone.head + bone.vector / 4
 
         bone.use_connect = False
@@ -623,13 +616,13 @@ class DUIK_OT_bbone( bpy.types.Operator ):
 
         # Add custom property to control influence
 
-        DUBLF_rigging.addCustomProperty( startCtrl , "Rotation Influence", 1.0, {"description": "Adjusts the rotation influence",
+        dublf.rigging.addCustomProperty( startCtrl , "Rotation Influence", 1.0, {"description": "Adjusts the rotation influence",
             "default": 1.0,
             "min": 0.0,
             "max": 10.0
             })
 
-        DUBLF_rigging.addCustomProperty( endCtrl , "Rotation Influence", 1.0, {"description": "Adjusts the rotation influence",
+        dublf.rigging.addCustomProperty( endCtrl , "Rotation Influence", 1.0, {"description": "Adjusts the rotation influence",
             "default": 1.0,
             "min": 0.0,
             "max": 10.0
@@ -654,50 +647,50 @@ class DUIK_OT_bbone( bpy.types.Operator ):
 
         segmentsCoef = (0.5) / segments
 
-        driver = DUBLF_rigging.addDriver(bone, 'bbone_curveinx', driverType = 'SCRIPTED')
-        DUBLF_rigging.addVariable(driver, "ctrlInfl", 'pose.bones["' + startCtrl.name + '"]["Rotation Influence"]', armatureObject)
-        DUBLF_rigging.addTransformVariable( driver, 'ctrl', startCtrl, 'ROT_Z', 'LOCAL_SPACE', armatureObject)
+        driver = dublf.rigging.addDriver(bone, 'bbone_curveinx', driverType = 'SCRIPTED')
+        dublf.rigging.addVariable(driver, "ctrlInfl", 'pose.bones["' + startCtrl.name + '"]["Rotation Influence"]', armatureObject)
+        dublf.rigging.addTransformVariable( driver, 'ctrl', startCtrl, 'ROT_Z', 'LOCAL_SPACE', armatureObject)
         driver.expression = '-ctrl*ctrlInfl'
 
-        driver = DUBLF_rigging.addDriver(bone, 'bbone_curveiny', driverType = 'SCRIPTED')
-        DUBLF_rigging.addVariable(driver, "ctrlInfl", 'pose.bones["' + startCtrl.name + '"]["Rotation Influence"]', armatureObject)
-        DUBLF_rigging.addTransformVariable( driver, 'ctrl', startCtrl, 'ROT_X', 'LOCAL_SPACE', armatureObject)
+        driver = dublf.rigging.addDriver(bone, 'bbone_curveiny', driverType = 'SCRIPTED')
+        dublf.rigging.addVariable(driver, "ctrlInfl", 'pose.bones["' + startCtrl.name + '"]["Rotation Influence"]', armatureObject)
+        dublf.rigging.addTransformVariable( driver, 'ctrl', startCtrl, 'ROT_X', 'LOCAL_SPACE', armatureObject)
         driver.expression = 'ctrl*ctrlInfl'
 
-        driver = DUBLF_rigging.addDriver(bone, 'bbone_rollin', driverType = 'SCRIPTED')
-        DUBLF_rigging.addTransformVariable( driver, 'ctrl', startCtrl, 'ROT_Y', 'LOCAL_SPACE', armatureObject)
+        driver = dublf.rigging.addDriver(bone, 'bbone_rollin', driverType = 'SCRIPTED')
+        dublf.rigging.addTransformVariable( driver, 'ctrl', startCtrl, 'ROT_Y', 'LOCAL_SPACE', armatureObject)
         driver.expression = 'ctrl*' + str(segmentsCoef)
 
-        driver = DUBLF_rigging.addDriver(bone, 'bbone_curveoutx', driverType = 'SCRIPTED')
-        DUBLF_rigging.addVariable(driver, "ctrlInfl", 'pose.bones["' + endCtrl.name + '"]["Rotation Influence"]', armatureObject)
-        DUBLF_rigging.addTransformVariable( driver, 'ctrl', endCtrl, 'ROT_Z', 'LOCAL_SPACE', armatureObject)
+        driver = dublf.rigging.addDriver(bone, 'bbone_curveoutx', driverType = 'SCRIPTED')
+        dublf.rigging.addVariable(driver, "ctrlInfl", 'pose.bones["' + endCtrl.name + '"]["Rotation Influence"]', armatureObject)
+        dublf.rigging.addTransformVariable( driver, 'ctrl', endCtrl, 'ROT_Z', 'LOCAL_SPACE', armatureObject)
         driver.expression = 'ctrl*ctrlInfl'
 
-        driver = DUBLF_rigging.addDriver(bone, 'bbone_curveouty', driverType = 'SCRIPTED')
-        DUBLF_rigging.addVariable(driver, "ctrlInfl", 'pose.bones["' + endCtrl.name + '"]["Rotation Influence"]', armatureObject)
-        DUBLF_rigging.addTransformVariable( driver, 'ctrl', endCtrl, 'ROT_X', 'LOCAL_SPACE', armatureObject)
+        driver = dublf.rigging.addDriver(bone, 'bbone_curveouty', driverType = 'SCRIPTED')
+        dublf.rigging.addVariable(driver, "ctrlInfl", 'pose.bones["' + endCtrl.name + '"]["Rotation Influence"]', armatureObject)
+        dublf.rigging.addTransformVariable( driver, 'ctrl', endCtrl, 'ROT_X', 'LOCAL_SPACE', armatureObject)
         driver.expression = '-ctrl*ctrlInfl'
 
-        driver = DUBLF_rigging.addDriver(bone, 'bbone_rollout', driverType = 'SCRIPTED')
-        DUBLF_rigging.addTransformVariable( driver, 'ctrl', endCtrl, 'ROT_Y', 'LOCAL_SPACE', armatureObject)
+        driver = dublf.rigging.addDriver(bone, 'bbone_rollout', driverType = 'SCRIPTED')
+        dublf.rigging.addTransformVariable( driver, 'ctrl', endCtrl, 'ROT_Y', 'LOCAL_SPACE', armatureObject)
         driver.expression = 'ctrl*' + str(segmentsCoef)
 
         #Scale drivers
-        driver = DUBLF_rigging.addDriver(bone, 'bbone_easein', driverType = 'SCRIPTED')
-        DUBLF_rigging.addTransformVariable( driver, 'ctrl', startCtrl, 'SCALE_Y', 'LOCAL_SPACE', armatureObject)
+        driver = dublf.rigging.addDriver(bone, 'bbone_easein', driverType = 'SCRIPTED')
+        dublf.rigging.addTransformVariable( driver, 'ctrl', startCtrl, 'SCALE_Y', 'LOCAL_SPACE', armatureObject)
         driver.expression = 'ctrl-1'
 
-        driver = DUBLF_rigging.addDriver(bone, 'bbone_easeout', driverType = 'SCRIPTED')
-        DUBLF_rigging.addTransformVariable( driver, 'ctrl', endCtrl, 'SCALE_Y', 'LOCAL_SPACE', armatureObject)
+        driver = dublf.rigging.addDriver(bone, 'bbone_easeout', driverType = 'SCRIPTED')
+        dublf.rigging.addTransformVariable( driver, 'ctrl', endCtrl, 'SCALE_Y', 'LOCAL_SPACE', armatureObject)
         driver.expression = 'ctrl-1'
        
         # -------------------
         # TIDYING
         # -------------------
 
-        DUBLF_rigging.addBoneToLayers( startCtrl.bone , [duik_prefs.layer_controllers] )
-        DUBLF_rigging.addBoneToLayers( endCtrl.bone , [duik_prefs.layer_controllers] )
-        DUBLF_rigging.addBoneToLayers( bone.bone , [duik_prefs.layer_skin] )
+        dublf.rigging.addBoneToLayers( startCtrl.bone , [duik_prefs.layer_controllers] )
+        dublf.rigging.addBoneToLayers( endCtrl.bone , [duik_prefs.layer_controllers] )
+        dublf.rigging.addBoneToLayers( bone.bone , [duik_prefs.layer_skin] )
 
         bpy.context.object.data.layers[duik_prefs.layer_controllers] = True
 
@@ -764,7 +757,7 @@ class DUIK_OT_parent_apply_inverse( bpy.types.Operator ):
         return not context.active_object.parent == None
 
     def execute( self, context ):
-        DUBLF_rigging.applyParentInverse(context.active_object)
+        dublf.rigging.applyParentInverse(context.active_object)
         return {'FINISHED'}
 
 class DUIK_OT_make_parent_apply_inverse( bpy.types.Operator ):
@@ -779,7 +772,7 @@ class DUIK_OT_make_parent_apply_inverse( bpy.types.Operator ):
         bpy.ops.object.parent_set()
         parent = context.active_object
         for obj in context.selected_objects:
-            DUBLF_rigging.applyParentInverse(obj)
+            dublf.rigging.applyParentInverse(obj)
         return {'FINISHED'}
 
 def ik2fk( context, ikCtrl, ik2, pole, fk2 ):

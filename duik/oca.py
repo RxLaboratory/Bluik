@@ -23,7 +23,7 @@ import bpy # pylint: disable=import-error
 from bpy_extras.object_utils import ( # pylint: disable=import-error
     AddObjectHelper,
 )
-from .dublf import (DuBLF_collections, DuBLF_materials, DuBLF_bl_ui)
+from . import dublf
 from .dupyf import oca
 from . import layers
 
@@ -169,7 +169,7 @@ class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
             self.current_index = self.current_index + 1
 
         # Let's redraw
-        DuBLF_bl_ui.redraw()
+        dublf.ui.redraw()
 
         print("OCA correctly imported")
 

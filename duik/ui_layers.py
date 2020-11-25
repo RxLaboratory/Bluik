@@ -20,8 +20,6 @@
 # Create a nice UI on Armatures for the bones layers
 
 import bpy # pylint: disable=import-error
-import idprop # pylint: disable=import-error
-from .dublf import (DUBLF_utils)
 
 class DUIK_PT_rig_layers( bpy.types.Panel ):
     bl_space_type = 'VIEW_3D'

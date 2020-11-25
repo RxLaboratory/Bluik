@@ -278,9 +278,6 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
-    # modules
-    dublf.register()
-
     # preferences
     preferences = bpy.context.preferences.addons[__name__].preferences
 
@@ -311,9 +308,6 @@ def unregister():
 
     if preferences.use_dev_tests:
         unregister_dev_tests()
-
-    # modules
-    dublf.unregister()   
 
     # unregister
     for cls in reversed(classes):

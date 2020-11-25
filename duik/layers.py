@@ -23,8 +23,7 @@ import bpy # pylint: disable=import-error
 from bpy_extras.image_utils import load_image  # pylint: disable=import-error
 from bpy_extras.object_utils import world_to_camera_view # pylint: disable=import-error
 from mathutils import Matrix # pylint: disable=import-error
-from .dublf import (DuBLF_collections, DuBLF_materials)
-from .dublf.rigging import DUBLF_rigging
+from . import dublf
 from . import tex_anim
 from math import pi
 
@@ -32,13 +31,13 @@ from math import pi
 
 def create_group(context, group_name="", containing_group=None, width = 1920, height = 1080):
     """Creates a group of layers"""
-    collection = DuBLF_collections.add_collection_to_scene(context.scene, group_name)
+    collection = dublf.collections.add_collection_to_scene(context.scene, group_name)
     group_name = group_name.split('.')[-1]
     # The layer
     bpy.ops.object.empty_add('INVOKE_REGION_WIN', type = 'ARROWS')
     group = context.active_object
     group.name = group_name + '.Group'
-    DuBLF_collections.move_to_collection( collection, group)
+    dublf.collections.move_to_collection( collection, group)
     # Duik infos
     group.duik_layer.width = width
     group.duik_layer.height = height
@@ -87,13 +86,13 @@ def create_scene(context, scene_name="", width=1920, height=1080, background_col
         cam.location = (width/100, 0.0, 0.0)
         cam.rotation_euler.x = pi/2
         cam.rotation_euler.z = pi/2
-    DuBLF_collections.move_to_collection( scene.duik_layer.default_collection, cam)
-    DUBLF_rigging.set_object_parent(context, (cam,), scene)
+    dublf.collections.move_to_collection( scene.duik_layer.default_collection, cam)
+    dublf.rigging.set_object_parent(context, (cam,), scene)
     scene.duik_scene.camera = cam
 
     # The background
     if background_color[3] > 0:
-        colorShader = DuBLF_materials.create_color_material( background_color, 'OCA.Background Color', shader )
+        colorShader = dublf.materials.create_color_material( background_color, 'OCA.Background Color', shader )
         bgLayer = create_layer(context, 'Background', width, height, scene)
         bgLayer.data.materials.append(colorShader)
         scene.duik_scene.background = bgLayer
@@ -106,10 +105,10 @@ def move_to_group( layer, group ):
     # Collections
     group_collection = group.duik_layer.default_collection
     if layer.duik_type == 'GROUP' or layer.duik_type == 'SCENE':
-        DuBLF_collections.move_collection_to_collection( group_collection, layer.duik_layer.default_collection)
+        dublf.collections.move_collection_to_collection( group_collection, layer.duik_layer.default_collection)
         layer.duik_type = 'GROUP'
     else:
-        DuBLF_collections.move_to_collection( group_collection, layer )
+        dublf.collections.move_to_collection( group_collection, layer )
         layer.duik_layer.default_collection = group_collection
 
     layer.parent = None
@@ -275,7 +274,7 @@ def set_depth(self, depth):
 
 def create_layer_shader( layer_name, frames, animated = False, shader='SHADELESS'):
     """Creates an image shader"""
-    mat, texture_node = DuBLF_materials.create_image_material(frames[0]['fileName'], layer_name, shader)
+    mat, texture_node = dublf.materials.create_image_material(frames[0]['fileName'], layer_name, shader)
     if animated:
         # create curve for anim
         anim_data = mat.node_tree.animation_data_create()
@@ -285,7 +284,7 @@ def create_layer_shader( layer_name, frames, animated = False, shader='SHADELESS
         opacity_curve = action.fcurves.new( 'nodes[\"Opacity\"].inputs[1].default_value' )
         for frame in frames:
             if frame['fileName'] == "" or  frame['name'] == "_blank":
-                im = DuBLF_materials.get_blank_image()
+                im = dublf.materials.get_blank_image()
             else:
                 im = load_image(frame['fileName'], check_existing=True, force_reload=True)
                 im.name = frame['name']
