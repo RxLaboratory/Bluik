@@ -155,31 +155,8 @@ class DUIK_Preferences( bpy.types.AddonPreferences ):
 
         layout.prop(self, 'use_dev_tests')     
 
-class DUIK_PT_armature_options( bpy.types.Panel ):
-    bl_label = "Duik Layers UI"
-    bl_idname = "DUIK_PT_armature_options"
-    bl_space_type = 'PROPERTIES'
-    bl_region_type = 'WINDOW'
-    bl_context = "data"
-
-    @classmethod
-    def poll(cls, context):
-        return context.object.type == 'ARMATURE'
-
-    def draw(self, context):
-        layout = self.layout
-
-        obj = context.object
-        armature = obj.data
-
-        layout.prop( armature, 'duik_rig_type' )
-        layout.separator(factor=1.0)
-        layout.prop( armature, 'duik_layers_arm_ikfk')
-        layout.prop( armature, 'duik_layers_leg_ikfk')
-
 classes = (
     DUIK_Preferences,
-    DUIK_PT_armature_options,
 )
 
 def register_experimental_2d():
