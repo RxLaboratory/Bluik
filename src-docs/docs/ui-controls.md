@@ -17,13 +17,14 @@ These *Duik Controls* are available in the *sidebar* of the *3D View*, in the `I
 
 Duik will try to build a nice layout, depending on the names of the controls, and their order in the list. Each time an *.R* suffix followed by an *.L* suffix is found, the two controls are showed in a row.
 
+The *Reset Custom Controls* will set back all custom properties to their default values. It is also available in the *3D view* context menu in pose mode and in `3D View ‣ Pose Menu ‣ Clear Transform`.
+
 !!! tip
     UI controls are a very nice way to expose (or not) the controls which may be useful for the animator, while keeping the other custom properties hidden.  
     Their UI is also nicer than the UI of the native custom properties.
 
 !!! note
     Keep in mind that you can have the same UI Control on several bones at once, which is a nice way to be able to animate the same property from different places
-
 
 ## Create and manage controls
 

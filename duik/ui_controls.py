@@ -23,6 +23,17 @@ import bpy # pylint: disable=import-error
 import idprop # pylint: disable=import-error
 from . import dublf
 
+def reset_ui_control(ui_control):
+    tgt = ui_control.target
+    rna = ui_control.target_rna
+    if tgt is None or rna is None: return
+    tgt, prop = dublf.rna.get_bpy_struct(tgt, rna)
+    try:
+        prop_name = eval(prop)[0]
+        tgt[prop_name] = tgt['_RNA_UI'][prop_name].get('default')
+    except:
+        pass
+
 class DUIK_UiControlBone( bpy.types.PropertyGroup ):
     name: bpy.props.StringProperty()
 
@@ -281,6 +292,38 @@ class DUIK_OT_remove_ui_control_from_bone( bpy.types.Operator ):
         
         return {'FINISHED'}
 
+class DUIK_OT_reset_custom_to_defaults( bpy.types.Operator ):
+    bl_idname = "armature.reset_duik_custom_controls"
+    bl_label = "Reset Custom Controls"
+    bl_description = "Resets custom controls to default values"
+    bl_options = {'REGISTER','UNDO'}
+
+    active_bone_only: bpy.props.BoolProperty(default=True, name="Reset only active bone")
+
+    @classmethod
+    def poll(cls, context):
+        if context.mode != 'POSE': return False
+        armature = context.active_object.data
+        if armature is None:
+            return False
+        ui_controls = armature.ui_controls
+        return len(ui_controls) >= 1
+
+    def execute(self, context):
+        armature_object = context.active_object
+        armature_data = armature_object.data
+        active_bone = context.active_pose_bone
+    
+        for ui_control in armature_data.ui_controls:
+            if self.active_bone_only and active_bone.name in ui_control.bones:
+                reset_ui_control(ui_control)
+            elif not self.active_bone_only:
+                for bone in context.selected_pose_bones:
+                    if bone.name in ui_control.bones:
+                        reset_ui_control(ui_control)
+                    
+        return {'FINISHED'}
+
 class DUIK_UL_ui_controls( bpy.types.UIList ):
     bl_idname = "DUIK_UL_ui_controls"
 
@@ -365,7 +408,13 @@ class DUIK_PT_controls_ui( bpy.types.Panel ):
     def poll(self, context):
         if context.mode != 'POSE': return False
         active_bone = context.active_pose_bone
-        return not (active_bone is None)
+        if active_bone is None: return False
+        armature_object = context.active_object
+        armature_data = armature_object.data
+        for ui_control in armature_data.ui_controls:
+            if active_bone.name in ui_control.bones: return True
+        return False
+
         
     def draw(self, context):
         armature_object = context.active_object
@@ -375,6 +424,9 @@ class DUIK_PT_controls_ui( bpy.types.Panel ):
         layout = self.layout
 
         current_layout = layout
+
+        layout.operator('armature.reset_duik_custom_controls')
+        layout.separator()
         
         for ui_control in armature_data.ui_controls:
             if active_bone.name in ui_control.bones:
@@ -395,6 +447,9 @@ class DUIK_PT_controls_ui( bpy.types.Panel ):
                         if not (target is None):
                             current_layout.prop( target[0], target[1] , text = ui_control.name , slider = ui_control.slider, toggle = ui_control.toggle )
 
+def reset_customs_menu(self, context):
+    self.layout.operator('armature.reset_duik_custom_controls', text="Reset Duik Custom Controls").active_bone_only = False
+
 classes = (
     DUIK_UiControlBone,
     DUIK_UiControl,
@@ -404,6 +459,7 @@ classes = (
     DUIK_OT_ui_control_move,
     DUIK_OT_assign_ui_control_to_bone,
     DUIK_OT_remove_ui_control_from_bone,
+    DUIK_OT_reset_custom_to_defaults,
     DUIK_UL_ui_controls,
     DUIK_MT_ui_controls,
     DUIK_PT_ui_controls,
@@ -421,10 +477,18 @@ def register():
     if not hasattr( bpy.types.Armature, 'active_ui_control' ):
         bpy.types.Armature.active_ui_control = bpy.props.IntProperty()
 
+    # Menus
+    bpy.types.VIEW3D_MT_pose_transform.append(reset_customs_menu)
+    bpy.types.VIEW3D_MT_pose_context_menu.append(reset_customs_menu)
+
 def unregister():
     # unregister
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
     
+    # Menus
+    bpy.types.VIEW3D_MT_pose_transform.remove(reset_customs_menu)
+    bpy.types.VIEW3D_MT_pose_context_menu.remove(reset_customs_menu)
+
     del bpy.types.Armature.ui_controls
     del bpy.types.Armature.active_ui_control
