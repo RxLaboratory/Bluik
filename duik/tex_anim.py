@@ -168,20 +168,7 @@ class DUIK_OT_remove_texanim_image( bpy.types.Operator ):
         # remove all keyframes referencing this image
         # and adjust values of other keyframes to continue referencing the right images
         current_index = node.duik_texanim_current_index
-        for action in bpy.data.actions:
-            fcurves = action.fcurves
-            for curve in fcurves:
-                if curve.data_path == 'nodes[\"' + node.name + '\"].duik_texanim_current_index':
-                    keyframes = curve.keyframe_points
-                    i = len(keyframes) -1
-                    while i >= 0:
-                        keyframe = keyframes[i]
-                        val = keyframe.co[1]
-                        if val == current_index:
-                            keyframes.remove(keyframe)
-                        if val > current_index:
-                            keyframe.co[1] = val-1
-                        i = i-1
+        dublf.animation.remove_animated_index('nodes[\"' + node.name + '\"].duik_texanim_current_index', current_index)
 
         # remove this image
         node.duik_texanim_images.remove(current_index)
@@ -217,14 +204,7 @@ class DUIK_OT_texanim_image_move( bpy.types.Operator ):
         else: new_index = current_index + 1
 
         # update keyframes values
-        for action in bpy.data.actions:
-            fcurves = action.fcurves
-            for curve in fcurves:
-                if curve.data_path == 'nodes[\"' + node.name + '\"].duik_texanim_current_index':
-                    keyframes = curve.keyframe_points
-                    for keyframe in keyframes:
-                        if keyframe.co[1] == new_index: keyframe.co[1] = current_index
-                        elif keyframe.co[1] == current_index: keyframe.co[1] = new_index
+        dublf.animation.swap_animated_index('nodes[\"' + node.name + '\"].duik_texanim_current_index', current_index, new_index)
 
         images.move(current_index, new_index)
         node.duik_texanim_current_index = new_index
