@@ -125,7 +125,7 @@ class DUIK_OT_new_ui_control( bpy.types.Operator ):
     bl_label = "New UI control"
     bl_options = {'REGISTER','UNDO'}
 
-    Dublf = dublf.DuBLF()
+    Dublf = dublf.debug.Logger()
     Dublf.toolName = "Duik"
 
     def execute(self, context):
@@ -156,7 +156,7 @@ class DUIK_OT_duplicate_ui_control( bpy.types.Operator ):
     bl_label = "Duplicate UI control"
     bl_options = {'REGISTER','UNDO'}
 
-    Dublf = dublf.DuBLF()
+    Dublf = dublf.debug.Logger()
     Dublf.toolName = "Duik"
 
     def execute(self, context):
@@ -195,7 +195,7 @@ class DUIK_OT_remove_ui_control( bpy.types.Operator ):
     bl_label = "Remove UI control"
     bl_options = {'REGISTER','UNDO'}
 
-    Dublf = dublf.DuBLF()
+    Dublf = dublf.debug.Logger()
     Dublf.toolName = "Duik"
 
     def execute(self, context):
@@ -216,7 +216,7 @@ class DUIK_OT_ui_control_move( bpy.types.Operator ):
 
     up: bpy.props.BoolProperty(default = True)
 
-    Dublf = dublf.DuBLF()
+    Dublf = dublf.debug.Logger()
     Dublf.toolName = "Duik"
 
     @classmethod
@@ -250,7 +250,7 @@ class DUIK_OT_assign_ui_control_to_bone( bpy.types.Operator ):
     bl_label = "Assign"
     bl_options = {'REGISTER','UNDO'}
 
-    Dublf = dublf.DuBLF()
+    Dublf = dublf.debug.Logger()
     Dublf.toolName = "Duik"
 
     def execute(self, context):
@@ -274,7 +274,7 @@ class DUIK_OT_remove_ui_control_from_bone( bpy.types.Operator ):
     bl_label = "Remove"
     bl_options = {'REGISTER','UNDO'}
 
-    Dublf = dublf.DuBLF()
+    Dublf = dublf.debug.Logger()
     Dublf.toolName = "Duik"
 
     def execute(self, context):

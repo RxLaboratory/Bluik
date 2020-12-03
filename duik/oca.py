@@ -24,7 +24,6 @@ from bpy_extras.object_utils import ( # pylint: disable=import-error
     AddObjectHelper,
 )
 from . import dublf
-from .dupyf import oca
 from . import layers
 
 class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
@@ -145,7 +144,7 @@ class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
         return {'FINISHED'}
 
     def import_oca(self, context):
-        ocaDocument = oca.load(self.filepath)
+        ocaDocument = dublf.oca.load(self.filepath)
 
         print("Importing OCA: " + ocaDocument['name'])
 
@@ -193,7 +192,7 @@ class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
             self.update_frame_paths(ocaLayer['frames'])
             framesShader = layers.create_layer_shader(ocaLayer['name'], ocaLayer['frames'], ocaLayer['animated'], self.shader)
             if ocaLayer['label'] != 0:
-                framesShader.diffuse_color = oca.OCALabels[ ocaLayer['label'] % 8 +1 ]
+                framesShader.diffuse_color = dublf.oca.OCALabels[ ocaLayer['label'] % 8 +1 ]
             layer.data.materials.append(framesShader)
             self.current_index = self.current_index + 1
 

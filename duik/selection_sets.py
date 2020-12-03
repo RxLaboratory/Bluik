@@ -21,9 +21,9 @@
 
 import bpy # pylint: disable=import-error
 import idprop # pylint: disable=import-error
-from .dublf import DuBLF
+from .dublf import debug as dublf_debug # pylint: disable=import-error
 
-Dublf = DuBLF()
+Dublf = dublf_debug.Logger()
 Dublf.toolName = "Duik"
 
 class DUIK_SelectionSetBone( bpy.types.PropertyGroup ):

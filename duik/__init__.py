@@ -28,8 +28,8 @@ bl_info = {
     "wiki_url": "https://duik-blender-docs.rainboxlab.org/",
 }
 
-import bpy # pylint: disable=import-error
 import importlib
+import bpy # pylint: disable=import-error
 from . import (
     autorig,
     selection_sets,
@@ -248,9 +248,6 @@ def register_experimental_rig():
         )
     
 def register():
-    # reload
-    importlib.reload(dublf)
-
     # register
     for cls in classes:
         bpy.utils.register_class(cls)

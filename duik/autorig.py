@@ -40,7 +40,7 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
     bl_label = "IK/FK Rig"
     bl_options = {'REGISTER','UNDO'}
 
-    Dublf = dublf.DuBLF()
+    Dublf = dublf.debug.Logger()
     Dublf.toolName = "Duik"
 
     @classmethod
@@ -416,7 +416,7 @@ class DUIK_OT_fk( bpy.types.Operator ):
     bl_label = "Add FK Control (No Follow option)"
     bl_options = {'REGISTER','UNDO'}
 
-    Dublf = dublf.DuBLF()
+    Dublf = dublf.debug.Logger()
     Dublf.toolName = "Duik"
 
     @classmethod
@@ -539,7 +539,7 @@ class DUIK_OT_bbone( bpy.types.Operator ):
     bl_label = "Add BBone Controls"
     bl_options = {'REGISTER','UNDO'}
 
-    Dublf = dublf.DuBLF()
+    Dublf = dublf.debug.Logger()
     Dublf.toolName = "Duik"
 
     @classmethod
