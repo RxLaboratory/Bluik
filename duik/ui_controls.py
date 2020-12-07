@@ -30,7 +30,13 @@ def reset_ui_control(ui_control):
     tgt, prop = dublf.rna.get_bpy_struct(tgt, rna)
     try:
         prop_name = eval(prop)[0]
-        tgt[prop_name] = tgt['_RNA_UI'][prop_name].get('default')
+        default_value = tgt['_RNA_UI'][prop_name].get('default')
+        if default_value:
+            tgt[prop_name] = default_value
+        elif isinstance(tgt[prop_name], int):
+            tgt[prop_name] = 0
+        elif isinstance(tgt[prop_name], float):
+            tgt[prop_name] = 0.0
     except:
         pass
 
