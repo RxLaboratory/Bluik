@@ -4,7 +4,7 @@ repo_url: https://github.com/Rainbox-dev/DuBLF_Duik/
 edit_uri: edit/master/src-docs/docs/
 site_description: The Duik for Blender comprehensive documentation
 site_author: Nicolas Dufresne and contributors
-copyright: 'Copyright © 2019 Rainbox Lab and Nicolas Dufresne'
+copyright: 'Copyright © 2019-2020 Rainbox Lab and Nicolas Dufresne'
 theme:
     name: readthedocs
     custom_dir: theme/

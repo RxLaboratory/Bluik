@@ -17,7 +17,10 @@ These *Duik Controls* are available in the *sidebar* of the *3D View*, in the `I
 
 Duik will try to build a nice layout, depending on the names of the controls, and their order in the list. Each time an *.R* suffix followed by an *.L* suffix is found, the two controls are showed in a row.
 
-The *Reset Custom Controls* will set back all custom properties to their default values. It is also available in the *3D view* context menu in pose mode and in `3D View ‣ Pose Menu ‣ Clear Transform`.
+The *Reset Custom Controls* button will set back all custom properties to their default values. It is also available in the *3D view* context menu in pose mode and in `3D View ‣ Pose Menu ‣ Clear Transform`.
+
+!!! warning
+    For now, the *Reset Custom Controls* operator works only with custom properties and not native Blender properties.
 
 !!! tip
     UI controls are a very nice way to expose (or not) the controls which may be useful for the animator, while keeping the other custom properties hidden.  

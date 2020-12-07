@@ -4,6 +4,13 @@
 
 This is the list of what has changed since the first version of *Duik for Blender*.
 
+
+## 0.5.2
+
+#### New
+
+- Added an operator to reset [Custom UI Controls](ui-controls.md) to their default values.
+
 ## 0.5.0
 
 #### New
