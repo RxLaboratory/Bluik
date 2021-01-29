@@ -165,10 +165,11 @@ class DUIK_OT_remove_texanim_image( bpy.types.Operator ):
 
     def execute(self, context):
         node = dublf.context.get_active_node(context)
+        tree = bpy.context.material.node_tree
         # remove all keyframes referencing this image
         # and adjust values of other keyframes to continue referencing the right images
         current_index = node.duik_texanim_current_index
-        dublf.animation.remove_animated_index('nodes[\"' + node.name + '\"].duik_texanim_current_index', current_index)
+        dublf.animation.remove_animated_index(tree, 'nodes[\"' + node.name + '\"].duik_texanim_current_index', current_index)
 
         # remove this image
         node.duik_texanim_images.remove(current_index)
@@ -193,6 +194,7 @@ class DUIK_OT_texanim_image_move( bpy.types.Operator ):
 
     def execute(self, context):
         node = dublf.context.get_active_node(context)
+        tree = bpy.context.material.node_tree
         current_index = node.duik_texanim_current_index
         images = node.duik_texanim_images
 
@@ -204,7 +206,7 @@ class DUIK_OT_texanim_image_move( bpy.types.Operator ):
         else: new_index = current_index + 1
 
         # update keyframes values
-        dublf.animation.swap_animated_index('nodes[\"' + node.name + '\"].duik_texanim_current_index', current_index, new_index)
+        dublf.animation.swap_animated_index(tree, 'nodes[\"' + node.name + '\"].duik_texanim_current_index', current_index, new_index)
 
         images.move(current_index, new_index)
         node.duik_texanim_current_index = new_index

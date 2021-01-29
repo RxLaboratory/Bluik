@@ -4,6 +4,9 @@
 
 This is the list of what has changed since the first version of *Duik for Blender*.
 
+## 0.5.3
+
+- Fixed an error happening when (re)moving an image in the TexAnim module.
 
 ## 0.5.2
 
