@@ -208,6 +208,7 @@ def set_layer_position( layer, position ):
     set_layer_location( layer, location)
 
 def get_layer_camera_position( self ):
+    """Gets the layer 2D position relative to the 2D scene camera"""
     layer = self.id_data
     scene = get_containing_scene(layer)
     if scene is None: return (0.0,0.0)
@@ -351,7 +352,8 @@ class DUIK_LayerSettings ( bpy.types.PropertyGroup ):
     camera_position: bpy.props.FloatVectorProperty(
         name="2D Position",
         description="The camera coordinates of the layer",
-        get=get_layer_camera_position
+        get=get_layer_camera_position,
+        size=2
     )
     depth:bpy.props.FloatProperty(
         name="Depth",
