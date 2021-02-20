@@ -30,6 +30,6 @@ for file in $dupyf_path/*.py; do
     echo "Deployed DuPYF file $file"
 done
 
-zip -r -m rainbox-blender-experimental.zip duik
+zip -r -m rx-experimental-tools.zip duik
 
 echo "Done!"
