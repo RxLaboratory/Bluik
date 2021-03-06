@@ -4,6 +4,16 @@
 
 This is the list of what has changed since the first version of *Duik for Blender*.
 
+## 0.5.5
+
+#### New
+
+- Added a "Create scene" operator, in the `3D view > Add` menu
+
+## 0.5.4
+
+- Fixed an error showing in the console when linking collections
+
 ## 0.5.3
 
 - Fixed an error happening when (re)moving an image in the TexAnim module.
