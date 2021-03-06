@@ -1,6 +1,6 @@
 #!/bin/bash
 
-addons_path=~/.config/blender/2.91/scripts/addons
+addons_path=~/.config/blender/2.92/scripts/addons
 
 duik_path=../duik/
 dublf_path=../../DuBLF/dublf/

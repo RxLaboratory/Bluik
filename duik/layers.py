@@ -27,6 +27,23 @@ from . import dublf
 from . import tex_anim
 from math import pi
 
+# General
+def set_2d_viewport(context, camera):
+    """Sets and locks the camera to fake a 2D viewport"""
+    bpy.context.scene.camera = camera
+    bpy.ops.view3d.view_camera()
+    bpy.ops.view3d.view_center_camera()
+    bpy.context.space_data.lock_camera = True
+    camera.lock_location[0] = True
+    camera.lock_location[1] = True
+    camera.lock_location[2] = True
+    camera.lock_rotation[0] = True
+    camera.lock_rotation[1] = True
+    camera.lock_rotation[2] = True
+    camera.lock_scale[0] = True
+    camera.lock_scale[1] = True
+    camera.lock_scale[2] = True
+
 # Layers and group
 
 def create_group(context, group_name="", containing_group=None, width = 1920, height = 1080):
@@ -50,7 +67,7 @@ def create_group(context, group_name="", containing_group=None, width = 1920, he
     group.lock_rotation[2] = True
     return group
 
-def create_scene(context, scene_name="", width=1920, height=1080, background_color = [0.0,0.0,0.0,0.0], depth_axis = 2, scene_type = '2D', shader='SHADELESS'):
+def create_scene(context, scene_name="", width=1920, height=1080, background_color = [0.0,0.0,0.0,0.0], depth_axis = 'Z', scene_type = '2D', shader='SHADELESS'):
     # The scene
     scene = create_group(context, 'Duik.' + scene_name, None, width, height)
     scene.duik_scene.depth_axis = depth_axis
@@ -78,13 +95,18 @@ def create_scene(context, scene_name="", width=1920, height=1080, background_col
         cam.data.ortho_scale = width/100
     if depth_axis == 'Z':
         cam.location = (0.0, 0.0, width/50)
+        cam.rotation_euler.x = 0
+        cam.rotation_euler.y = 0
+        cam.rotation_euler.z = 0
     elif depth_axis == 'Y':
         cam.location = (0.0, width/50, 0.0)
         cam.rotation_euler.x = pi/2
+        cam.rotation_euler.y = 0
         cam.rotation_euler.z = pi
     else:
         cam.location = (width/100, 0.0, 0.0)
         cam.rotation_euler.x = pi/2
+        cam.rotation_euler.y = 0
         cam.rotation_euler.z = pi/2
     dublf.collections.move_to_collection( scene.duik_layer.default_collection, cam)
     dublf.rigging.set_object_parent(context, (cam,), scene)
@@ -391,10 +413,76 @@ class DUIK_PT_layer_controls( bpy.types.Panel ):
         duik = obj.duik_layer
         layout.prop( duik, 'depth')
 
+class DUIK_OT_create_2d_scene( bpy.types.Operator ):
+    bl_idname = "object.2d_duik_scene_add"
+    bl_label = "Add Duik 2D scene"
+    bl_description = "Adds and sets a Duik 2D scene up"
+    bl_options = {'REGISTER','UNDO'}
+
+        # Options
+    shader: bpy.props.EnumProperty(
+        name="Shader",
+        items= (
+            ('PRINCIPLED',"Principled","Principled Shader"),
+            ('SHADELESS', "Shadeless", "Only visible to camera and reflections"),
+            ('EMISSION', "Emit", "Emission Shader"),
+        ),
+        default='SHADELESS', 
+        description="Node shader to use"
+        )
+
+    scene_type: bpy.props.EnumProperty(
+        name="Scene perspective",
+        items=(
+            ('2D',"2D","A 2D scene (orthographic)", 'VIEW_ORTHO',0),
+            ('2.5D', "2.5D", "A 2.5D scene (perspective)", 'VIEW_PERSPECTIVE',1),
+            ),
+        default='2D',
+        description="Perspective of the scene"
+        )
+
+    depth_axis: bpy.props.EnumProperty(
+        name="Depth axis",
+        items=(
+            ('X',"X","Use the X axis for the depth"),
+            ('Y', "Y", "Use the Y axis for the depth"),
+            ('Z', "Z", "Use the Z axis for the depth"),
+            ),
+        default='Z',
+        description="Axis to use for the depth"
+        )
+
+    @classmethod
+    def poll(cls, context):
+        # only in object mode
+        return  bpy.context.mode == 'OBJECT'
+
+    def execute(self, context):
+        render_settings = context.scene.render
+        # create scene
+        scene = create_scene(context, "Duik Scene", render_settings.resolution_x, render_settings.resolution_y)
+        # align view to cam
+        set_2d_viewport( context, scene.duik_scene.camera)
+        return {'FINISHED'}
+
+class DUIK_MT_duik_layers_add( bpy.types.Menu ):
+    bl_label = 'Duik'
+    bl_idname = 'DUIK_MT_duik_layers_add'
+
+    def draw(self, context):
+        layout = self.layout
+        layout.operator("object.2d_duik_scene_add", text = "2D Scene", icon = 'CON_CAMERASOLVER')
+
+def menu_func(self, context):
+    self.layout.separator()
+    self.layout.menu("DUIK_MT_duik_layers_add", icon = 'IMAGE_PLANE')
+
 classes = (
     DUIK_LayerSettings,
     DUIK_SceneSettings,
     DUIK_PT_layer_controls,
+    DUIK_OT_create_2d_scene,
+    DUIK_MT_duik_layers_add,
 )
 
 def register():
@@ -417,8 +505,13 @@ def register():
         bpy.types.Object.duik_scene = bpy.props.PointerProperty( type = DUIK_SceneSettings )
     if not hasattr( bpy.types.Object, 'duik_layer'):
         bpy.types.Object.duik_layer = bpy.props.PointerProperty( type = DUIK_LayerSettings )
-        
+
+    bpy.types.VIEW3D_MT_add.append(menu_func)
+
 def unregister():
+
+    bpy.types.VIEW3D_MT_add.remove(menu_func)
+
     # unregister
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
