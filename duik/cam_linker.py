@@ -26,6 +26,7 @@ from . import dublf
 
 class DUIK_CamLinker( bpy.types.PropertyGroup ):
     """A control to link the scene camera to specific properties"""
+    current_cam = ""
 
     id_type: bpy.props.EnumProperty (
             items = [
@@ -178,6 +179,13 @@ class DUIK_PT_cam_linker( bpy.types.Panel ):
 @persistent
 def update_camera_links( scene ):
     """Updates all properties pointing to the current camera"""
+    # Check if the cam has changed, to avoid unnecessary overweight
+    if scene.camera is None:
+        DUIK_CamLinker.current_cam = ""
+        return
+    if scene.camera.name == DUIK_CamLinker.current_cam:
+        return
+    DUIK_CamLinker.current_cam = scene.camera.name
     # get all camera linkers in the scene
     for obj in scene.collection.all_objects:
         for cam_linker in obj.cam_linkers:
@@ -186,7 +194,6 @@ def update_camera_links( scene ):
                 if not (struct is None):
                     #bpy.context.object.pose.bones["pupil"].constraints["Track To"].target = scene.camera
                     setattr(struct[0], struct[1], scene.camera)
-
 
 classes = (
     DUIK_CamLinker,

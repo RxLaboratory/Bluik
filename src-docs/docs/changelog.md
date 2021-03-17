@@ -4,6 +4,12 @@
 
 This is the list of what has changed since the first version of *Duik for Blender*.
 
+## 0.5.6
+
+#### Fixes
+
+- Fixed performance issue (due to the cam linker) on scenes with a lot of objects
+
 ## 0.5.5
 
 #### New
