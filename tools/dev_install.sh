@@ -1,6 +1,6 @@
 #!/bin/bash
 
-addons_path=~/.config/blender/2.92/scripts/addons
+blender_config_path=~/.config/blender/2.92
 
 duik_path=../duik/
 dublf_path=../../DuBLF/dublf/
@@ -10,6 +10,11 @@ dupyf_path=../../../DuPYF/DuPYF/dupyf/
 duik_path=$(cd "$duik_path"; pwd)
 dublf_path=$(cd "$dublf_path"; pwd)
 dupyf_path=$(cd "$dupyf_path"; pwd)
+
+# get/create scripts path
+mkdir "$blender_config_path/scripts"
+mkdir "$blender_config_path/scripts/addons"
+addons_path="$blender_config_path/scripts/addons"
 
 rm -r -f "$addons_path/duik"
 mkdir "$addons_path/duik"
