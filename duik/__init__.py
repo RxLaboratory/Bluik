@@ -18,14 +18,14 @@
 # <pep8 compliant>
 
 bl_info = {
-    "name": "Rainbox Experimental Tools",
+    "name": "Rx Experimental Tools And Bluik",
     "category": "Rigging",
     "blender": (2, 80, 0),
     "author": "Nicolas 'Duduf' Dufresne",
     "location": "Armature properties Pose Menu, View3d sidebar (N), Shader Editor sidebar (N), File > Import.",
-    "version": (0,5,6),
-    "description": "Experimental tools from Rainbox Lab. which may end up in Duik for Blender.",
-    "wiki_url": "https://duik-blender-docs.rainboxlab.org/",
+    "version": (0,6,0),
+    "description": "Experimental tools from RxLab. which may end up in Bluik for Blender.",
+    "wiki_url": "https://bluik.rxlab.guide/",
 }
 
 import importlib

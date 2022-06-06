@@ -1,10 +1,10 @@
 #!/bin/bash
 
-blender_config_path=~/.config/blender/2.92
+blender_config_path=~/.config/blender/3.1
 
 duik_path=../duik/
 dublf_path=../../DuBLF/dublf/
-dupyf_path=../../../DuPYF/DuPYF/dupyf/
+dupyf_path=../../../DuPYF/dupyf/
 
 # convert to absolute paths
 duik_path=$(cd "$duik_path"; pwd)
