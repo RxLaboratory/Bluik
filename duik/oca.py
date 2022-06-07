@@ -59,17 +59,6 @@ class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
         description="Perspective of the scene"
         )
 
-    depth_axis: bpy.props.EnumProperty(
-        name="Depth axis",
-        items=(
-            ('X',"X","Use the X axis for the depth"),
-            ('Y', "Y", "Use the Y axis for the depth"),
-            ('Z', "Z", "Use the Z axis for the depth"),
-            ),
-        default='Z',
-        description="Axis to use for the depth"
-        )
-
     update_timeline: bpy.props.BoolProperty(
         name="Update frame range",
         description="Updates the frame range of the scene according to the imported animation",
@@ -88,9 +77,6 @@ class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
         default=True
     )
 
-    # Utils
-    current_index = 0
-
     def draw(self, context):
         layout = self.layout
         box = layout.box()
@@ -99,8 +85,6 @@ class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
         row = box.row()
         row.prop(self, 'scene_type', expand = True)
         row = box.row()
-        row.label(text="Depth:")
-        row.prop(self, 'depth_axis', expand=True)
         # Shading
         box = layout.box()
         box.label(text="Material Settings:", icon='MATERIAL')
@@ -159,42 +143,40 @@ class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
             context.scene.render.resolution_y = ocaDocument['height']
         
         # Setup 2D Scene
-        scene = layers.create_scene(context, ocaDocument['name'], ocaDocument['width'], ocaDocument['height'], ocaDocument['backgroundColor'], self.depth_axis, self.scene_type, self.shader)
+        scene = layers.create_scene(context, ocaDocument['name'], ocaDocument['width'], ocaDocument['height'], ocaDocument['backgroundColor'], self.scene_type, self.shader)
         
         # Layers
-        self.current_index = 0
         for layer in ocaDocument['layers']:
             self.import_layer(context, layer, scene)
-            self.current_index = self.current_index + 1
 
         # Let's redraw
         dublf.ui.redraw()
 
         print("OCA correctly imported")
 
-    def import_layer(self, context, ocaLayer, containing_group):
+    def import_layer(self, context, ocaLayer, containing_group, depth=0):
         layer_type = ocaLayer['type']
         
         if layer_type == 'grouplayer':
             print('Importing OCA Group: ' + ocaLayer['name'])
-            group = layers.create_group(context, ocaLayer['name'], containing_group, ocaLayer['width'], ocaLayer['height'])
-            group.duik_layer.depth = -self.current_index*.1
+            group = layers.create_group(context, ocaLayer['name'], containing_group)
             for layer in ocaLayer['childLayers']:
-                self.import_layer(context, layer, group)
-            layers.set_layer_position( group, ocaLayer['position'])
-            group.duik_layer.default_collection.hide_viewport = not ocaLayer['visible']
-            group.duik_layer.default_collection.hide_render = ocaLayer['reference']
+                depth = self.import_layer(context, layer, group, depth)
+            group.hide_viewport = not ocaLayer['visible']
+            group.hide_render = ocaLayer['reference']
         elif layer_type == 'paintlayer':
             print('Importing OCA Layer: ' + ocaLayer['name'])
+            depth = depth - .01
             layer = layers.create_layer(context, ocaLayer['name'], ocaLayer['width'], ocaLayer['height'], containing_group)
-            layer.duik_layer.depth = -self.current_index*.1
             layers.set_layer_position( layer, ocaLayer['position'] )
+            layer.duik_layer.depth = depth
             self.update_frame_paths(ocaLayer['frames'])
             framesShader = layers.create_layer_shader(ocaLayer['name'], ocaLayer['frames'], ocaLayer['animated'], self.shader)
             if ocaLayer['label'] != 0:
                 framesShader.diffuse_color = dublf.oca.OCALabels[ ocaLayer['label'] % 8 +1 ]
             layer.data.materials.append(framesShader)
-            self.current_index = self.current_index + 1
+
+        return depth
 
     def update_frame_paths( self, frames ):
         for f in frames:

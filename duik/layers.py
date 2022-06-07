@@ -46,45 +46,23 @@ def set_2d_viewport(context, camera):
 
 # Layers and group
 
-def create_group(context, group_name="", containing_group=None, width = 1920, height = 1080):
+def create_group(context, group_name="", containing_group=None):
     """Creates a group of layers"""
     collection = dublf.collections.add_collection_to_scene(context.scene, group_name)
     group_name = group_name.split('.')[-1]
-    # The layer
-    bpy.ops.object.empty_add('INVOKE_REGION_WIN', type = 'ARROWS')
-    group = context.active_object
-    group.name = group_name + '.Group'
-    dublf.collections.move_to_collection( collection, group)
+    collection.name = group_name
+    if containing_group is not None:
+        dublf.collections.move_collection_to_collection( containing_group, collection )
     # Duik infos
-    group.duik_layer.width = width
-    group.duik_layer.height = height
-    group.duik_layer.default_collection = collection
-    group.duik_type = 'SCENE'
-    # Move to containing group
-    move_to_group( group, containing_group )
-    group.lock_rotation[0] = True
-    group.lock_rotation[1] = True
-    group.lock_rotation[2] = True
-    return group
+    collection.duik_type = 'SCENE'
+    return collection
 
-def create_scene(context, scene_name="", width=1920, height=1080, background_color = [0.0,0.0,0.0,0.0], depth_axis = 'Z', scene_type = '2D', shader='SHADELESS'):
+def create_scene(context, scene_name="", width=1920, height=1080, background_color = [0.0,0.0,0.0,0.0], scene_type = '2D', shader='SHADELESS'):
     # The scene
-    scene = create_group(context, 'Duik.' + scene_name, None, width, height)
-    scene.duik_scene.depth_axis = depth_axis
+    scene = create_group(context, 'Duik.' + scene_name)
     scene.duik_scene.background_color = background_color
     scene.duik_scene.scene_type = scene_type
     scene.duik_scene.shader = shader
-
-    # Move the root to the top left corner
-    scene.name = scene_name + '.Root'
-    if depth_axis == 'Z':
-        scene.rotation_euler.y = pi
-    elif depth_axis == 'Y':
-        scene.rotation_euler.z = pi
-        scene.rotation_euler.y = pi/2
-    else:
-        scene.rotation_euler.z = pi
-        scene.rotation_euler.x = pi
 
     # The camera
     bpy.ops.object.camera_add('INVOKE_REGION_WIN')
@@ -93,90 +71,59 @@ def create_scene(context, scene_name="", width=1920, height=1080, background_col
     if scene_type == '2D':
         cam.data.type = 'ORTHO'
         cam.data.ortho_scale = width/100
-    if depth_axis == 'Z':
-        cam.location = (0.0, 0.0, width/50)
-        cam.rotation_euler.x = 0
+        cam.location = (0.0, -width/50, 0.0)
+        cam.rotation_euler.x = pi/2
         cam.rotation_euler.y = 0
         cam.rotation_euler.z = 0
-    elif depth_axis == 'Y':
-        cam.location = (0.0, width/50, 0.0)
-        cam.rotation_euler.x = pi/2
-        cam.rotation_euler.y = 0
-        cam.rotation_euler.z = pi
-    else:
-        cam.location = (width/100, 0.0, 0.0)
-        cam.rotation_euler.x = pi/2
-        cam.rotation_euler.y = 0
-        cam.rotation_euler.z = pi/2
-    dublf.collections.move_to_collection( scene.duik_layer.default_collection, cam)
-    dublf.rigging.set_object_parent(context, (cam,), scene)
+
+    dublf.collections.move_to_collection( scene, cam)
     scene.duik_scene.camera = cam
+    scene.duik_scene.width = width
+    scene.duik_scene.height = height
 
     # The background
     if background_color[3] > 0:
-        colorShader = dublf.materials.create_color_material( background_color, 'OCA.Background Color', shader )
+        colorShader = dublf.materials.create_color_material( background_color, 'Background Color', shader )
         bgLayer = create_layer(context, 'Background', width, height, scene)
         bgLayer.data.materials.append(colorShader)
         scene.duik_scene.background = bgLayer
 
     return scene
 
+def get_create_scene(context, scene_name=""):
+    collection = context.scene.collection
+    for coll in collection.children:
+        pass
+
 def move_to_group( layer, group ):
     if group is None: return
 
     # Collections
-    group_collection = group.duik_layer.default_collection
     if layer.duik_type == 'GROUP' or layer.duik_type == 'SCENE':
-        dublf.collections.move_collection_to_collection( group_collection, layer.duik_layer.default_collection)
+        dublf.collections.move_collection_to_collection( group, layer)
         layer.duik_type = 'GROUP'
     else:
-        dublf.collections.move_to_collection( group_collection, layer )
-        layer.duik_layer.default_collection = group_collection
+        dublf.collections.move_to_collection( group, layer )
+        layer.duik_layer.default_collection = group
 
-    layer.parent = None
+def get_containing_group(context, layer ):
+    collections = context.scene.collection.children_recursive
+    for collection in collections:
+        if collection.duik_type not in ('GROUP', 'SCENE'):
+            continue
+        for object in collection.objects:
+            if object.name == layer.name:
+                return collection
+    return None
 
-    depth_axis = group.duik_layer.depth_axis
-    # Location and rotation
-    if depth_axis == 'Y':
-        layer.rotation_euler.x = -pi/2
-        layer.rotation_euler.y = pi
-        layer.rotation_euler.z = 0
-        layer.lock_location[0] = False
-        layer.lock_location[1] = True
-        layer.lock_location[2] = False
-    elif depth_axis == 'X':
-        layer.rotation_euler.x = -pi/2
-        layer.rotation_euler.z = -pi/2
-        layer.rotation_euler.y = pi
-        layer.lock_location[0] = True
-        layer.lock_location[1] = False
-        layer.lock_location[2] = False
-    else:
-        layer.rotation_euler.x = 0
-        layer.rotation_euler.z = 0
-        layer.rotation_euler.y = 0
-        layer.lock_location[0] = False
-        layer.lock_location[1] = False
-        layer.lock_location[2] = True
-
-    layer.parent = group
-
-def get_containing_group( layer ):
-    p = layer.parent
-    while p is not None:
-        layer_type = p.duik_type
-        if layer_type == 'GROUP' or layer_type == 'SCENE':
-            return p
-        p = p.parent
-    return p
-
-def get_containing_scene( layer ):
-    p = layer.parent
-    while p is not None:
-        layer_type = p.duik_type
-        if layer_type == 'SCENE':
-            return p
-        p = p.parent
+def get_containing_scene( context, layer ):
+    collections = context.scene.collection.children_recursive
+    for collection in collections:
+        if collection.duik_type != 'SCENE':
+            continue
+        for object in collection.all_objects:
+            if object.name == layer.name:
+                return collection
     return None
 
 def create_layer(context, name, width, height, containing_group=None):
@@ -193,46 +140,48 @@ def create_layer(context, name, width, height, containing_group=None):
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
 
     plane.duik_layer.width = width
-    plane.duik_layer.width = height
+    plane.duik_layer.height = height
     plane.duik_type = 'LAYER'
     move_to_group( plane, containing_group)
 
+    # Location and rotation
+    plane.rotation_euler.x = -pi/2
+    plane.rotation_euler.y = pi
+    plane.rotation_euler.z = 0
+    plane.lock_location[0] = False
+    plane.lock_location[1] = True
+    plane.lock_location[2] = False
+
     return plane
 
-def is_layer( obj ):
+def is_layer( context, obj ):
     if obj is None: return False
-    scene = get_containing_scene( obj )
-    return scene is not None
+    scene = get_containing_scene( context, obj )
+    return scene is not None and obj.duik_type == 'LAYER'
 
 # 2D Transformations
 
-def convert_position_from_px( position, containing_group=None):
+def convert_position_from_px( position ):
     """Converts pixel coordinates to actual location in Blender"""
     fac = .01
     x = position[0]
     y = position[1]
-    if containing_group is not None:
-        x = x - containing_group.duik_layer.width / 2
-        y = y - containing_group.duik_layer.height / 2
     x = x*fac
     y = -y*fac
-    result = [x,y]
+    z = 0
     if len(position) == 3:
-        result.append(position[2]*fac)
-    return result
+        z = position[2]*fac
+    return [x, y, z]
 
 def set_layer_position( layer, position ):
     """Translates an object, converting the 2D position to the actual 3D location depenting on the depth axis"""
-    print(position)
-    group = get_containing_group( layer )
-    location = convert_position_from_px(position, group)
-    print(location)
+    location = convert_position_from_px(position)
     set_layer_location( layer, location)
 
 def get_layer_camera_position( self ):
     """Gets the layer 2D position relative to the 2D scene camera"""
     layer = self.id_data
-    scene = get_containing_scene(layer)
+    scene = get_containing_scene(bpy.context, layer)
     if scene is None: return (0.0,0.0)
     cam = scene.duik_scene.camera
     if cam is None: return  (0.0,0.0)
@@ -245,53 +194,28 @@ def get_layer_camera_position( self ):
 
 def set_layer_location( layer, location ):
     """Sets the 3D location, adapting it to the depth axis"""
-    depth_axis = layer.duik_layer.depth_axis
-    if depth_axis == 'Z':
-        layer.location = (location[0], location[1], layer.location[2])
-    elif depth_axis == 'Y':
-        layer.location = (location[0], layer.location[1], location[1])
-    else:
-        layer.location = (layer.location[0], location[0], location[1])
+    x = location[0]
+    y = layer.location[1]
+    if len(location) == 3:
+        y = location[2]
+    z = location[1]
+
+    scene = get_containing_scene(bpy.context, layer)
+    if scene is not None:
+        x = x - scene.duik_scene.width / 200
+        z = z + scene.duik_scene.height / 200
+
+    layer.location = (x, y, z)
 
 # Layer Indices (depth location)
 
-def get_depth_axis( self ):
-    layer = self.id_data
-    scene = get_containing_scene(layer)
-    if scene is not None:
-        axis = scene.duik_scene.depth_axis
-        if axis == 'X': return 0
-        if axis == 'Y': return 1
-        if axis == 'Z': return 2
-    return 2
-
 def get_depth( self ):
     layer = self.id_data
-    if layer.duik_type == 'SCENE': return 0.0
-    scene = get_containing_scene(layer)
-    if scene is None: return 0.0
-    cam = scene.duik_scene.camera
-    if cam is None: return 0.0
-    bl_scene = bpy.context.scene
-    coord = layer.matrix_world.decompose()[0]
-    position = world_to_camera_view( bl_scene, cam, coord )
-    scene_coord = scene.matrix_world.decompose()[0]
-    scene_position = world_to_camera_view( bl_scene, cam, scene_coord )
-    return position[2] - scene_position[2]
+    return layer.location[1]
 
-def set_depth(self, depth):
+def set_depth( self, depth ):
     layer = self.id_data
-    scene = get_containing_scene(layer)
-    if scene is None: return 
-    cam = scene.duik_scene.camera
-    if cam is None: return
-    matrix_cam = layer.matrix_world @ cam.matrix_world
-    # translate
-    offset_depth = self.depth - depth
-    matrix_cam = matrix_cam @ Matrix.Translation((0.0,0.0,offset_depth))
-    invert_cam = cam.matrix_world.copy()
-    invert_cam.invert()
-    layer.matrix_world = matrix_cam @ invert_cam
+    layer.location = (layer.location[0], depth, layer.location[2] )
         
 # Shaders
 
@@ -310,10 +234,12 @@ def create_layer_shader( layer_name, frames, animated = False, shader='SHADELESS
                 im = dublf.materials.get_blank_image()
             else:
                 im = load_image(frame['fileName'], check_existing=True, force_reload=True)
-                im.name = frame['name']
+                if im:
+                    im.name = frame['name']
             texAnimIm = texture_node.duik_texanim_images.add()
-            texAnimIm.image = im
-            texAnimIm.name = im.name
+            if im:
+                texAnimIm.image = im
+                texAnimIm.name = im.name
             current_frame = frame['frameNumber']
             key = curve.keyframe_points.insert( current_frame, len(texture_node.duik_texanim_images) -1 )
             key.interpolation = 'CONSTANT'
@@ -342,12 +268,6 @@ axis=(
 
 class DUIK_SceneSettings( bpy.types.PropertyGroup ):
     background_color: bpy.props.FloatVectorProperty(size=4, subtype='COLOR', min=0.0, max=0.0)
-    depth_axis: bpy.props.EnumProperty(
-        name="Depth axis",
-        items=axis,
-        default='Z',
-        description="Axis to use for the depth"
-        )
     scene_type: bpy.props.EnumProperty(
         name="Scene perspective",
         items=(
@@ -369,6 +289,8 @@ class DUIK_SceneSettings( bpy.types.PropertyGroup ):
         )
     camera: bpy.props.PointerProperty( type=bpy.types.Object )
     background: bpy.props.PointerProperty( type=bpy.types.Object )
+    width: bpy.props.IntProperty(default=1920, subtype='PIXEL')
+    height: bpy.props.IntProperty(default=1080, subtype='PIXEL')
 
 class DUIK_LayerSettings ( bpy.types.PropertyGroup ):
     camera_position: bpy.props.FloatVectorProperty(
@@ -380,17 +302,8 @@ class DUIK_LayerSettings ( bpy.types.PropertyGroup ):
     depth:bpy.props.FloatProperty(
         name="Depth",
         description="The layer depth coordinate",
-        subtype='DISTANCE',
-        unit='LENGTH',
         get=get_depth,
         set=set_depth
-    )
-    depth_axis: bpy.props.EnumProperty(
-        name="Depth axis",
-        items=axis,
-        default='Z',
-        description="Axis to use for the depth",
-        get=get_depth_axis
     )
     width: bpy.props.IntProperty(default=1920, subtype='PIXEL')
     height: bpy.props.IntProperty(default=1080, subtype='PIXEL')
@@ -405,7 +318,7 @@ class DUIK_PT_layer_controls( bpy.types.Panel ):
 
     @classmethod
     def poll(self, context):
-        return is_layer(context.active_object)
+        return is_layer(context, context.active_object)
 
     def draw(self, context):
         layout = self.layout
@@ -491,8 +404,8 @@ def register():
         bpy.utils.register_class(cls)
 
     # The 2D Scene attributes
-    if not hasattr( bpy.types.Object, 'duik_type'):
-        bpy.types.Object.duik_type = bpy.props.EnumProperty(
+    if not hasattr( bpy.types.Collection, 'duik_type'):
+        bpy.types.Collection.duik_type = bpy.props.EnumProperty(
             items=(
                 ('SCENE',"Scene","A Duik 2D Scene"),
                 ('GROUP', "Group", "A Duik 2D Group"),
@@ -501,8 +414,16 @@ def register():
                 ),
             default='NONE',
             )
-    if not hasattr( bpy.types.Object, 'duik_scene'):
-        bpy.types.Object.duik_scene = bpy.props.PointerProperty( type = DUIK_SceneSettings )
+    if not hasattr( bpy.types.Object, 'duik_type'):
+        bpy.types.Object.duik_type = bpy.props.EnumProperty(
+            items=(
+                ('LAYER', "Layer", "A Duik 2D Layer"),
+                ('NONE', "None", "Not used by Duik"),
+                ),
+            default='NONE',
+            )
+    if not hasattr( bpy.types.Collection, 'duik_scene'):
+        bpy.types.Collection.duik_scene = bpy.props.PointerProperty( type = DUIK_SceneSettings )
     if not hasattr( bpy.types.Object, 'duik_layer'):
         bpy.types.Object.duik_layer = bpy.props.PointerProperty( type = DUIK_LayerSettings )
 
@@ -516,6 +437,7 @@ def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
+    del bpy.types.Collection.duik_type
     del bpy.types.Object.duik_type
-    del bpy.types.Object.duik_scene
+    del bpy.types.Collection.duik_scene
     del bpy.types.Object.duik_layer
