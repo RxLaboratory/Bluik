@@ -57,7 +57,12 @@ def create_group(context, group_name="", containing_group=None):
     collection.duik_type = 'SCENE'
     return collection
 
-def create_scene(context, scene_name="", width=1920, height=1080, background_color = [0.0,0.0,0.0,0.0], scene_type = '2D', shader='SHADELESS'):
+def create_scene(context, scene_name="", width=0, height=0, background_color = [0.0,0.0,0.0,0.0], scene_type = '2D', shader='SHADELESS'):
+    if width == 0:
+        width = context.scene.render.resolution_x
+    if height == 0:
+        height = context.scene.render.resolution_y
+    
     # The scene
     scene = create_group(context, 'Duik.' + scene_name)
     scene.duik_scene.background_color = background_color
@@ -90,11 +95,18 @@ def create_scene(context, scene_name="", width=1920, height=1080, background_col
 
     return scene
 
-def get_create_scene(context, scene_name=""):
+def get_create_scene(context, scene_name="", width=1920, height=1080, background_color = [0.0,0.0,0.0,0.0], scene_type = '2D', shader='SHADELESS'):
     collection = context.scene.collection
-    for coll in collection.children:
-        pass
-
+    for coll in collection.children_recursive:
+        if not coll.duik_type == 'SCENE':
+            continue
+        if scene_name != "" and coll.name != scene_name:
+            continue
+        return coll
+    if scene_name == "":
+        scene_name = "Duik Scene"
+    return create_scene(context, scene_name, width, height, background_color, scene_type, shader)
+        
 def move_to_group( layer, group ):
     if group is None: return
 
@@ -153,6 +165,10 @@ def create_layer(context, name, width, height, containing_group=None):
     plane.lock_location[2] = False
 
     return plane
+
+def set_as_layer(obj, group):
+    obj.duik_type = 'LAYER'
+    move_to_group( obj, group)
 
 def is_layer( context, obj ):
     if obj is None: return False
@@ -371,9 +387,8 @@ class DUIK_OT_create_2d_scene( bpy.types.Operator ):
         return  bpy.context.mode == 'OBJECT'
 
     def execute(self, context):
-        render_settings = context.scene.render
         # create scene
-        scene = create_scene(context, "Duik Scene", render_settings.resolution_x, render_settings.resolution_y)
+        scene = create_scene(context, "Duik Scene")
         # align view to cam
         set_2d_viewport( context, scene.duik_scene.camera)
         return {'FINISHED'}
