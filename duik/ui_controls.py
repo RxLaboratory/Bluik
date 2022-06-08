@@ -420,7 +420,6 @@ class DUIK_PT_controls_ui( bpy.types.Panel ):
         for ui_control in armature_data.ui_controls:
             if active_bone.name in ui_control.bones: return True
         return False
-
         
     def draw(self, context):
         armature_object = context.active_object

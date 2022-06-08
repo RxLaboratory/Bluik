@@ -40,7 +40,8 @@ from . import (
     layers,
     oca,
     dopesheet_filters,
-    oco
+    oco,
+    object_selector
 )
 
 class DUIK_Preferences( bpy.types.AddonPreferences ):
@@ -112,6 +113,7 @@ def register():
     importlib.reload(oca)
     importlib.reload(dopesheet_filters)
     importlib.reload(oco)
+    importlib.reload(object_selector)
 
     # Modules
     autorig.register()
@@ -124,6 +126,7 @@ def register():
     oca.register()
     oco.register()
     dopesheet_filters.register()
+    object_selector.register()
 
     # Attributes
     if not hasattr( bpy.types.Armature, 'duik_rig_type' ):
@@ -172,6 +175,7 @@ def unregister():
     ui_layers.unregister()
     cam_linker.unregister()
     oco.unregister()
+    object_selector.unregister()
 
     # unregister
     for cls in reversed(classes):
