@@ -19,7 +19,7 @@
 
 # OCO Import
 
-import time
+import time, os
 import numpy as np
 import bpy # pylint: disable=import-error
 import bmesh
@@ -163,6 +163,8 @@ class IMPORT_OCO_OT_import(bpy.types.Operator, AddObjectHelper):
     def import_layer(self, context, ocoLayer, doc, containing_group, depth=0):
         layer_type = ocoLayer['type']
 
+        path = os.path.dirname(self.filepath)
+
         if layer_type == 'grouplayer':
             print('Importing OCO Group: ' + ocoLayer['name'])
             group = layers.create_group(context, ocoLayer['name'], containing_group)
@@ -180,7 +182,10 @@ class IMPORT_OCO_OT_import(bpy.types.Operator, AddObjectHelper):
             # Create images to leafig them
             for frame in ocoLayer['frames']:
                 self.progressUpdate(context, .1)
-                r = self.import_image(context, frame['fileName'], ocoLayer['name'], frame['opacity'])
+                filePath = os.path.join(path, frame['fileName'])
+                if not os.path.isfile(filePath):
+                    continue
+                r = self.import_image(context, filePath, ocoLayer['name'], frame['opacity'])
                 if r is None:
                     continue
                 layer = r[0]
@@ -188,8 +193,8 @@ class IMPORT_OCO_OT_import(bpy.types.Operator, AddObjectHelper):
                 layers.set_as_layer(layer, containing_group)
                 # Center layer in doc
                 # layers.set_layer_position( layer, ocoLayer['position'] )
-                x = ocoLayer['position'][0] - doc['width']/2
-                y = ocoLayer['position'][1] - doc['height']/2
+                x = frame['position'][0] - doc['width']/2
+                y = frame['position'][1] - doc['height']/2
                 layers.translate_layer(layer, (x,y))
                 layer.duik_layer.depth = depth
                 if ocoLayer['label'] != 0:
