@@ -88,7 +88,7 @@ class BLUIK_PT_object_selector( bpy.types.Panel ):
         layout = self.layout
 
         row = layout.row()
-        row.template_list("UI_UL_list", "bluik_selector", selector, "objects", selector, "current_index" , rows = 3 )
+        row.template_list("UI_UL_list", "bluik_selector", selector, "objects", selector, "current_index" , rows = 5 )
         col = row.column(align=True)
         col.operator("bluik_object_selector.add_objects", icon='ADD', text="")
         col.operator("bluik_object_selector.remove_object", icon='REMOVE', text="")
@@ -110,9 +110,7 @@ class BLUIK_OT_object_selector_add_objects( bpy.types.Operator ):
 
     @classmethod
     def poll( self, context):
-        obj = context.active_object
-        if obj is None:
-            return False
+        obj = dublf.context.get_active_poseBone_or_object(context)
         return len(context.selected_objects) > 0 and obj.bluik_object_selector.enabled
             
     def execute(self, context):
@@ -162,9 +160,7 @@ class BLUIK_OT_object_selector_remove_object( bpy.types.Operator ):
 
     @classmethod
     def poll( self, context):
-        obj = context.active_object
-        if obj is None:
-            return False
+        obj = dublf.context.get_active_poseBone_or_object(context)
         return obj.bluik_object_selector.enabled
             
     def execute(self, context):
@@ -186,9 +182,7 @@ class BLUIK_OT_object_selector_remove_all( bpy.types.Operator ):
 
     @classmethod
     def poll( self, context):
-        obj = context.active_object
-        if obj is None:
-            return False
+        obj = dublf.context.get_active_poseBone_or_object(context)
         return obj.bluik_object_selector.enabled
 
     def execute(self, context):
@@ -210,9 +204,7 @@ class BLUIK_OT_object_selector_move( bpy.types.Operator ):
 
     @classmethod
     def poll( self, context):
-        obj = context.active_object
-        if obj is None:
-            return False
+        obj = dublf.context.get_active_poseBone_or_object(context)
         return obj.bluik_object_selector.enabled
 
     def execute(self, context):
@@ -274,8 +266,11 @@ class BLUIK_MT_object( bpy.types.Menu ):
         layout = self.layout
         layout.operator("bluik_object_selector.add", text = "Add object selector", icon = 'PRESET')
 
-def menu_func(self, context):
+def object_menu_func(self, context):
     self.layout.separator()
+    self.layout.menu("BLUIK_MT_object")
+
+def pose_menu_func(self, context):
     self.layout.menu("BLUIK_MT_object")
 
 classes = (
@@ -303,7 +298,8 @@ def register():
     if not hasattr( bpy.types.PoseBone, 'bluik_object_selector' ):
         bpy.types.PoseBone.bluik_object_selector = bpy.props.PointerProperty( type = BLUIK_object_selector )
         
-    bpy.types.VIEW3D_MT_object.append(menu_func)
+    bpy.types.VIEW3D_MT_object.append(object_menu_func)
+    bpy.types.VIEW3D_MT_pose.append(pose_menu_func)
 
     # Add handler
     dublf.handlers.frame_change_post_append( update_object_handler )
@@ -313,7 +309,8 @@ def unregister():
     dublf.handlers.frame_change_post_remove( update_object_handler )
 
     # Menu
-    bpy.types.VIEW3D_MT_object.remove(menu_func)
+    bpy.types.VIEW3D_MT_object.remove(object_menu_func)
+    bpy.types.VIEW3D_MT_pose.remove(pose_menu_func)
 
     # Attributes
     del bpy.types.Object.bluik_object_selector

@@ -237,11 +237,11 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
         dublf.rigging.addTransformVariable(driver, "rot", tibia, 'ROT_Z', 'LOCAL_SPACE', armatureObject)
         dublf.rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
         driver.expression = "( rot * auto ) / 10"
-        driver = dublf.rigging.addDriver(tibia, 'bbone_curveiny', driverType = 'SCRIPTED')
+        driver = dublf.rigging.addDriver(tibia, 'bbone_curveinz', driverType = 'SCRIPTED')
         dublf.rigging.addTransformVariable(driver, "rot", tibia, 'ROT_X', 'LOCAL_SPACE', armatureObject)
         dublf.rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
         driver.expression = "- ( rot * auto ) / 10"
-        driver = dublf.rigging.addDriver(tibia, 'bbone_curveouty', driverType = 'SCRIPTED')
+        driver = dublf.rigging.addDriver(tibia, 'bbone_curveoutz', driverType = 'SCRIPTED')
         dublf.rigging.addTransformVariable(driver, "rot", tibia, 'ROT_X', 'LOCAL_SPACE', armatureObject)
         dublf.rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
         driver.expression = "- ( rot * auto ) / 10"
@@ -254,11 +254,11 @@ class DUIK_OT_ikfk( bpy.types.Operator ):
         dublf.rigging.addTransformVariable(driver, "rot", tibia, 'ROT_Z', 'LOCAL_SPACE', armatureObject)
         dublf.rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
         driver.expression = "( rot * auto ) / 10"
-        driver = dublf.rigging.addDriver(femur, 'bbone_curveiny', driverType = 'SCRIPTED')
+        driver = dublf.rigging.addDriver(femur, 'bbone_curveinz', driverType = 'SCRIPTED')
         dublf.rigging.addTransformVariable(driver, "rot", tibia, 'ROT_X', 'LOCAL_SPACE', armatureObject)
         dublf.rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
         driver.expression = "- ( rot * auto ) / 10"
-        driver = dublf.rigging.addDriver(femur, 'bbone_curveouty', driverType = 'SCRIPTED')
+        driver = dublf.rigging.addDriver(femur, 'bbone_curveoutz', driverType = 'SCRIPTED')
         dublf.rigging.addTransformVariable(driver, "rot", tibia, 'ROT_X', 'LOCAL_SPACE', armatureObject)
         dublf.rigging.addVariable(driver, "auto", 'pose.bones["' + controller.name + '"]["Auto-Bend"]', armatureObject)
         driver.expression = "- ( rot * auto ) / 10"

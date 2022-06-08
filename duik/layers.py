@@ -166,9 +166,10 @@ def create_layer(context, name, width, height, containing_group=None):
 
     return plane
 
-def set_as_layer(obj, group):
+def set_as_layer(obj, group=None):
     obj.duik_type = 'LAYER'
-    move_to_group( obj, group)
+    if group is not None:
+        move_to_group( obj, group)
 
 def is_layer( context, obj ):
     if obj is None: return False

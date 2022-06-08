@@ -20,7 +20,7 @@
 bl_info = {
     "name": "Rx Experimental Tools And Bluik",
     "category": "Rigging",
-    "blender": (2, 80, 0),
+    "blender": (3, 0, 0),
     "author": "Nicolas 'Duduf' Dufresne",
     "location": "Armature properties Pose Menu, View3d sidebar (N), Shader Editor sidebar (N), File > Import.",
     "version": (0,6,0),

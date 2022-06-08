@@ -155,6 +155,8 @@ class IMPORT_OCO_OT_import(bpy.types.Operator, AddObjectHelper):
         for layer in ocoDocument['layers']:
             self.import_layer(context, layer, ocoDocument, scene)
 
+        self.progressEnd(context)
+
         # Let's redraw
         dublf.ui.redraw()
 
@@ -180,6 +182,7 @@ class IMPORT_OCO_OT_import(bpy.types.Operator, AddObjectHelper):
             if ocoLayer['animated']:
                 containing_group = layers.create_group(context, ocoLayer['name'], containing_group)
             # Create images to leafig them
+            frames = []
             for frame in ocoLayer['frames']:
                 self.progressUpdate(context, .1)
                 filePath = os.path.join(path, frame['fileName'])
@@ -199,6 +202,10 @@ class IMPORT_OCO_OT_import(bpy.types.Operator, AddObjectHelper):
                 layer.duik_layer.depth = depth
                 if ocoLayer['label'] != 0:
                     shader.diffuse_color = oco.OCOLabels[ ocoLayer['label'] % 8 +1 ]
+                frames.append(layer)
+
+            if len(frames) > 1:
+                self.create_layer_control(context, ocoLayer, frames)
 
         return depth
 
@@ -412,6 +419,24 @@ class IMPORT_OCO_OT_import(bpy.types.Operator, AddObjectHelper):
 
         return obj, mat
 
+    def create_layer_control(self, context, ocoLayer, frames):
+        # Add an empty + object selector
+        empty = bpy.data.objects.new(ocoLayer['name'], None)
+        context.scene.collection.objects.link(empty)
+        empty.location = frames[0].location
+        empty.empty_display_size = frames[0].dimensions[0]/2
+        empty.empty_display_type = 'CUBE'
+        empty.show_in_front = True
+        containing_group = layers.get_containing_group(context, frames[0])
+        print(containing_group)
+        layers.set_as_layer(empty, containing_group)
+        empty.bluik_object_selector.enabled = True
+        for frame in frames:
+            o = empty.bluik_object_selector.objects.add()
+            o.obj = frame
+            o.name = frame.name   
+        dublf.rigging.set_object_parent(frames, empty)
+
     def progressStart(self, context):
         wm = context.window_manager
         wm.progress_begin(0, 1000)
@@ -421,7 +446,7 @@ class IMPORT_OCO_OT_import(bpy.types.Operator, AddObjectHelper):
         self.progress = self.progress + val
         wm.progress_update(self.progress)
 
-    def progressEnd(self, context, val):
+    def progressEnd(self, context):
         wm = context.window_manager
         wm.progress_end()
 
