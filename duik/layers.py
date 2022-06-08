@@ -194,6 +194,17 @@ def set_layer_position( layer, position ):
     location = convert_position_from_px(position)
     set_layer_location( layer, location)
 
+def translate_layer(layer, position):
+    """Offsets the location"""
+    tr = convert_position_from_px(position)
+    x = tr[0] + layer.location[0]
+    y = layer.location[1]
+    if len(tr) == 3:
+        y = tr[2] + layer.location[1]
+    z = tr[1] + layer.location[2]
+
+    layer.location = (x, y, z)
+
 def get_layer_camera_position( self ):
     """Gets the layer 2D position relative to the 2D scene camera"""
     layer = self.id_data
@@ -204,8 +215,8 @@ def get_layer_camera_position( self ):
     bl_scene = bpy.context.scene
     coord = layer.matrix_world.decompose()[0]
     position = world_to_camera_view( bl_scene, cam, coord )
-    position[0] = position[0]*100-scene.duik_layer.width/2
-    position[1] = position[1]*100-scene.duik_layer.height/2
+    position[0] = position[0]*100-scene.duik_scene.width/2
+    position[1] = position[1]*100-scene.duik_scene.height/2
     return (position[0], position[1])
 
 def set_layer_location( layer, location ):

@@ -70,10 +70,14 @@ class IMPORT_OCO_OT_import(bpy.types.Operator, AddObjectHelper):
         name="Cutoff",
         min=0.0001,
         max=0.9999,
-        default=0.5,
+        default=0.01,
         description="Threshold in the alpha channel in which the selected pixel is considered visible",
     )
 
+    # Utils
+    progress=0
+
+    # Methods
     def draw(self, context):
         def spacer(inpl):
             row = inpl.row()
@@ -145,40 +149,48 @@ class IMPORT_OCO_OT_import(bpy.types.Operator, AddObjectHelper):
         # Get/Create Duik Scene
         scene = layers.get_create_scene(context)
 
+        self.progressStart(context)
+
         # Layers
         for layer in ocoDocument['layers']:
-            self.import_layer(context, layer, scene)
+            self.import_layer(context, layer, ocoDocument, scene)
 
         # Let's redraw
         dublf.ui.redraw()
 
         print("OCO correctly imported")
 
-    def import_layer(self, context, ocoLayer, containing_group, depth=0):
+    def import_layer(self, context, ocoLayer, doc, containing_group, depth=0):
         layer_type = ocoLayer['type']
 
         if layer_type == 'grouplayer':
             print('Importing OCO Group: ' + ocoLayer['name'])
             group = layers.create_group(context, ocoLayer['name'], containing_group)
             for layer in ocoLayer['childLayers']:
-                depth = self.import_layer(context, layer, group, depth)
+                depth = self.import_layer(context, layer, doc, group, depth)
             group.hide_viewport = not ocoLayer['visible']
             group.hide_render = ocoLayer['reference']
         else:
             print('Importing OCO Layer: ' + ocoLayer['name'])
-            depth = depth - .01
+            self.progressUpdate(context, 1)
+            depth = depth - .05
             # Animated: create a group for it
             if ocoLayer['animated']:
                 containing_group = layers.create_group(context, ocoLayer['name'], containing_group)
             # Create images to leafig them
             for frame in ocoLayer['frames']:
+                self.progressUpdate(context, .1)
                 r = self.import_image(context, frame['fileName'], ocoLayer['name'], frame['opacity'])
                 if r is None:
                     continue
                 layer = r[0]
                 shader = r[0]
                 layers.set_as_layer(layer, containing_group)
-                layers.set_layer_position( layer, ocoLayer['position'] )
+                # Center layer in doc
+                # layers.set_layer_position( layer, ocoLayer['position'] )
+                x = ocoLayer['position'][0] - doc['width']/2
+                y = ocoLayer['position'][1] - doc['height']/2
+                layers.translate_layer(layer, (x,y))
                 layer.duik_layer.depth = depth
                 if ocoLayer['label'] != 0:
                     shader.diffuse_color = oco.OCOLabels[ ocoLayer['label'] % 8 +1 ]
@@ -195,12 +207,6 @@ class IMPORT_OCO_OT_import(bpy.types.Operator, AddObjectHelper):
         # We need an image editor
         #bpy.ops.render.view_show("INVOKE_DEFAULT")
 
-        wm = context.window_manager
-
-        tot = 1000
-        wm.progress_begin(0, tot)
-        wm.progress_update(100)
-
         t0 = time.time()
         pixels = np.float32(np.array(image.pixels[:]).reshape(image.size[1], image.size[0], 4))
 
@@ -213,8 +219,6 @@ class IMPORT_OCO_OT_import(bpy.types.Operator, AddObjectHelper):
         st = 1
         # st = int(self.prg.downsample)
 
-        wm.progress_update(200)
-
         # convert from linear to srgb
         bcol = np.array([ilib.linear2srgb(i) for i in (0.0, 0.0, 0.0)], dtype=np.float32)
 
@@ -223,8 +227,6 @@ class IMPORT_OCO_OT_import(bpy.types.Operator, AddObjectHelper):
 
         print("image conversion: {:.2f} sec".format(time.time() - t0))
         t0 = time.time()
-
-        wm.progress_update(300)
 
         if self.smooth > 0:
             sval = 1 + self.smooth * 2
@@ -236,22 +238,36 @@ class IMPORT_OCO_OT_import(bpy.types.Operator, AddObjectHelper):
             print("smoothing: {:.2f} sec".format(time.time() - t0))
             t0 = time.time()
 
-        wm.progress_update(400)
-
         nm = res > self.cutoff
         l_verts = geo.lines_marching(res, self.cutoff, nm)
 
+        # Get the shape location to move the object to its location later
+        xmin = ydim
+        xmax = 0
+        ymin = xdim
+        ymax = 0
+        for line in l_verts:
+            x0 = line[0][1]
+            x1 = line[1][1]
+            y0 = line[0][0]
+            y1 = line[1][0]
+            xmax = max(x0, xmax)
+            xmax = max(x1, xmax)
+            xmin = min(x0, xmin)
+            xmin = min(x1, xmin)
+            ymax = max(y0, ymax)
+            ymax = max(y1, ymax)
+            ymin = min(y0, ymin)
+            ymin = min(y1, ymin)
+        objloc = ( (xmin+xmax - image.size[0])/200 , 0 , (ymin+ymax - image.size[1])/200)
+
         print("pixel logic: {:.2f} sec".format(time.time() - t0))
         t0 = time.time()
-
-        wm.progress_update(500)
 
         chains = geo.parse_segments(self, l_verts)
 
         print("parse: {:.2f} sec".format(time.time() - t0))
         t0 = time.time()
-
-        wm.progress_update(600)
 
         if not chains or len(chains) == 0:
             print("Duik: No polygons found at this cutoff/smoothing values")
@@ -276,8 +292,6 @@ class IMPORT_OCO_OT_import(bpy.types.Operator, AddObjectHelper):
         print("simplify: {:.2f} sec".format(time.time() - t0))
         t0 = time.time()
 
-        wm.progress_update(700)
-
         # go through chain, is it inside any other chain?
         print(len(chains), end=" -> ")
         chains = [c for c in chains if not c.invalid]
@@ -289,9 +303,7 @@ class IMPORT_OCO_OT_import(bpy.types.Operator, AddObjectHelper):
 
         # find outer loops
         roots = []
-        lch = len(chains)
         for ci, c in enumerate(chains):
-            wm.progress_update(800 + 100 * ci // lch)
             inside = False
             for i in chains:
                 if c == i:
@@ -386,9 +398,27 @@ class IMPORT_OCO_OT_import(bpy.types.Operator, AddObjectHelper):
         print("tessellate: {:.2f} sec".format(time.time() - t0))
         t0 = time.time()
 
-        wm.progress_end()
+        # Adjust object location and scale
+        obj.dimensions=((xmax-xmin)/100, 0, (ymax-ymin)/100)
+        # apply scale
+        geo.apply_transfrom(obj, use_scale=True)
+        # set location
+        obj.location = objloc
 
         return obj, mat
+
+    def progressStart(self, context):
+        wm = context.window_manager
+        wm.progress_begin(0, 1000)
+
+    def progressUpdate(self, context, val):
+        wm = context.window_manager
+        self.progress = self.progress + val
+        wm.progress_update(self.progress)
+
+    def progressEnd(self, context, val):
+        wm = context.window_manager
+        wm.progress_end()
 
 def import_oco_button(self, context):
     self.layout.operator(IMPORT_OCO_OT_import.bl_idname, text="Open Cut-Out (OCO)", icon='ARMATURE_DATA')
