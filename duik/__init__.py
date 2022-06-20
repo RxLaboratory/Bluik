@@ -57,6 +57,10 @@ class DUIK_Preferences( bpy.types.AddonPreferences ):
         name="Layer for bones with influences",
         default=8,
     )
+    layer_anchors: bpy.props.IntProperty(
+        name="Layer for anchor bones",
+        default=15,
+    )
     layer_rig: bpy.props.IntProperty(
         name="Layer for bones without influences",
         default=24,
@@ -82,8 +86,9 @@ class DUIK_Preferences( bpy.types.AddonPreferences ):
 
         layout.label(text="Layers:")
         row = layout.row(align=True)
-        row.prop(self, "layer_controllers", text="Controllers")
-        row.prop(self, "layer_skin", text="Influences")
+        row.prop(self, "layer_controllers", text="Ctrl")
+        row.prop(self, "layer_skin", text="Influence")
+        row.prop(self, "layer_anchors", text="Anchor")
         row.prop(self, "layer_rig", text="Other")
         layout.label(text="Pie menus:")
         layout.prop(self, "pie_menu_autorig")

@@ -805,6 +805,9 @@ class DUIK_OT_create_2d_anchor_bone( bpy.types.Operator ):
         # INIT
         #-----------------------
 
+        preferences = context.preferences
+        duik_prefs = preferences.addons[__package__].preferences
+
         # Go in edit mode
         bpy.ops.object.mode_set(mode='EDIT')
 
@@ -885,6 +888,9 @@ class DUIK_OT_create_2d_anchor_bone( bpy.types.Operator ):
         anchor_bone.custom_shape_scale_xyz[0] = 0.25
         anchor_bone.custom_shape_scale_xyz[1] = 0.25
         anchor_bone.custom_shape_scale_xyz[2] = 0.25
+
+        # Layer
+        dublf.rigging.addBoneToLayers( anchor_bone.bone , [duik_prefs.layer_anchors] )
 
         self.report({'INFO'}, "Anchor bone created")
         return {'FINISHED'}
