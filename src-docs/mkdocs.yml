@@ -32,6 +32,7 @@ nav:
         - IK/FK Rig: ikfk.md
         - FK Controller: fk.md
         - BBone Controllers: bbone.md
+        - Anchor bone: anchorbone.md
     - Objects:
         - Introduction: objects.md
     - UI Creation:
