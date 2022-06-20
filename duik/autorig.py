@@ -19,11 +19,25 @@
 
 # Auto-rigging tools
 
+CTRL_SHAPE_ORIGIN={"name": "Bluik Origin Icon", "vertices": [[-0.03595222532749176, 0.22403232753276825, 0.0], [-0.03595222532749176, 0.031480416655540466, 0.0], [-0.22848361730575562, 0.031480416655540466, 0.0], [-0.22848361730575562, -0.03515344858169556, 0.0], [-0.034993212670087814, -0.03419443219900131, 0.0], [-0.03595222532749176, -0.22770538926124573, 0.0], [0.030756875872612, -0.22770538926124573, 0.0], [0.02883884869515896, -0.03467395156621933, 0.0], [0.22328828275203705, -0.03515344858169556, 0.0], [0.22328828275203705, 0.031480416655540466, 0.0], [0.030756875872612, 0.031480416655540466, 0.0], [0.030756875872612, 0.22403232753276825, 0.0], [-4.093988081876887e-08, 0.5009701251983643, 0.0], [-0.09773445874452591, 0.4913440942764282, 0.0], [-0.19171300530433655, 0.46283596754074097, 0.0], [-0.2783241271972656, 0.4165413975715637, 0.0], [-0.3542393743991852, 0.3542393445968628, 0.0], [-0.4165414273738861, 0.27832409739494324, 0.0], [-0.46283605694770813, 0.19171294569969177, 0.0], [-0.4913440942764282, 0.09773443639278412, 0.0], [-0.4913440942764282, -0.09773441404104233, 0.0], [-0.4628360867500305, -0.19171293079853058, 0.0], [-0.4165414571762085, -0.27832403779029846, 0.0], [-0.3542393743991852, -0.3542393445968628, 0.0], [-0.27832406759262085, -0.4165414273738861, 0.0], [-0.19171302020549774, -0.46283602714538574, 0.0], [-0.09773445129394531, -0.491344153881073, 0.0], [2.856324954336742e-09, -0.5009700059890747, 0.0], [0.09773433953523636, -0.491344153881073, 0.0], [0.1917129009962082, -0.46283602714538574, 0.0], [0.27832406759262085, -0.41654136776924133, 0.0], [0.35423925518989563, -0.3542393743991852, 0.0], [0.41654130816459656, -0.278324156999588, 0.0], [0.46283596754074097, -0.19171303510665894, 0.0], [0.49134403467178345, -0.09773444384336472, 0.0], [0.49134403467178345, 0.0977344661951065, 0.0], [0.4628359079360962, 0.19171305000782013, 0.0], [0.4165413975715637, 0.2783239781856537, 0.0], [0.3542393743991852, 0.354239284992218, 0.0], [0.27832406759262085, 0.4165413975715637, 0.0], [0.1917129009962082, 0.4628360867500305, 0.0], [0.09773433208465576, 0.4913440942764282, 0.0], [-2.8276653907255422e-08, 0.3460136950016022, 0.0], [-0.06750394403934479, 0.3393651247024536, 0.0], [-0.13241373002529144, 0.31967490911483765, 0.0], [-0.19223491847515106, 0.2876998484134674, 0.0], [-0.2446686178445816, 0.2446686178445816, 0.0], [-0.2876998484134674, 0.19223491847515106, 0.0], [-0.3196749687194824, 0.13241370022296906, 0.0], [-0.3393650949001312, 0.06750394403934479, 0.0], [-0.3393650949001312, -0.06750389188528061, 0.0], [-0.3196749687194824, -0.13241365551948547, 0.0], [-0.2876998782157898, -0.1922348439693451, 0.0], [-0.2446686178445816, -0.24466857314109802, 0.0], [-0.19223488867282867, -0.287699818611145, 0.0], [-0.13241373002529144, -0.31967490911483765, 0.0], [-0.06750393658876419, -0.3393651247024536, 0.0], [1.9728272349084364e-09, -0.3460135757923126, 0.0], [0.06750386208295822, -0.3393651247024536, 0.0], [0.13241365551948547, -0.31967490911483765, 0.0], [0.19223488867282867, -0.28769978880882263, 0.0], [0.24466852843761444, -0.2446686029434204, 0.0], [0.28769975900650024, -0.19223491847515106, 0.0], [0.31967490911483765, -0.13241373002529144, 0.0], [0.33936506509780884, -0.0675039142370224, 0.0], [0.33936506509780884, 0.06750396639108658, 0.0], [0.31967484951019287, 0.13241377472877502, 0.0], [0.287699818611145, 0.1922348439693451, 0.0], [0.2446686178445816, 0.24466857314109802, 0.0], [0.19223488867282867, 0.2876998484134674, 0.0], [0.13241365551948547, 0.3196749985218048, 0.0], [0.06750385463237762, 0.3393651247024536, 0.0]], "edges": [[0, 1], [0, 11], [10, 11], [2, 3], [1, 2], [9, 10], [8, 9], [3, 4], [4, 5], [7, 8], [5, 6], [6, 7], [13, 12], [14, 13], [15, 14], [16, 15], [17, 16], [18, 17], [19, 18], [21, 20], [22, 21], [23, 22], [24, 23], [25, 24], [26, 25], [27, 26], [28, 27], [29, 28], [30, 29], [31, 30], [32, 31], [33, 32], [34, 33], [36, 35], [37, 36], [38, 37], [39, 38], [40, 39], [41, 40], [12, 41], [43, 42], [44, 43], [45, 44], [46, 45], [47, 46], [48, 47], [49, 48], [51, 50], [52, 51], [53, 52], [54, 53], [55, 54], [56, 55], [57, 56], [58, 57], [59, 58], [60, 59], [61, 60], [62, 61], [63, 62], [64, 63], [66, 65], [67, 66], [68, 67], [69, 68], [70, 69], [71, 70], [42, 71], [64, 34], [35, 65], [19, 49], [20, 50]]}
+
 import bpy # pylint: disable=import-error
 import mathutils # pylint: disable=import-error
 import math
 import time
 from . import dublf
+
+def get_create_ctrl_shape( ctrl ):
+    # Get the collection
+    ctrl_collection = dublf.collections.get_create_collection("Bluik Icons")
+    for obj in ctrl_collection.objects:
+        if obj.name == ctrl['name']:
+            return obj
+    new_mesh = bpy.data.meshes.new(ctrl['name'])
+    new_mesh.from_pydata(ctrl['vertices'], ctrl['edges'], [])
+    new_mesh.update()
+    new_object = bpy.data.objects.new(ctrl['name'], new_mesh)
+    ctrl_collection.objects.link(new_object)
 
 class DUIK_ikfk_prop ( bpy.types.PropertyGroup ):
     """The property storing all info needed to handle and animate IK/FK rigs"""
@@ -775,6 +789,106 @@ class DUIK_OT_make_parent_apply_inverse( bpy.types.Operator ):
             dublf.rigging.applyParentInverse(obj)
         return {'FINISHED'}
 
+class DUIK_OT_create_2d_anchor_bone( bpy.types.Operator ):
+    """Duplicates the selected bone, and links the new bone to the original one using constraints and drivers."""
+    bl_idname = "armature.duik_create_2d_anchor_bone"
+    bl_label = "Create 2D Anchor bone"
+    bl_options = {'REGISTER','UNDO'}
+
+    @classmethod
+    def poll (self, context):
+        if context.active_object is None: return False
+        return context.active_object.type == 'ARMATURE'
+
+    def execute(self, context):
+        #-----------------------
+        # INIT
+        #-----------------------
+
+        # Go in edit mode
+        bpy.ops.object.mode_set(mode='EDIT')
+
+        # Get the active bone
+        bone = context.active_bone
+        # The Armature
+        armatureObject = context.active_object
+        armatureData = bpy.types.Armature(armatureObject.data)
+
+        if bone is None:
+            self.Dublf.showMessageBox( "Select the bone", "Select bone first")
+            bpy.ops.object.mode_set(mode='POSE')
+            return {'CANCELLED'}
+
+        # Duplicate
+        anchor_bone = dublf.rigging.duplicateBone( armatureData , bone, bone.basename + '.Anchor' )
+
+        # Get pose bones
+
+        bone_name = bone.name
+        anchor_name = anchor_bone.name
+
+        # Add constraints and drivers
+
+        bpy.ops.object.mode_set(mode='POSE')
+
+        bone = armatureObject.pose.bones[ bone_name ]
+        anchor_bone = armatureObject.pose.bones[ anchor_name ]
+
+        # Link BBone properties
+        driver = dublf.rigging.addDriver(anchor_bone, 'bbone_curveinx', driverType = 'SUM')
+        dublf.rigging.addVariable(driver, "b", 'pose.bones["' + bone.name + '"].bbone_curveinx', armatureObject)
+        driver = dublf.rigging.addDriver(anchor_bone, 'bbone_curveinz', driverType = 'SUM')
+        dublf.rigging.addVariable(driver, "b", 'pose.bones["' + bone.name + '"].bbone_curveinz', armatureObject)
+        driver = dublf.rigging.addDriver(anchor_bone, 'bbone_curveoutx', driverType = 'SUM')
+        dublf.rigging.addVariable(driver, "b", 'pose.bones["' + bone.name + '"].bbone_curveoutx', armatureObject)
+        driver = dublf.rigging.addDriver(anchor_bone, 'bbone_curveoutz', driverType = 'SUM')
+        dublf.rigging.addVariable(driver, "b", 'pose.bones["' + bone.name + '"].bbone_curveoutz', armatureObject)
+        driver = dublf.rigging.addDriver(anchor_bone, 'bbone_rollin', driverType = 'SUM')
+        dublf.rigging.addVariable(driver, "b", 'pose.bones["' + bone.name + '"].bbone_rollin', armatureObject)
+        driver = dublf.rigging.addDriver(anchor_bone, 'bbone_rollout', driverType = 'SUM')
+        dublf.rigging.addVariable(driver, "b", 'pose.bones["' + bone.name + '"].bbone_rollout', armatureObject)
+
+        # Add constraints
+        cl = anchor_bone.constraints.new('COPY_LOCATION')
+        cl.target = armatureObject
+        cl.subtarget = bone.name
+        cl.target_space = 'POSE'
+        cl.owner_space = 'POSE'
+        cl.use_y = False
+
+        cr = anchor_bone.constraints.new('COPY_ROTATION')
+        cr.target = armatureObject
+        cr.subtarget = bone.name
+        cr.target_space = 'POSE'
+        cr.owner_space = 'POSE'
+
+        cs = anchor_bone.constraints.new('COPY_SCALE')
+        cs.target = armatureObject
+        cs.subtarget = bone.name
+        cs.target_space = 'POSE'
+        cs.owner_space = 'POSE'
+
+        # Lock transform
+        anchor_bone.lock_location[0] = True
+        anchor_bone.lock_location[1] = True
+        anchor_bone.lock_rotation[0] = True
+        anchor_bone.lock_rotation[1] = True
+        anchor_bone.lock_rotation[2] = True
+        anchor_bone.lock_rotation_w = True
+        anchor_bone.lock_scale[0] = True
+        anchor_bone.lock_scale[1] = True
+        anchor_bone.lock_scale[2] = True
+
+        # Viewport Display
+        ctrl_icon = get_create_ctrl_shape( CTRL_SHAPE_ORIGIN )
+        anchor_bone.custom_shape = ctrl_icon
+        anchor_bone.custom_shape_scale_xyz[0] = 0.25
+        anchor_bone.custom_shape_scale_xyz[1] = 0.25
+        anchor_bone.custom_shape_scale_xyz[2] = 0.25
+
+        self.report({'INFO'}, "Anchor bone created")
+        return {'FINISHED'}
+
 def ik2fk( context, ikCtrl, ik2, pole, fk2 ):
     depsgraph = context.evaluated_depsgraph_get()
 
@@ -875,6 +989,7 @@ def populateRiggingMenu( layout ):
     layout.operator(DUIK_OT_ikfk.bl_idname,  text="IK/FK Rig", icon='CON_KINEMATIC')
     layout.operator(DUIK_OT_fk.bl_idname,  text="Add FK Controller", icon='CON_ROTLIKE')
     layout.operator(DUIK_OT_bbone.bl_idname,  text="Add BBone controllers", icon='CURVE_DATA')
+    layout.operator(DUIK_OT_create_2d_anchor_bone.bl_idname,  text="Create Anchor bone", icon='PIVOT_CURSOR')
 
 def populateAnimationMenu( layout ):
     """Populates a Duik menu with the animation methods"""
@@ -970,6 +1085,7 @@ classes = (
     DUIK_OT_swap_ikfk,
     DUIK_OT_parent_apply_inverse,
     DUIK_OT_make_parent_apply_inverse,
+    DUIK_OT_create_2d_anchor_bone,
     DUIK_MT_pose_menu,
     DUIK_MT_animation_menu,
     DUIK_MT_pie_menu,
