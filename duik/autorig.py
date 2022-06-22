@@ -666,7 +666,7 @@ class DUIK_OT_bbone( bpy.types.Operator ):
         dublf.rigging.addTransformVariable( driver, 'ctrl', startCtrl, 'ROT_Z', 'LOCAL_SPACE', armatureObject)
         driver.expression = '-ctrl*ctrlInfl'
 
-        driver = dublf.rigging.addDriver(bone, 'bbone_curveiny', driverType = 'SCRIPTED')
+        driver = dublf.rigging.addDriver(bone, 'bbone_curveinz', driverType = 'SCRIPTED')
         dublf.rigging.addVariable(driver, "ctrlInfl", 'pose.bones["' + startCtrl.name + '"]["Rotation Influence"]', armatureObject)
         dublf.rigging.addTransformVariable( driver, 'ctrl', startCtrl, 'ROT_X', 'LOCAL_SPACE', armatureObject)
         driver.expression = 'ctrl*ctrlInfl'
@@ -680,7 +680,7 @@ class DUIK_OT_bbone( bpy.types.Operator ):
         dublf.rigging.addTransformVariable( driver, 'ctrl', endCtrl, 'ROT_Z', 'LOCAL_SPACE', armatureObject)
         driver.expression = 'ctrl*ctrlInfl'
 
-        driver = dublf.rigging.addDriver(bone, 'bbone_curveouty', driverType = 'SCRIPTED')
+        driver = dublf.rigging.addDriver(bone, 'bbone_curveoutz', driverType = 'SCRIPTED')
         dublf.rigging.addVariable(driver, "ctrlInfl", 'pose.bones["' + endCtrl.name + '"]["Rotation Influence"]', armatureObject)
         dublf.rigging.addTransformVariable( driver, 'ctrl', endCtrl, 'ROT_X', 'LOCAL_SPACE', armatureObject)
         driver.expression = '-ctrl*ctrlInfl'
