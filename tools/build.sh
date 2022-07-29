@@ -1,36 +1,44 @@
 #!/bin/bash
 
-duik_path=../duik/
+bluik_path=../bluik/
 docs_path=../src-docs/
 dublf_path=../../DuBLF/dublf/
 dupyf_path=../../../DuPYF/DuPYF/dupyf/
+oco_path=../../../OCO/ocopy/
 
 # convert to absolute paths
-duik_path=$(cd "$duik_path"; pwd)
+bluik_path=$(cd "$bluik_path"; pwd)
 dublf_path=$(cd "$dublf_path"; pwd)
 dupyf_path=$(cd "$dupyf_path"; pwd)
+oco_path=$(cd "$oco_path"; pwd)
 
-rm -r -f "duik"
-mkdir "duik"
+rm -r -f "bluik"
+mkdir "bluik"
 
-for file in $duik_path/*.py; do
-    cp -t "duik" "$file"
+for file in $bluik_path/*.py; do
+    cp -t "bluik" "$file"
     echo "Deployed $file"
 done
 
-mkdir "duik/dublf"
+mkdir "bluik/dublf"
+mkdir "bluik/ocopy"
 
 for file in $dublf_path/*.py; do
-    cp -t "duik/dublf" "$file"
+    cp -t "bluik/dublf" "$file"
     echo "Deployed DuBLF file $file"
 done
 
 for file in $dupyf_path/*.py; do
-    cp -t "duik/dublf" "$file"
+    cp -t "bluik/dublf" "$file"
     echo "Deployed DuPYF file $file"
 done
 
-zip -r -m rx-experimental-tools.zip duik
+for file in $oco_path/*.py; do
+    cp -t "bluik/ocopy" "$file"
+    echo "Linked OCO file $file"
+done
+
+zip -r -m bluik.zip bluik
 
 # build doc
 cd $docs_path
