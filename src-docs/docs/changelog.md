@@ -1,8 +1,17 @@
 # Changelog
 
-[TOC]
-
 This is the list of what has changed since the first version of *Duik for Blender*.
+
+## 0.6.0
+
+- Start using the *Bluik* name instead of *Duik for Blender*
+- Added experimental OCO Open Cut-Out format import
+- Added icons for controlers
+- Added anchor bones for 2D rigs
+- Added object selector
+- Simplified OCA import
+- Fixed BBone controlers for Blender 3.x
+- Fixed frame size and location on OCO and OCA import
 
 ## 0.5.6
 
