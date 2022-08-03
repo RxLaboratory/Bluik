@@ -10,9 +10,11 @@
   <link rel="canonical" href="https://rainboxlab.org/changelog/">
   <link rel="shortcut icon" href="../img/favicon.ico">
   <title>Changelog - Duik for Blender Documentation</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
   <link rel="stylesheet" href="../css/theme.css" />
   <link rel="stylesheet" href="../css/theme_extra.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
   <link href="../style.css" rel="stylesheet" />
   <link href="../video.css" rel="stylesheet" />
   
@@ -25,9 +27,8 @@
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
   <script src="../js/modernizr-2.8.3.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script> 
-  
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -41,7 +42,7 @@
         <a href=".." class="icon icon-home"> Duik for Blender Documentation</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -108,6 +109,8 @@
                 <ul class="current">
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">Changelog</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#060">0.6.0</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#056">0.5.6</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#fixes">Fixes</a>
@@ -265,83 +268,23 @@
   
   <hr/>
 </div>
+
           <div role="main">
             <div class="section">
               
                 <h1 id="changelog">Changelog</h1>
-<div class="toc">
-<ul>
-<li><a href="#changelog">Changelog</a><ul>
-<li><a href="#056">0.5.6</a><ul>
-<li><a href="#fixes">Fixes</a></li>
-</ul>
-</li>
-<li><a href="#055">0.5.5</a><ul>
-<li><a href="#new">New</a></li>
-</ul>
-</li>
-<li><a href="#054">0.5.4</a></li>
-<li><a href="#053">0.5.3</a></li>
-<li><a href="#052">0.5.2</a><ul>
-<li><a href="#new_1">New</a></li>
-</ul>
-</li>
-<li><a href="#050">0.5.0</a><ul>
-<li><a href="#new_2">New</a></li>
-<li><a href="#bugfixes">Bugfixes</a></li>
-</ul>
-</li>
-<li><a href="#040">0.4.0</a><ul>
-<li><a href="#new_3">New</a></li>
-</ul>
-</li>
-<li><a href="#020">0.2.0</a><ul>
-<li><a href="#new_4">New</a></li>
-</ul>
-</li>
-<li><a href="#0020">0.0.20</a><ul>
-<li><a href="#bugfixes_1">Bugfixes</a></li>
-</ul>
-</li>
-<li><a href="#0018">0.0.18</a><ul>
-<li><a href="#bugfixes_2">Bugfixes</a></li>
-</ul>
-</li>
-<li><a href="#0017">0.0.17</a><ul>
-<li><a href="#bugfixes_3">Bugfixes</a></li>
-<li><a href="#new_5">New</a></li>
-<li><a href="#bugfixes_4">Bugfixes</a></li>
-</ul>
-</li>
-<li><a href="#006">0.0.6</a><ul>
-<li><a href="#new_6">New</a></li>
-<li><a href="#bugfixes_5">Bugfixes</a></li>
-</ul>
-</li>
-<li><a href="#005">0.0.5</a><ul>
-<li><a href="#new_7">New</a></li>
-</ul>
-</li>
-<li><a href="#004">0.0.4</a><ul>
-<li><a href="#source-code-improvement-and-cleaning">Source code Improvement and cleaning</a></li>
-</ul>
-</li>
-<li><a href="#003">0.0.3</a><ul>
-<li><a href="#improvements">Improvements</a></li>
-</ul>
-</li>
-<li><a href="#002">0.0.2</a><ul>
-<li><a href="#new_8">New</a></li>
-<li><a href="#improvements_1">Improvements</a></li>
-<li><a href="#fixes_1">Fixes</a></li>
-</ul>
-</li>
-<li><a href="#001">0.0.1</a></li>
-</ul>
-</li>
-</ul>
-</div>
 <p>This is the list of what has changed since the first version of <em>Duik for Blender</em>.</p>
+<h2 id="060">0.6.0</h2>
+<ul>
+<li>Start using the <em>Bluik</em> name instead of <em>Duik for Blender</em></li>
+<li>Added experimental OCO Open Cut-Out format import</li>
+<li>Added icons for controlers</li>
+<li>Added anchor bones for 2D rigs</li>
+<li>Added object selector</li>
+<li>Simplified OCA import</li>
+<li>Fixed BBone controlers for Blender 3.x</li>
+<li>Fixed frame size and location on OCO and OCA import</li>
+</ul>
 <h2 id="056">0.5.6</h2>
 <h4 id="fixes">Fixes</h4>
 <ul>
@@ -501,17 +444,20 @@
   </div>
 
   <div class="rst-versions" role="note" aria-label="versions">
-    <span class="rst-current-version" data-toggle="rst-current-version">
-      
-          <a href="https://github.com/Rainbox-dev/DuBLF_Duik/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
-      
-      
-        <span><a href="../oca/" style="color: #fcfcfc;">&laquo; Previous</a></span>
-      
-      
-    </span>
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/Rainbox-dev/DuBLF_Duik/" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../oca/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
 </div>
     <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
     <script src="../js/theme.js" defer></script>
       <script src="../video.js" defer></script>
       <script src="../search/main.js" defer></script>
