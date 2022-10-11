@@ -18,19 +18,52 @@
 # <pep8 compliant>
 
 bl_info = {
-    "name": "Rx Experimental Tools And Bluik",
+    "name": "Bluik",
     "category": "Rigging",
     "blender": (3, 0, 0),
     "author": "Nicolas 'Duduf' Dufresne",
     "location": "Armature properties Pose Menu, View3d sidebar (N), Shader Editor sidebar (N), File > Import.",
-    "version": (0,6,0),
+    "version": (0,6,1),
     "description": "Experimental tools from RxLab. which may end up in Bluik for Blender.",
     "wiki_url": "https://bluik.rxlab.guide/",
 }
 
 import importlib
 import bpy # pylint: disable=import-error
+
+if "bpy" in locals():
+    import importlib
+
+    if "dublf" in locals():
+        importlib.reload(dublf)
+    if "preferences" in locals():
+        importlib.reload(preferences)
+    if "autorig" in locals():
+        importlib.reload(autorig)
+    if "selection_sets" in locals():
+        importlib.reload(selection_sets)
+    if "cam_linker" in locals():
+        importlib.reload(cam_linker)
+    if "ui_controls" in locals():
+        importlib.reload(ui_controls)
+    if "ui_layers" in locals():
+        importlib.reload(ui_layers)
+    if "tex_anim" in locals():
+        importlib.reload(tex_anim)
+    if "layers" in locals():
+        importlib.reload(layers)
+    if "oca" in locals():
+        importlib.reload(oca)
+    if "dopesheet_filters" in locals():
+        importlib.reload(dopesheet_filters)
+    if "oco" in locals():
+        importlib.reload(oco)
+    if "object_selector" in locals():
+        importlib.reload(object_selector)
+
 from . import (
+    dublf,
+    preferences,
     autorig,
     selection_sets,
     cam_linker,
@@ -41,97 +74,28 @@ from . import (
     oca,
     dopesheet_filters,
     oco,
-    object_selector
+    object_selector,
 )
 
-class DUIK_Preferences( bpy.types.AddonPreferences ):
-    # this must match the add-on name, use '__package__'
-    # when defining this in a submodule of a python package.
-    bl_idname = __name__
-
-    layer_controllers: bpy.props.IntProperty(
-        name="Layer for All controllers",
-        default=0,
-    )
-    layer_skin: bpy.props.IntProperty(
-        name="Layer for bones with influences",
-        default=8,
-    )
-    layer_anchors: bpy.props.IntProperty(
-        name="Layer for anchor bones",
-        default=15,
-    )
-    layer_rig: bpy.props.IntProperty(
-        name="Layer for bones without influences",
-        default=24,
-    )
-    pie_menu_autorig: bpy.props.BoolProperty(
-        description="Use a pie menu for the auto-rig operators. [SHIFT + R] in 'Pose' mode",
-        name="Auto-rig operators. [SHIFT + R]",
-        default=True
-        )
-    pie_menu_armature_display: bpy.props.BoolProperty(
-        description="A nice pie menu to change the armature display. [SHIFT + V] in 'Pose' or 'Edit' mode",
-        name="Armature display. [SHIFT + V]",
-        default=True
-        )
-    pie_menu_animation: bpy.props.BoolProperty(
-        description="A nice pie menu with tools for animators. [SHIFT + D] in 'Pose' mode",
-        name="Animation tools. [SHIFT + D]",
-        default=True
-        )
-
-    def draw(self, context):
-        layout = self.layout
-
-        layout.label(text="Layers:")
-        row = layout.row(align=True)
-        row.prop(self, "layer_controllers", text="Ctrl")
-        row.prop(self, "layer_skin", text="Influence")
-        row.prop(self, "layer_anchors", text="Anchor")
-        row.prop(self, "layer_rig", text="Other")
-        layout.label(text="Pie menus:")
-        layout.prop(self, "pie_menu_autorig")
-        layout.prop(self, "pie_menu_armature_display")
-        layout.prop(self, "pie_menu_animation")
-
-classes = (
-    DUIK_Preferences,
+modules = (
+    preferences,
+    autorig,
+    selection_sets,
+    cam_linker,
+    ui_controls,
+    ui_layers,
+    tex_anim,
+    layers,
+    oca,
+    oco,
+    dopesheet_filters,
+    object_selector,
 )
 
 def register():
     # register
-    for cls in classes:
-        bpy.utils.register_class(cls)
-
-    # preferences
-    preferences = bpy.context.preferences.addons[__name__].preferences
-
-    # Reload
-    importlib.reload(autorig)
-    importlib.reload(selection_sets)
-    importlib.reload(cam_linker)
-    importlib.reload(ui_controls)
-    importlib.reload(ui_layers)
-    importlib.reload(tex_anim)
-    importlib.reload(layers)
-    importlib.reload(oca)
-    importlib.reload(dopesheet_filters)
-    importlib.reload(oco)
-    importlib.reload(object_selector)
-
-    # Modules
-    autorig.register()
-    selection_sets.register()
-    cam_linker.register()
-    ui_controls.register()
-    ui_layers.register()
-    tex_anim.register()
-    layers.register()
-    oca.register()
-    oco.register()
-    dopesheet_filters.register()
-    object_selector.register()
+    for mod in modules:
+        mod.register()
 
     # Attributes
     if not hasattr( bpy.types.Armature, 'duik_rig_type' ):
@@ -160,31 +124,16 @@ def register():
             description = "If checked, the UI for the leg layers will add separate buttons for IK and FK",
             default = True
         )
-           
-def unregister():
-    # preferences
-    preferences = bpy.context.preferences.addons[__name__].preferences
 
+def unregister():
     # Attributes
     del bpy.types.Armature.duik_rig_type
     del bpy.types.Armature.duik_layers_leg_ikfk
     del bpy.types.Armature.duik_layers_arm_ikfk
 
-    dopesheet_filters.unregister()
-    oca.unregister()
-    layers.unregister()
-    tex_anim.unregister()
-    autorig.unregister()
-    selection_sets.unregister()
-    ui_controls.unregister()
-    ui_layers.unregister()
-    cam_linker.unregister()
-    oco.unregister()
-    object_selector.unregister()
-
     # unregister
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
+    for mod in reversed(modules):
+        mod.unregister()
 
 if __name__ == "__main__":
     register()
