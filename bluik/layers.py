@@ -157,8 +157,8 @@ def create_layer(context, name, width, height, containing_group=None):
     move_to_group( plane, containing_group)
 
     # Location and rotation
-    plane.rotation_euler.x = -pi/2
-    plane.rotation_euler.y = pi
+    plane.rotation_euler.x = pi/2
+    plane.rotation_euler.y = 0
     plane.rotation_euler.z = 0
     plane.lock_location[0] = False
     plane.lock_location[1] = True
