@@ -1,0 +1,24 @@
+{
+    "title": "Bluik",
+    "hosts": [
+        {
+            "name": "blender",
+            "title": "Blender"
+        }
+    ],
+    "os": [
+        {
+            "name": "mac",
+            "title": "macOS"
+        },
+        {
+            "name": "win",
+            "title": "Windows"
+        },
+        {
+            "name": "linux",
+            "title": "Linux"
+        }
+    ],
+    "userGuide": "http://bluik.rxlab.guide"
+}
