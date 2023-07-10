@@ -36,6 +36,10 @@ class BLUIK_UpdateBox(dublf.ops.UpdateBox):
     addonName = __package__
     openURLOp = BLUIK_OpenURL.bl_idname
 
+class BLUIK_OT_ReportIssue( dublf.ops.DUBLF_OT_ReportIssue ):
+    bl_idname = "bluik.reportissue"
+    addonName = __package__
+
 class BLUIK_Preferences( bpy.types.AddonPreferences ):
     # this must match the add-on name, use '__package__'
     # when defining this in a submodule of a python package.
@@ -88,6 +92,7 @@ class BLUIK_Preferences( bpy.types.AddonPreferences ):
 
         layout.prop(self, "check_updates")
         layout.operator("bluik.updatebox", text="Check for updates now")
+        layout.operator("bluik.reportissue")
 
         layout.label(text="Layers:")
         row = layout.row(align=True)
@@ -101,8 +106,6 @@ class BLUIK_Preferences( bpy.types.AddonPreferences ):
         layout.prop(self, "pie_menu_armature_display")
         layout.prop(self, "pie_menu_animation")
         
-        layout.prop(self, "last_update_check")
-
 @persistent
 def checkUpdateHandler(arg1, arg2):
     bpy.ops.bluik.updatebox('INVOKE_DEFAULT', discreet = True)
@@ -110,6 +113,7 @@ def checkUpdateHandler(arg1, arg2):
 classes = (
     BLUIK_OpenURL,
     BLUIK_UpdateBox,
+    BLUIK_OT_ReportIssue,
     BLUIK_Preferences,
 )
 
