@@ -308,7 +308,6 @@ class DUIK_OT_reset_custom_to_defaults( bpy.types.Operator ):
 
     @classmethod
     def poll(cls, context):
-        if context.mode != 'POSE': return False
         armature = context.active_object.data
         if armature is None:
             return False
@@ -318,15 +317,21 @@ class DUIK_OT_reset_custom_to_defaults( bpy.types.Operator ):
     def execute(self, context):
         armature_object = context.active_object
         armature_data = armature_object.data
-        active_bone = context.active_pose_bone
+        
+        active_bone = None
+        if context.mode == 'POSE':
+            active_bone = context.active_pose_bone
+        elif context.mode == 'EDIT_ARMATURE':
+            active_bone = context.active_bone
+
+        if not active_bone and self.active_bone_only:
+            return
     
         for ui_control in armature_data.ui_controls:
             if self.active_bone_only and active_bone.name in ui_control.bones:
                 reset_ui_control(ui_control)
             elif not self.active_bone_only:
-                for bone in context.selected_pose_bones:
-                    if bone.name in ui_control.bones:
-                        reset_ui_control(ui_control)
+                reset_ui_control(ui_control)
                     
         return {'FINISHED'}
 
@@ -412,29 +417,57 @@ class DUIK_PT_controls_ui( bpy.types.Panel ):
 
     @classmethod
     def poll(self, context):
-        if context.mode != 'POSE': return False
-        active_bone = context.active_pose_bone
-        if active_bone is None: return False
         armature_object = context.active_object
+        if not armature_object:
+            return False
+        if armature_object.type != 'ARMATURE':
+            return False
+        
         armature_data = armature_object.data
-        for ui_control in armature_data.ui_controls:
-            if active_bone.name in ui_control.bones: return True
-        return False
+        if not armature_data:
+            return False
+        
+        if len(armature_data.ui_controls) == 0:
+            return False
+        
+        active_bone = None
+        if context.mode == 'POSE':
+            active_bone = context.active_pose_bone
+            if active_bone is None:
+                return False
+        elif context.mode == 'EDIT_ARMATURE':
+            active_bone = context.active_bone
+            if active_bone is None:
+                return False
+            
+        if active_bone is not None:
+            armature_object = context.active_object
+            armature_data = armature_object.data
+            for ui_control in armature_data.ui_controls:
+                if active_bone.name in ui_control.bones: return True
+            return False
+        
+        return True
         
     def draw(self, context):
         armature_object = context.active_object
         armature_data = armature_object.data
-        active_bone = context.active_pose_bone
 
+        active_bone = None
+        if context.mode == 'POSE':
+            active_bone = context.active_pose_bone
+        elif context.mode == 'EDIT_ARMATURE':
+            active_bone = context.active_bone
+            
         layout = self.layout
 
         current_layout = layout
 
-        layout.operator('armature.reset_duik_custom_controls')
+        layout.operator('armature.reset_duik_custom_controls').active_bone_only = context.mode != 'OBJECT'
         layout.separator()
         
         for ui_control in armature_data.ui_controls:
-            if active_bone.name in ui_control.bones:
+            if context.mode == 'OBJECT' or active_bone.name in ui_control.bones:
                 name = ui_control.name.upper()
 
                 if name.endswith('.R'):
