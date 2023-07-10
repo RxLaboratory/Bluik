@@ -4,8 +4,8 @@
 ## Relocation notice!
 
 The canonical repository for DuBlast is [on
-Codeberg](https://codeberg.org/RxLaboratory/DuBlast) but we maintain [a
-mirror on GitHub](https://github.com/RxLaboratory/DuBlast/tree/master) for the
+Codeberg](https://codeberg.org/RxLaboratory/Bluik) but we maintain [a
+mirror on GitHub](https://github.com/RxLaboratory/Bluik/tree/master) for the
 time being in order to ease the transition. Please update your links
 and git remotes.
 
