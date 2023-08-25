@@ -20,5 +20,6 @@
             "title": "Linux"
         }
     ],
-    "userGuide": "http://bluik.rxlab.guide"
+    "userGuide": "http://bluik.rxlab.guide",
+    "description": "2D/Cut-Out Rigging and Animation toolset for Blender"
 }
