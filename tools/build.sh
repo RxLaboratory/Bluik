@@ -3,7 +3,7 @@
 bluik_path=../bluik/
 docs_path=../src-docs/
 dublf_path=../../DuBLF/dublf/
-dupyf_path=../../../DuPYF/DuPYF/dupyf/
+dupyf_path=../../../Python/DuPYF/dupyf/
 oco_path=../../../OCO/ocopy/
 
 # convert to absolute paths
@@ -14,14 +14,13 @@ oco_path=$(cd "$oco_path"; pwd)
 
 rm -r -f "bluik"
 mkdir "bluik"
+mkdir "bluik/dublf"
+mkdir "bluik/ocopy"
 
 for file in $bluik_path/*.py; do
     cp -t "bluik" "$file"
     echo "Deployed $file"
 done
-
-mkdir "bluik/dublf"
-mkdir "bluik/ocopy"
 
 for file in $dublf_path/*.py; do
     cp -t "bluik/dublf" "$file"
@@ -35,7 +34,7 @@ done
 
 for file in $oco_path/*.py; do
     cp -t "bluik/ocopy" "$file"
-    echo "Linked OCO file $file"
+    echo "Deployed OCO file $file"
 done
 
 zip -r -m bluik.zip bluik

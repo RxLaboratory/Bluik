@@ -1,6 +1,6 @@
 #!/bin/bash
 
-blender_config_path=~/.config/blender/3.2
+blender_config_path=~/.config/blender/4.0
 
 bluik_path=../bluik/
 dublf_path=../../DuBLF/dublf/
