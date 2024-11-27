@@ -99,9 +99,10 @@ class IMPORT_OCA_OT_import(bpy.types.Operator, AddObjectHelper ):
 
     def invoke(self, context, event):
         engine = context.scene.render.engine
-        if engine not in {'CYCLES', 'BLENDER_EEVEE'}:
+        if engine not in {'CYCLES', 'BLENDER_EEVEE', 'BLENDER_EEVEE_NEXT'}:
             if engine != 'BLENDER_WORKBENCH':
-                self.report({'ERROR'}, "Cannot generate materials for unknown %s render engine" % engine)
+                self.report({'ERROR'},
+                            "Cannot generate materials for unknown %s render engine" % engine)
                 return {'CANCELLED'}
             else:
                 self.report({'WARNING'},
