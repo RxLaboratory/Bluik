@@ -84,7 +84,9 @@ def has_texanim_node(context, node):
     obj = dublf.context.get_active_poseBone_or_object(context)
     if obj is not None:
         for c in obj.duik_linked_texanims:
-            if c.nodeTree is node.id_data and c.node == node.name:
+            if not c.is_valid():
+                continue
+            if c.material.node_tree is node.id_data and c.node == node.name:
                 return True
     return False
 
@@ -99,8 +101,18 @@ def draw_texanims_lists(obj,layout):
 
 class DUIK_TexAnimLink( bpy.types.PropertyGroup ):
     """A texanim control on an object or a pose_bone"""
-    nodeTree: bpy.props.PointerProperty( type = bpy.types.ShaderNodeTree )
+    material: bpy.props.PointerProperty( type = bpy.types.Material )
     node: bpy.props.StringProperty( )
+
+    def is_valid(self):
+        """Checks if the link is still valid (the source exists)"""
+        if not self.material:
+            return False
+        if not hasattr(self.material, 'node_tree'):
+            return False
+        if not self.material.node_tree:
+            return False
+        return hasattr(self.material.node_tree, self.node)
 
 class DUIK_TexAnimImage( bpy.types.PropertyGroup ):
     """One Image in the TexAnim"""
@@ -224,27 +236,31 @@ class DUIK_OT_texanim_link_control( bpy.types.Operator ):
 
     @classmethod
     def poll(cls, context):
+        """Polls"""
         node = dublf.context.get_active_node(context)
-        if node is None: return False
-        if has_texanim_node(context, node): return False
+        if node is None:
+            return False
+        if has_texanim_node(context, node):
+            return False
         return node.bl_idname == 'ShaderNodeTexImage'
 
     def execute( self, context):
+        """Executes the operator"""
         obj = dublf.context.get_active_poseBone_or_object(context)
         node = context.active_node
 
-        texanimControl = obj.duik_linked_texanims.add()
-        texanimControl.nodeTree = node.id_data
-        texanimControl.node = node.name
+        texanim_control = obj.duik_linked_texanims.add()
+        texanim_control.material = context.material
+        texanim_control.node = node.name
 
         # cleaning! remove any node not available anymore
         # check if everything still exists
         i = len(obj.duik_linked_texanims) - 1
         while i >= 0:
             control = obj.duik_linked_texanims[i]
-            nodeTree = control.nodeTree
+            material = control.material
             try:
-                test = nodeTree.nodes[control.node]
+                test = material.node_tree.nodes[control.node]
             except:
                 obj.duik_linked_texanims.remove(i)
             i = i-1
@@ -278,12 +294,12 @@ class DUIK_OT_texanim_unlink_control( bpy.types.Operator ):
             i = len(obj.duik_linked_texanims) - 1
             while i >= 0:
                 control = obj.duik_linked_texanims[i]
-                nodeTree = control.nodeTree
+                material = control.material
                 try:
-                    test = nodeTree.nodes[control.node]
+                    test = material.node_tree.nodes[control.node]
                 except:
                     obj.duik_linked_texanims.remove(i)
-                if node.id_data is nodeTree and node.name == control.node:
+                if node.id_data is material.node_tree and node.name == control.node:
                     obj.duik_linked_texanims.remove(i)
                 i = i-1
         # if we know, just remove
@@ -309,10 +325,10 @@ class DUIK_UL_linked_texanim( bpy.types.UIList ):
 
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
         # get the texanim
-        nodeTree = item.nodeTree
+        material = item.material
         node = item.node
         try:
-            texanim = nodeTree.nodes[node]
+            texanim = material.node_tree.nodes[node]
             layout.prop(texanim, "duik_texanim_name", text="", emboss=False)
         except:
             layout.label(text='Broken Link')
@@ -376,9 +392,9 @@ class DUIK_PT_texanim_control( bpy.types.Panel ):
 
     def addLinkedList( self, layout, texanimControl ):
         # check if everything still exists
-        nodeTree = texanimControl.nodeTree
+        material = texanimControl.material
         try:
-            texanim = nodeTree.nodes[texanimControl.node]
+            texanim = material.node_tree.nodes[texanimControl.node]
             layout.label( text = texanim.duik_texanim_name + ":" )
             layout.template_list("DUIK_UL_texanim", "", texanim , "duik_texanim_images", texanim , "duik_texanim_current_index" , rows = 3 )
         except:
@@ -446,7 +462,7 @@ classes = (
 )
 
 def register():
-    # register
+    """Registers the classes, event handlers, and adds attributes to some objects"""
     for cls in classes:
         bpy.utils.register_class(cls)
 
@@ -472,7 +488,7 @@ def register():
     dublf.handlers.frame_change_post_append( update_image_handler )
 
 def unregister():
-    # Remove handler
+    """Remove event handlers, attribbutles and unregisters classes"""
     dublf.handlers.frame_change_post_remove( update_image_handler )
 
     del bpy.types.ShaderNodeTexImage.duik_texanim_images
