@@ -1,5 +1,18 @@
 {
     "title": "Bluik",
+    "description": "2D/Cut-Out Rigging and Animation tool set for Blender.",
+    "readme": "https://codeberg.org/Duduf-Blender/Bluik/raw/branch/rxlaboratorio-manifest-v2/HOME.md",
+    "version": "0.7.3",
+    "date": "2025-05-12",
+    "prerelease-version": "",
+    "prerelease-date": "",
+    "changelog": "https://codeberg.org/Duduf-Blender/Bluik/releases",
+    "source": "https://codeberg.org/Duduf-Blender/Bluik",
+    "archive": "https://codeberg.org/Duduf-Blender/Bluik/releases",
+    "license": {
+        "title": "GNU GPL-v3",
+        "url": "https://rxlaboratorio.org/license-gpl/"
+    },
     "hosts": [
         {
             "name": "blender",
@@ -8,12 +21,12 @@
     ],
     "os": [
         {
-            "name": "mac",
-            "title": "macOS"
-        },
-        {
             "name": "win",
             "title": "Windows"
+        },
+        {
+            "name": "mac",
+            "title": "Mac OS"
         },
         {
             "name": "linux",
@@ -22,19 +35,27 @@
     ],
     "assets": [
         {
-            "nameRegEx": "Bluik_.*\\.zip",
-            "name": "Bluik",
+            "url": "https://codeberg.org/Duduf-Blender/Bluik/releases/download/v%version%/bluik_%version%.zip",
+            "title": "Bluik",
+            "name": "bluik",
             "description": "This is still an experimental add-on in development. It can already be used to import OCA files though and is the official implementation of OCA in Blender.",
-            "hosts": [ {"name": "blender", "title": "Blender"} ],
-            "os": [ {"name": "mac", "title": "macOS"} ,  {"name": "win", "title": "Windows"},  {"name": "linux", "title": "Linux"} ],
-            "urls": [
-                {"title": "Pre-release access", "url": "http://memberships.rxlab.io"},
+            "hosts": [{ "name": "blender", "title": "Blender" }],
+            "os": [ {"name": "all", "title": "All"} ],
+            "links": [
                 {"title": "Documentation", "url": "http://bluik.rxlab.guide"},
-                {"title": "OCA", "url": "https://rxlaboratory.org/tools/oca"}
-            ]
+                {"title": "OCA", "url": "https://rxlaboratorio.org/rx-tool/oca"}
+                ],
+            "prerelease": false
         }
     ],
-    "userGuide": "http://bluik.rxlab.guide",
-    "website": "https://rxlaboratory.org/tools/bluik",
-    "description": "2D/Cut-Out Rigging and Animation tool set for Blender"
+    "links":[
+        {"title": "User Guide", "url": "http://bluik.rxlab.guide"}
+    ],
+    "authors": [
+        {
+            "name": "Duduf",
+            "url": "https://duduf.com"
+        }
+    ]
 }
+
