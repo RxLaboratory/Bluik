@@ -23,7 +23,7 @@ bl_info = {
     "blender": (3, 0, 0),
     "author": "Nicolas 'Duduf' Dufresne",
     "location": "Armature properties Pose Menu, View3d sidebar (N), Shader Editor sidebar (N), File > Import.",
-    "version": (0,7,3),
+    "version": (0,7,5),
     "description": "Experimental tools from RxLab. which may end up in Bluik for Blender.",
     "wiki_url": "https://bluik.rxlab.guide/",
 }

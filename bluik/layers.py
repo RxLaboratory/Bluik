@@ -251,12 +251,13 @@ def create_layer_shader( layer_name, frames, animated = False, shader='SHADELESS
     """Creates an image shader"""
     mat, texture_node = dublf.materials.create_image_material(frames[0]['fileName'], layer_name, shader)
     if animated:
+        print("Creating Keyframes")
         # create curve for anim
         anim_data = mat.node_tree.animation_data_create()
         action = bpy.data.actions.new('OCA.' + layer_name )
-        anim_data.action = action
         curve = action.fcurves.new( 'nodes[\"' + texture_node.name + '\"].duik_texanim_current_index' )
         opacity_curve = action.fcurves.new( 'nodes[\"Opacity\"].inputs[1].default_value' )
+
         for frame in frames:
             if frame['fileName'] == "" or  frame['name'] == "_blank":
                 im = dublf.materials.get_blank_image()
@@ -281,6 +282,10 @@ def create_layer_shader( layer_name, frames, animated = False, shader='SHADELESS
                     opacity_key.interpolation = 'CONSTANT'
                 opacity_key = opacity_curve.keyframe_points.insert( current_frame, new_opacity)
                 opacity_key.interpolation = 'CONSTANT'
+
+        # Since Blender 4.4, the action MUST be applied AFTER
+        # having created the keyframes, or they will be ignored
+        anim_data.action = action
     else:
         # just set opacity
         mat.node_tree.nodes['Opacity'].inputs[1].default_value = frames[0]['opacity']
